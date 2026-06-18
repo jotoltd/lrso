@@ -1,0 +1,152 @@
+import React from "react";
+import { Logo } from "./Logo";
+import { Phone, Mail, MapPin } from "lucide-react";
+
+interface FooterProps {
+  currentTab: string;
+  setCurrentTab: (tab: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => {
+  const regions = ["Nottingham", "Ipswich", "Croydon & London", "Swindon", "Derby"];
+
+  const handleTabClick = (tabId: string) => {
+    setCurrentTab(tabId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <footer className="bg-slate-900 text-white border-t border-slate-800" id="footer-container">
+      
+      {/* Upper footer content container */}
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+          
+          {/* Col 1: Brand details and bookteq partner disclosure */}
+          <div className="space-y-6">
+            <div className="cursor-pointer" onClick={() => handleTabClick("home")}>
+              <Logo className="h-12 w-12" darkText={false} showText={true} />
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
+              Connecting the people who want to <strong className="text-white">Do</strong> with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.
+            </p>
+            <div className="flex gap-4">
+              <a
+                href="https://twitter.com/lrso"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-lg bg-slate-800 p-2 text-slate-400 hover:text-white transition-colors"
+                aria-label="LRSO Twitter"
+              >
+                <span className="text-xs font-mono font-bold">@lrso</span>
+              </a>
+              <span className="text-xs text-slate-500 font-mono self-center">Twitter & Facebook channels</span>
+            </div>
+          </div>
+
+          {/* Col 2: Site Quick Navigation */}
+          <div className="space-y-4">
+            <h4 className="font-display text-sm font-bold text-slate-300 border-l-2 border-lrso-crimson-600 pl-3">
+              Explore Services
+            </h4>
+            <ul className="space-y-2 text-xs font-semibold text-slate-400">
+              <li>
+                <button onClick={() => handleTabClick("home")} className="hover:text-white transition-colors">
+                  Home Landing & Mission
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleTabClick("venues")} className="hover:text-white transition-colors">
+                  Our Hire Venues
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleTabClick("booking")} className="hover:text-white transition-colors">
+                  Space Booking Request
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleTabClick("partnership")} className="hover:text-white transition-colors">
+                  Join Us (School Trusts)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleTabClick("contact")} className="hover:text-white transition-colors">
+                  Contact & Support
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Partner Regions */}
+          <div className="space-y-4">
+            <h4 className="font-display text-sm font-bold text-slate-300 border-l-2 border-lrso-blue-600 pl-3">
+              Hire Regions
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-400 font-semibold">
+              {regions.map((reg) => (
+                <li key={reg}>
+                  <button
+                    onClick={() => handleTabClick("venues")}
+                    className="hover:text-white transition-colors text-left"
+                  >
+                    Sport halls in {reg}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Corporate Registration & Help Direct lines */}
+          <div className="space-y-4">
+            <h4 className="font-display text-sm font-bold text-slate-300 border-l-2 border-lrso-crimson-600 pl-3">
+              HQ Helplines
+            </h4>
+            <div className="space-y-3.5 text-xs text-slate-400 font-semibold">
+              <a href="tel:03333355944" className="flex items-center gap-2 hover:text-white transition-colors">
+                <Phone className="h-4 w-4 shrink-0 text-lrso-crimson-600" />
+                <span>0333 3355 944</span>
+              </a>
+              <a href="mailto:enquiries@lrso.co.uk" className="flex items-center gap-2 hover:text-white transition-colors">
+                <Mail className="h-4 w-4 shrink-0 text-lrso-blue-600" />
+                <span>enquiries@lrso.co.uk</span>
+              </a>
+              <div className="flex items-start gap-2 pt-1">
+                <MapPin className="h-4 w-4 shrink-0 text-slate-500 mt-0.5" />
+                <span className="leading-relaxed text-[11px] text-slate-400">
+                  Unit 8, Amberley Court,<br />
+                  Whitworth Road, Crawley,<br />
+                  West Sussex, <strong className="text-white">RH11 7XL</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Sub-Footer: Partnership logo stamp and copyright block */}
+      <div className="bg-slate-950 text-slate-500 py-8 border-t border-slate-800/40 text-[11px] font-semibold">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-1 text-center md:text-left">
+            <p>&copy; {new Date().getFullYear()} LRSO Ltd. All rights reserved.</p>
+            <p className="text-slate-600">Generating Money for Schools, Sports Clubs and Community Facilities. Registered office: Unit 8 Amberley Court, Crawley.</p>
+          </div>
+
+          {/* Bookteq Partnership Badge */}
+          <div className="flex items-center gap-3.5 bg-slate-900/60 rounded-xl px-4 py-2 border border-slate-800 shrink-0">
+            <div className="text-right">
+              <span className="block text-[9px] uppercase font-bold text-slate-500 tracking-wider">Lettings System Powered by</span>
+              <span className="font-display text-xs font-bold text-slate-400 tracking-tight">bookteq partner</span>
+            </div>
+            {/* Red Teardrop symbol */}
+            <svg viewBox="0 0 100 100" className="h-4 w-4 fill-lrso-crimson-600 animate-pulse">
+              <path d="M 50 10 C 70 30, 85 45, 85 60 C 85 75, 70 90, 50 90 C 30 90, 15 75, 15 60 C 15 45, 30 30, 50 10 Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </footer>
+  );
+};

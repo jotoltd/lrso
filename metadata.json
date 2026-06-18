@@ -1,0 +1,6 @@
+{
+  "name": "LRSO",
+  "description": "Generating Money for Schools, Sports Clubs and Community Facilities through Managed Lettings",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
