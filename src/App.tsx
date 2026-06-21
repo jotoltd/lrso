@@ -10,6 +10,7 @@ import { ScrollProgress } from "./components/ScrollProgress";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BackToTop } from "./components/BackToTop";
 import { AdminPanel } from "./components/AdminPanel";
+import { VenuePage } from "./components/VenuePage";
 import { School } from "lucide-react";
 
 // Import Home component representing classic split layout
@@ -76,6 +77,7 @@ const heroStocks = [
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>("home");
+  const [activeVenueId, setActiveVenueId] = useState<string | null>(null);
   const [preselectedVenue, setPreselectedVenue] = useState<string>("");
   const [cyclingWordIdx, setCyclingWordIdx] = useState(0);
   const [activeStockIdx, setActiveStockIdx] = useState(0);
@@ -112,11 +114,13 @@ export default function App() {
 
   const handleBookVenue = (venueName: string) => {
     setPreselectedVenue(venueName);
+    setActiveVenueId(null);
     setCurrentTab("booking");
   };
 
-  // Always scroll to top when tab changes
+  // Reset venue page when switching tabs
   useEffect(() => {
+    setActiveVenueId(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentTab]);
 
@@ -146,7 +150,9 @@ export default function App() {
         heroStocks={heroStocks}
       />
     ),
-    venues: <VenueExplorer onBookClick={handleBookVenue} />,
+    venues: activeVenueId
+      ? <VenuePage venueId={activeVenueId} onBack={() => setActiveVenueId(null)} />
+      : <VenueExplorer onBookClick={handleBookVenue} onVenueSelect={(id) => setActiveVenueId(id)} />,
     booking: <BookingForm initialVenueName={preselectedVenue} onSuccessSubmit={() => setPreselectedVenue("")} />,
     partnership: (
       <>

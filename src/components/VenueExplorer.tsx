@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { Search, MapPin, CheckCircle2, ShieldCheck, Mail, ExternalLink, X, Loader2 } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Search, MapPin, ExternalLink, Loader2 } from "lucide-react";
 import { FadeIn } from "./FadeIn";
 import { supabase } from "../lib/supabase";
 
@@ -22,15 +22,13 @@ interface Facility {
 
 interface VenueExplorerProps {
   onBookClick: (venueName: string) => void;
+  onVenueSelect: (venueId: string) => void;
 }
 
-export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBookClick }) => {
+export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBookClick, onVenueSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [venues, setVenues] = useState<SupabaseVenue[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeVenue, setActiveVenue] = useState<SupabaseVenue | null>(null);
-  const [facilities, setFacilities] = useState<Facility[]>([]);
-  const [loadingFacilities, setLoadingFacilities] = useState(false);
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -40,20 +38,6 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
       setLoading(false);
     };
     fetchVenues();
-  }, []);
-
-  const openVenue = useCallback(async (venue: SupabaseVenue) => {
-    setActiveVenue(venue);
-    setFacilities([]);
-    setLoadingFacilities(true);
-    const { data, error } = await supabase
-      .from("facilities")
-      .select("*")
-      .eq("venue_id", venue.id)
-      .order("sort_order", { ascending: true });
-    if (error) { console.error("Facility fetch error:", error); }
-    if (data) setFacilities(data as Facility[]);
-    setLoadingFacilities(false);
   }, []);
 
   const filteredVenues = useMemo(() => {
@@ -153,7 +137,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
 
                 <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
                   <button
-                    onClick={() => openVenue(venue)}
+                    onClick={() => onVenueSelect(venue.id)}
                     className="text-sm font-bold text-lrso-blue-600 hover:text-lrso-blue-800 transition-colors underline decoration-2 underline-offset-4 cursor-pointer"
                   >
                     View Facilities
@@ -196,89 +180,6 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
         </div>
       )}
 
-      {/* Detail Modal */}
-      {activeVenue && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-[250ms]"
-          onClick={() => setActiveVenue(null)}
-        >
-          <div
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal header */}
-            <div className="sticky top-0 z-10 bg-gradient-to-br from-lrso-blue-800 to-slate-800 px-6 py-5 flex items-center gap-4">
-              {activeVenue.logo_url ? (
-                <img src={activeVenue.logo_url} alt={`${activeVenue.name} logo`} className="h-14 w-14 rounded-xl object-contain bg-white/10 p-1 border border-white/20 shrink-0" />
-              ) : (
-                <div className="h-14 w-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-                  <span className="text-xl font-display font-bold text-white/60">{activeVenue.name.charAt(0)}</span>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-display text-xl font-bold text-white leading-tight">{activeVenue.name}</h3>
-                <p className="text-sm text-white/70 mt-0.5 flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 shrink-0" />{activeVenue.address}</p>
-              </div>
-              <button onClick={() => setActiveVenue(null)} className="rounded-full bg-black/40 p-2 text-white hover:bg-black/60 transition-colors cursor-pointer shrink-0">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="p-6">
-              {/* Safeguarding banner */}
-              <div className="mb-6 flex items-center gap-3 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-800">
-                <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-                <span><strong>DBS Safeguarding Guaranteed.</strong> Fully managed by security-cleared LRSO Supervisors.</span>
-              </div>
-
-              {/* Facility cards */}
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Available Facilities — click to book</h4>
-              {loadingFacilities ? (
-                <div className="flex items-center justify-center py-6 mb-6">
-                  <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
-                </div>
-              ) : (
-                <div className="grid gap-3 sm:grid-cols-2 mb-6">
-                  {facilities.map((fac) => (
-                    <a
-                      key={fac.id}
-                      href={activeVenue.book_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-lrso-blue-50 hover:border-lrso-blue-200 p-3 transition-all cursor-pointer"
-                    >
-                      {fac.image_url ? (
-                        <img src={fac.image_url} alt={fac.name} className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0" />
-                      ) : (
-                        <div className="h-10 w-10 rounded-lg bg-slate-200 flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="h-5 w-5 text-slate-400" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <span className="text-sm font-bold text-slate-800 group-hover:text-lrso-blue-700 block truncate">{fac.name}</span>
-                        {fac.description && <span className="text-xs text-slate-500 block truncate">{fac.description}</span>}
-                      </div>
-                      <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-lrso-blue-500 shrink-0" />
-                    </a>
-                  ))}
-                  {facilities.length === 0 && !loadingFacilities && (
-                    <p className="text-sm text-slate-400 col-span-full text-center py-4">No facilities listed for this venue yet.</p>
-                  )}
-                </div>
-              )}
-
-              {/* Email enquiry fallback */}
-              <a
-                href={`mailto:enquiries@lrso.co.uk?subject=Facility Enquiry at ${activeVenue.name}`}
-                className="w-full flex items-center justify-center gap-2 rounded-2xl border border-slate-200 hover:bg-slate-100 py-3 text-sm font-bold text-slate-600 transition-all cursor-pointer"
-              >
-                <Mail className="h-4 w-4" />
-                Email an Enquiry
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
