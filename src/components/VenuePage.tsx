@@ -35,7 +35,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
   const [venue, setVenue] = useState<Venue | null>(null);
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFac, setActiveFac] = useState<Facility | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -158,10 +157,12 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               {facilitiesWithImages.map((fac) => (
-                <div
+                <a
                   key={fac.id}
+                  href={venue.book_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-                  onClick={() => setActiveFac(fac)}
                 >
                   <div className="relative h-52 overflow-hidden bg-slate-100">
                     <img
@@ -179,19 +180,13 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
                       <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">
                         {fac.description}
                       </p>
-                      <a
-                        href={venue.book_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-lrso-blue-600 hover:text-lrso-blue-800 transition-colors"
-                      >
+                      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-lrso-blue-600 group-hover:text-lrso-blue-800 transition-colors">
                         Book this space
                         <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
+                      </span>
                     </div>
                   )}
-                </div>
+                </a>
               ))}
             </div>
           </section>
@@ -212,14 +207,17 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
             )}
             <div className="grid gap-3 sm:grid-cols-2">
               {facilitiesWithoutImages.map((fac) => (
-                <div
+                <a
                   key={fac.id}
+                  href={venue.book_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-lrso-blue-50 hover:border-lrso-blue-200 p-4 transition-all"
                 >
                   <div className="mt-0.5 h-8 w-8 rounded-xl bg-lrso-blue-100 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="h-4 w-4 text-lrso-blue-600" />
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-slate-800">{fac.name}</p>
                     {fac.description && (
                       <p className="mt-0.5 text-xs text-slate-500 leading-relaxed line-clamp-2">
@@ -227,7 +225,8 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
                       </p>
                     )}
                   </div>
-                </div>
+                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
+                </a>
               ))}
             </div>
           </section>
@@ -253,43 +252,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
         </div>
       </div>
 
-      {/* Facility image lightbox */}
-      {activeFac && activeFac.image_url && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-          onClick={() => setActiveFac(null)}
-        >
-          <div
-            className="relative max-w-3xl w-full rounded-3xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={activeFac.image_url}
-              alt={activeFac.name}
-              className="w-full object-cover max-h-[70vh]"
-            />
-            <div className="bg-white p-5">
-              <h4 className="font-display text-xl font-bold text-slate-900">
-                {activeFac.name}
-              </h4>
-              {activeFac.description && (
-                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                  {activeFac.description}
-                </p>
-              )}
-              <a
-                href={venue.book_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl bg-lrso-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-lrso-blue-700 transition-colors"
-              >
-                Book this space
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
