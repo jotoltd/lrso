@@ -6,7 +6,18 @@ import {
   ShieldCheck,
   Mail,
   Loader2,
-  CheckCircle2,
+  Dumbbell,
+  Music,
+  Drama,
+  Footprints,
+  Waves,
+  BookOpen,
+  Circle,
+  Trees,
+  UtensilsCrossed,
+  Presentation,
+  Clock,
+  Navigation,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
@@ -29,9 +40,25 @@ interface Facility {
 interface VenuePageProps {
   venueId: string;
   onBack: () => void;
+  onEnquire: (venueName: string) => void;
 }
 
-export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
+function facilityIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("sport") || n.includes("gym") || n.includes("fitness")) return <Dumbbell className="h-4 w-4" />;
+  if (n.includes("dance") || n.includes("studio")) return <Music className="h-4 w-4" />;
+  if (n.includes("drama") || n.includes("theatre") || n.includes("lecture")) return <Presentation className="h-4 w-4" />;
+  if (n.includes("pitch") || n.includes("football") || n.includes("3g") || n.includes("muga")) return <Footprints className="h-4 w-4" />;
+  if (n.includes("swim") || n.includes("pool")) return <Waves className="h-4 w-4" />;
+  if (n.includes("class") || n.includes("room") || n.includes("meeting")) return <BookOpen className="h-4 w-4" />;
+  if (n.includes("netball") || n.includes("tennis") || n.includes("court")) return <Circle className="h-4 w-4" />;
+  if (n.includes("grass") || n.includes("garden") || n.includes("outdoor")) return <Trees className="h-4 w-4" />;
+  if (n.includes("hall") || n.includes("atrium") || n.includes("dining")) return <UtensilsCrossed className="h-4 w-4" />;
+  if (n.includes("chapel") || n.includes("worship")) return <Drama className="h-4 w-4" />;
+  return <Dumbbell className="h-4 w-4" />;
+}
+
+export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire }) => {
   const [venue, setVenue] = useState<Venue | null>(null);
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,11 +69,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
       setLoading(true);
       const [{ data: v }, { data: f }] = await Promise.all([
         supabase.from("venues").select("*").eq("id", venueId).single(),
-        supabase
-          .from("facilities")
-          .select("*")
-          .eq("venue_id", venueId)
-          .order("sort_order", { ascending: true }),
+        supabase.from("facilities").select("*").eq("venue_id", venueId).order("sort_order", { ascending: true }),
       ]);
       if (v) setVenue(v as Venue);
       if (f) setFacilities(f as Facility[]);
@@ -67,21 +90,29 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <p className="text-slate-500 font-semibold">Venue not found.</p>
-        <button onClick={onBack} className="text-lrso-blue-600 font-bold underline cursor-pointer">
-          Back to venues
-        </button>
+        <button onClick={onBack} className="text-lrso-blue-600 font-bold underline cursor-pointer">Back to venues</button>
       </div>
     );
   }
 
   const facilitiesWithImages = facilities.filter((f) => f.image_url);
   const facilitiesWithoutImages = facilities.filter((f) => !f.image_url);
+  const heroBg = facilitiesWithImages[0]?.image_url ?? null;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue.address)}`;
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero banner */}
-      <div className="bg-gradient-to-br from-lrso-blue-900 via-lrso-blue-800 to-slate-800 px-4 pt-8 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
+      {/* Hero — blurred facility photo backdrop */}
+      <div className="relative overflow-hidden px-4 pt-8 pb-20 sm:px-6 lg:px-8">
+        {/* Blurred background image */}
+        {heroBg ? (
+          <img src={heroBg} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover scale-110 blur-sm brightness-[0.35]" />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-lrso-blue-900 via-lrso-blue-800 to-slate-800" />
+        )}
+        <div className="absolute inset-0 bg-lrso-blue-900/60" />
+
+        <div className="relative mx-auto max-w-5xl">
           <button
             onClick={onBack}
             className="mb-8 flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-colors cursor-pointer"
@@ -92,166 +123,143 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             {venue.logo_url ? (
-              <img
-                src={venue.logo_url}
-                alt={`${venue.name} logo`}
-                className="h-36 w-28 rounded-2xl object-contain bg-white/10 border border-white/20 p-2 shrink-0"
-              />
+              <img src={venue.logo_url} alt={`${venue.name} logo`} className="h-36 w-28 rounded-2xl object-contain bg-white/10 border border-white/20 p-2 shrink-0" />
             ) : (
               <div className="h-36 w-28 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-                <span className="text-3xl font-display font-bold text-white/60">
-                  {venue.name.charAt(0)}
-                </span>
+                <span className="text-3xl font-display font-bold text-white/60">{venue.name.charAt(0)}</span>
               </div>
             )}
             <div>
-              <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                {venue.name}
-              </h1>
-              <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-white/60">
+              <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-white leading-tight">{venue.name}</h1>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 hover:text-white transition-colors">
                 <MapPin className="h-4 w-4 shrink-0" />
                 {venue.address}
-              </p>
+              </a>
+              <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-white/50">
+                <Clock className="h-3.5 w-3.5" />
+                Available evenings 5–10pm · Weekends 8am–10pm · School holidays all day
+              </div>
             </div>
           </div>
 
-          {/* CTA strip */}
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href={venue.book_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
-            >
-              Book Online
-              <ExternalLink className="h-4 w-4" />
+            <a href={venue.book_link} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Book Online <ExternalLink className="h-4 w-4" />
             </a>
-            <a
-              href={`mailto:enquiries@lrso.co.uk?subject=Enquiry about ${venue.name}`}
-              className="flex items-center gap-2 rounded-2xl border border-white/30 px-6 py-3 text-sm font-bold text-white hover:bg-white/10 transition-all"
-            >
-              <Mail className="h-4 w-4" />
-              Email Enquiry
+            <button onClick={() => onEnquire(venue.name)}
+              className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition-all cursor-pointer">
+              <Mail className="h-4 w-4" /> Send Enquiry
+            </button>
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition-all">
+              <Navigation className="h-4 w-4" /> Get Directions
             </a>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 -mt-6 pb-24">
-        {/* Safeguarding badge */}
-        <div className="mb-8 flex items-center gap-3 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-800 shadow-xs">
-          <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
-          <span>
-            <strong>DBS Safeguarding Guaranteed.</strong> Fully managed by
-            security-cleared LRSO Supervisors. Available evenings, weekends &
-            school holidays.
-          </span>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 -mt-4 pb-24">
+        {/* Info strip */}
+        <div className="mb-8 grid sm:grid-cols-3 gap-3">
+          <div className="flex items-center gap-3 rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-800">
+            <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
+            <span><strong>DBS Safeguarded.</strong> Security-cleared supervisors on site.</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl bg-lrso-blue-50 border border-lrso-blue-100 p-4 text-sm text-lrso-blue-800">
+            <Clock className="h-5 w-5 text-lrso-blue-600 shrink-0" />
+            <span><strong>Flexible Hours.</strong> Evenings, weekends & school holidays.</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200 p-4 text-sm text-slate-700">
+            <Navigation className="h-5 w-5 text-slate-500 shrink-0" />
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              <strong>Get Directions.</strong> {venue.address}
+            </a>
+          </div>
         </div>
+
+        {/* All facilities header */}
+        <h2 className="font-display text-2xl font-extrabold text-slate-900 mb-6">
+          Available Facilities <span className="text-slate-400 font-semibold text-lg">({facilities.length})</span>
+        </h2>
 
         {/* Facilities with images — large cards */}
         {facilitiesWithImages.length > 0 && (
-          <section className="mb-12">
-            <h2 className="font-display text-2xl font-extrabold text-slate-900 mb-6">
-              Facilities
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {facilitiesWithImages.map((fac) => (
-                <a
-                  key={fac.id}
-                  href={venue.book_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-                >
-                  <div className="relative h-52 overflow-hidden bg-slate-100">
-                    <img
-                      src={fac.image_url!}
-                      alt={fac.name}
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    <span className="absolute bottom-3 left-4 font-display text-lg font-bold text-white drop-shadow">
-                      {fac.name}
-                    </span>
+          <div className="grid gap-6 sm:grid-cols-2 mb-6">
+            {facilitiesWithImages.map((fac) => (
+              <a key={fac.id} href={venue.book_link} target="_blank" rel="noopener noreferrer"
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                <div className="relative h-52 overflow-hidden bg-slate-100">
+                  <img src={fac.image_url!} alt={fac.name}
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <span className="absolute bottom-3 left-4 font-display text-lg font-bold text-white drop-shadow">{fac.name}</span>
+                  <span className="absolute top-3 right-3 bg-lrso-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                    Book →
+                  </span>
+                </div>
+                {fac.description && (
+                  <div className="p-4">
+                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">{fac.description}</p>
                   </div>
-                  {fac.description && (
-                    <div className="p-4">
-                      <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">
-                        {fac.description}
-                      </p>
-                      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-lrso-blue-600 group-hover:text-lrso-blue-800 transition-colors">
-                        Book this space
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
-          </section>
+                )}
+              </a>
+            ))}
+          </div>
         )}
 
-        {/* Facilities without images — compact list */}
+        {/* Facilities without images — icon list */}
         {facilitiesWithoutImages.length > 0 && (
-          <section className="mb-12">
-            {facilitiesWithImages.length > 0 && (
-              <h2 className="font-display text-xl font-extrabold text-slate-900 mb-4">
-                More Spaces
-              </h2>
-            )}
-            {facilitiesWithImages.length === 0 && (
-              <h2 className="font-display text-2xl font-extrabold text-slate-900 mb-6">
-                Facilities
-              </h2>
-            )}
-            <div className="grid gap-3 sm:grid-cols-2">
-              {facilitiesWithoutImages.map((fac) => (
-                <a
-                  key={fac.id}
-                  href={venue.book_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-lrso-blue-50 hover:border-lrso-blue-200 p-4 transition-all"
-                >
-                  <div className="mt-0.5 h-8 w-8 rounded-xl bg-lrso-blue-100 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="h-4 w-4 text-lrso-blue-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-slate-800">{fac.name}</p>
-                    {fac.description && (
-                      <p className="mt-0.5 text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {fac.description}
-                      </p>
-                    )}
-                  </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
-                </a>
-              ))}
-            </div>
-          </section>
+          <div className="grid gap-3 sm:grid-cols-2 mb-12">
+            {facilitiesWithoutImages.map((fac) => (
+              <a key={fac.id} href={venue.book_link} target="_blank" rel="noopener noreferrer"
+                className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-lrso-blue-50 hover:border-lrso-blue-200 p-4 transition-all">
+                <div className="mt-0.5 h-8 w-8 rounded-xl bg-lrso-blue-100 group-hover:bg-lrso-blue-200 flex items-center justify-center shrink-0 text-lrso-blue-600 transition-colors">
+                  {facilityIcon(fac.name)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-slate-800 group-hover:text-lrso-blue-700">{fac.name}</p>
+                  {fac.description && (
+                    <p className="mt-0.5 text-xs text-slate-500 leading-relaxed line-clamp-2">{fac.description}</p>
+                  )}
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-lrso-blue-500 shrink-0 mt-0.5" />
+              </a>
+            ))}
+          </div>
         )}
 
-        {/* Bottom Book CTA */}
+        {/* Google Maps embed */}
+        <div className="mb-12 overflow-hidden rounded-3xl border border-slate-200 shadow-xs">
+          <iframe
+            title={`Map of ${venue.name}`}
+            width="100%"
+            height="300"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(venue.address)}&output=embed`}
+            className="block"
+          />
+        </div>
+
+        {/* Bottom CTA */}
         <div className="rounded-3xl bg-gradient-to-br from-lrso-blue-800 to-slate-800 p-8 text-center">
-          <h3 className="font-display text-2xl font-extrabold text-white mb-2">
-            Ready to book {venue.name}?
-          </h3>
-          <p className="text-sm text-white/60 mb-6">
-            Book instantly online via our secure booking platform.
-          </p>
-          <a
-            href={venue.book_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
-          >
-            Book Now
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          <h3 className="font-display text-2xl font-extrabold text-white mb-2">Ready to book {venue.name}?</h3>
+          <p className="text-sm text-white/60 mb-6">Book instantly online or send us an enquiry.</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <a href={venue.book_link} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Book Now <ExternalLink className="h-4 w-4" />
+            </a>
+            <button onClick={() => onEnquire(venue.name)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-bold text-white hover:bg-white/20 transition-all cursor-pointer">
+              <Mail className="h-4 w-4" /> Send Enquiry
+            </button>
+          </div>
         </div>
       </div>
-
     </div>
   );
 };

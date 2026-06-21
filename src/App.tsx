@@ -151,7 +151,7 @@ export default function App() {
       />
     ),
     venues: activeVenueId
-      ? <VenuePage venueId={activeVenueId} onBack={() => setActiveVenueId(null)} />
+      ? <VenuePage venueId={activeVenueId} onBack={() => setActiveVenueId(null)} onEnquire={handleBookVenue} />
       : <VenueExplorer onBookClick={handleBookVenue} onVenueSelect={(id) => setActiveVenueId(id)} />,
     booking: <BookingForm initialVenueName={preselectedVenue} onSuccessSubmit={() => setPreselectedVenue("")} />,
     partnership: (

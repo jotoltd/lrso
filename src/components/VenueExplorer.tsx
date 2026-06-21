@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, MapPin, ExternalLink, Loader2 } from "lucide-react";
+import { Search, MapPin, ExternalLink, Loader2, SlidersHorizontal } from "lucide-react";
 import { FadeIn } from "./FadeIn";
 import { supabase } from "../lib/supabase";
 
@@ -27,30 +27,60 @@ interface VenueExplorerProps {
 
 export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBookClick, onVenueSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("");
   const [venues, setVenues] = useState<SupabaseVenue[]>([]);
+  const [venueFacilityNames, setVenueFacilityNames] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchVenues = async () => {
       setLoading(true);
-      const { data } = await supabase.from("venues").select("*").order("created_at", { ascending: true });
-      if (data) setVenues(data as SupabaseVenue[]);
+      const { data } = await supabase.from("venues").select("*").order("name", { ascending: true });
+      if (data) {
+        setVenues(data as SupabaseVenue[]);
+        // Also fetch all facility names for filtering
+        const { data: facs } = await supabase.from("facilities").select("venue_id, name");
+        if (facs) {
+          const map: Record<string, string[]> = {};
+          for (const f of facs) {
+            if (!map[f.venue_id]) map[f.venue_id] = [];
+            map[f.venue_id].push(f.name.toLowerCase());
+          }
+          setVenueFacilityNames(map);
+        }
+      }
       setLoading(false);
     };
     fetchVenues();
   }, []);
 
-  const filteredVenues = useMemo(() => {
-    if (!searchQuery.trim()) return venues;
-    const q = searchQuery.toLowerCase();
-    return venues.filter(
-      (v) =>
-        v.name.toLowerCase().includes(q) ||
-        v.address.toLowerCase().includes(q)
-    );
-  }, [venues, searchQuery]);
+  const FILTERS = [
+    { label: "3G Pitch",     match: "3g" },
+    { label: "Sports Hall",  match: "sports hall" },
+    { label: "Dance",        match: "dance" },
+    { label: "Drama",        match: "drama" },
+    { label: "Swimming",     match: "swimming" },
+    { label: "Classrooms",   match: "classroom" },
+    { label: "Netball",      match: "netball" },
+  ];
 
-  const resetFilters = () => setSearchQuery("");
+  const filteredVenues = useMemo(() => {
+    let result = venues;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (v) => v.name.toLowerCase().includes(q) || v.address.toLowerCase().includes(q)
+      );
+    }
+    if (activeFilter) {
+      result = result.filter((v) =>
+        (venueFacilityNames[v.id] || []).some((n) => n.includes(activeFilter))
+      );
+    }
+    return result;
+  }, [venues, searchQuery, activeFilter, venueFacilityNames]);
+
+  const resetFilters = () => { setSearchQuery(""); setActiveFilter(""); };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" id="venue-explorer-container">
@@ -76,17 +106,36 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
             </span>
             <input
               type="text"
-              placeholder="Search by name, location or facility..."
+              placeholder="Search by name or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-base font-medium text-slate-800 placeholder-slate-400 focus:border-lrso-blue-600 focus:bg-white focus:outline-hidden transition-all"
             />
           </div>
-          {searchQuery && (
-            <button onClick={resetFilters} className="mt-3 text-sm font-bold text-lrso-crimson-600 hover:underline cursor-pointer">
-              Clear search
-            </button>
-          )}
+          {/* Facility type filter chips */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 mr-1">
+              <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
+            </span>
+            {FILTERS.map((f) => (
+              <button
+                key={f.match}
+                onClick={() => setActiveFilter(activeFilter === f.match ? "" : f.match)}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
+                  activeFilter === f.match
+                    ? "bg-lrso-blue-600 text-white border-lrso-blue-600 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:border-lrso-blue-300 hover:text-lrso-blue-700"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+            {(searchQuery || activeFilter) && (
+              <button onClick={resetFilters} className="ml-auto text-xs font-bold text-lrso-crimson-600 hover:underline cursor-pointer">
+                Clear all
+              </button>
+            )}
+          </div>
         </div>
       </FadeIn>
 
@@ -111,7 +160,8 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
           {filteredVenues.map((venue) => (
             <div
               key={venue.id}
-              className="group flex flex-col justify-between overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 transition-all duration-300"
+              onClick={() => onVenueSelect(venue.id)}
+              className="group flex flex-col justify-between overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 hover:border-lrso-blue-200 transition-all duration-300 cursor-pointer"
             >
               {/* Header banner with logo */}
               <div className="relative h-52 bg-gradient-to-br from-lrso-blue-800 to-slate-800 flex items-center justify-center overflow-hidden">
@@ -119,7 +169,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
                   <img
                     src={venue.logo_url}
                     alt={`${venue.name} logo`}
-                    className="h-full w-full object-contain p-4"
+                    className="h-full w-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
                   <span className="text-4xl font-display font-bold text-white/40">{venue.name.charAt(0)}</span>
@@ -135,16 +185,14 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
                 </p>
 
                 <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
-                  <button
-                    onClick={() => onVenueSelect(venue.id)}
-                    className="text-sm font-bold text-lrso-blue-600 hover:text-lrso-blue-800 transition-colors underline decoration-2 underline-offset-4 cursor-pointer"
-                  >
+                  <span className="text-sm font-bold text-lrso-blue-600 group-hover:text-lrso-blue-800 transition-colors underline decoration-2 underline-offset-4">
                     View Facilities
-                  </button>
+                  </span>
                   <a
                     href={venue.book_link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                     className="flex items-center gap-1.5 rounded-xl bg-lrso-blue-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-lrso-blue-700 hover:scale-[1.02] active:scale-[0.98] shadow-sm"
                   >
                     Book Now
