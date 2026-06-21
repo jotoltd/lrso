@@ -7,7 +7,7 @@ import { FadeIn } from "./FadeIn";
 
 interface HomepageProps {
   setCurrentTab: (tab: string) => void;
-  handleBookVenue: (venueName: string) => void;
+  handleEnquire: (subject: string) => void;
   cyclingWordIdx: number;
   verbs: string[];
   activeStockIdx: number;
@@ -23,6 +23,7 @@ interface HomepageProps {
 
 export const Home: React.FC<HomepageProps> = ({
   setCurrentTab,
+  handleEnquire,
   cyclingWordIdx,
   verbs,
   activeStockIdx,
@@ -196,7 +197,7 @@ export const Home: React.FC<HomepageProps> = ({
           <div className="grid gap-8 sm:grid-cols-3">
             {[
               { icon: <Search className="h-8 w-8" />, step: "01", title: "Browse", desc: "Search and filter venues by location, facilities, and availability. View detailed facility information and photos." },
-              { icon: <CalendarDays className="h-8 w-8" />, step: "02", title: "Book", desc: "Submit a booking request in under 2 minutes. Choose your date, time slot, and required facilities." },
+              { icon: <CalendarDays className="h-8 w-8" />, step: "02", title: "Book", desc: "Book directly on the venue's Bookteq page, or send us an enquiry and we'll point you to the right space." },
               { icon: <Trophy className="h-8 w-8" />, step: "03", title: "Play", desc: "Arrive to a fully supervised, unlocked facility. Our DBS-vetted Venue Supervisors ensure everything runs smoothly." },
             ].map((item) => (
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
@@ -333,11 +334,11 @@ export const Home: React.FC<HomepageProps> = ({
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
             <button
-              onClick={() => setCurrentTab("booking")}
-              id="support-cta-book-btn"
+              onClick={() => handleEnquire("General venue enquiry")}
+              id="support-cta-enquire-btn"
               className="rounded-2xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-sm font-bold text-white px-8 py-4 shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
-              Request a Space Slot
+              Send an Enquiry
             </button>
             <button
               onClick={() => setCurrentTab("contact")}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
-import { Phone, Mail, Menu, X, Calendar } from "lucide-react";
+import { Phone, Mail, Menu, X, MessageSquare } from "lucide-react";
 
 interface NavbarProps {
   currentTab: string;
@@ -82,15 +82,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
             })}
           </nav>
 
-          {/* Booking CTA Button (Right Action) */}
+          {/* Enquiry CTA Button (Right Action) */}
           <div className="hidden items-center gap-3 md:flex">
             <button
-              onClick={() => handleNavClick("booking")}
-              id="header-booking-cta"
+              onClick={() => handleNavClick("contact")}
+              id="header-enquiry-cta"
               className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-lrso-crimson-600 to-lrso-crimson-700 px-6 py-3 text-[15px] font-bold text-white shadow-md shadow-lrso-crimson-600/10 transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-lrso-crimson-600/20 active:scale-[0.98] cursor-pointer"
             >
-              <Calendar className="h-4 w-4 text-white" />
-              Book Venue Now
+              <MessageSquare className="h-4 w-4 text-white" />
+              Send Enquiry
             </button>
           </div>
 
@@ -143,12 +143,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
               enquiries@lrso.co.uk
             </a>
             <button
-              onClick={() => handleNavClick("booking")}
-              id="mobile-menu-booking-cta"
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lrso-crimson-600 to-lrso-crimson-700 py-3 text-center text-sm font-bold text-white shadow-md"
+              onClick={() => handleNavClick("contact")}
+              id="mobile-menu-enquiry-cta"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lrso-crimson-600 to-lrso-crimson-700 py-3 text-center text-sm font-bold text-white shadow-md cursor-pointer"
             >
-              <Calendar className="h-4 w-4 text-white" />
-              Book Venue
+              <MessageSquare className="h-4 w-4 text-white" />
+              Send Enquiry
             </button>
           </div>
         </div>

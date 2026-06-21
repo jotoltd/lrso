@@ -21,11 +21,10 @@ interface Facility {
 }
 
 interface VenueExplorerProps {
-  onBookClick: (venueName: string) => void;
   onVenueSelect: (venueId: string) => void;
 }
 
-export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBookClick, onVenueSelect }) => {
+export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("");
   const [venues, setVenues] = useState<SupabaseVenue[]>([]);

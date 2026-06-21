@@ -40,7 +40,7 @@ interface Facility {
 interface VenuePageProps {
   venueId: string;
   onBack: () => void;
-  onEnquire: (venueName: string) => void;
+  onEnquire: (subject: string) => void;
 }
 
 function facilityIcon(name: string) {
@@ -127,7 +127,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
             <span className="font-display font-bold text-slate-900 truncate text-sm">{venue?.name}</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => onEnquire(venue!.name)}
+            <button onClick={() => onEnquire(`Enquiry about ${venue!.name}`)}
               className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">
               <Mail className="h-3.5 w-3.5" /> Enquire
             </button>

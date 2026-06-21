@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { Navbar } from "./components/Navbar";
 import { VenueExplorer } from "./components/VenueExplorer";
 import { PartnershipStepper } from "./components/PartnershipStepper";
-import { BookingForm } from "./components/BookingForm";
 import { ContactSection } from "./components/ContactSection";
 import { Footer } from "./components/Footer";
 import { ScrollProgress } from "./components/ScrollProgress";
@@ -78,7 +77,7 @@ const heroStocks = [
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>("home");
   const [activeVenueId, setActiveVenueId] = useState<string | null>(null);
-  const [preselectedVenue, setPreselectedVenue] = useState<string>("");
+  const [enquirySubject, setEnquirySubject] = useState<string>("");
   const [cyclingWordIdx, setCyclingWordIdx] = useState(0);
   const [activeStockIdx, setActiveStockIdx] = useState(0);
 
@@ -112,10 +111,10 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleBookVenue = (venueName: string) => {
-    setPreselectedVenue(venueName);
+  const handleEnquire = (subject: string) => {
+    setEnquirySubject(subject);
     setActiveVenueId(null);
-    setCurrentTab("booking");
+    setCurrentTab("contact");
   };
 
   // Reset venue page when switching tabs
@@ -142,7 +141,7 @@ export default function App() {
     home: (
       <Home
         setCurrentTab={setCurrentTab}
-        handleBookVenue={handleBookVenue}
+        handleEnquire={handleEnquire}
         cyclingWordIdx={cyclingWordIdx}
         verbs={verbs}
         activeStockIdx={activeStockIdx}
@@ -151,9 +150,9 @@ export default function App() {
       />
     ),
     venues: activeVenueId
-      ? <VenuePage venueId={activeVenueId} onBack={() => setActiveVenueId(null)} onEnquire={handleBookVenue} />
-      : <VenueExplorer onBookClick={handleBookVenue} onVenueSelect={(id) => setActiveVenueId(id)} />,
-    booking: <BookingForm initialVenueName={preselectedVenue} onSuccessSubmit={() => setPreselectedVenue("")} />,
+      ? <VenuePage venueId={activeVenueId} onBack={() => setActiveVenueId(null)} onEnquire={handleEnquire} />
+      : <VenueExplorer onVenueSelect={(id) => setActiveVenueId(id)} />,
+    contact: <ContactSection initialSubject={enquirySubject} onSubjectConsumed={() => setEnquirySubject("")} />,
     partnership: (
       <>
         <section className="bg-gradient-to-b from-slate-50 via-white to-white py-20 border-b border-slate-100">
@@ -173,7 +172,6 @@ export default function App() {
         <PartnershipStepper />
       </>
     ),
-    contact: <ContactSection />,
   };
 
   if (currentTab === "admin") {

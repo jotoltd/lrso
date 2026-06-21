@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle2, Navigation } from "lucide-react";
 
-export const ContactSection: React.FC = () => {
+interface ContactSectionProps {
+  initialSubject?: string;
+  onSubjectConsumed?: () => void;
+}
+
+export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject, onSubjectConsumed }) => {
   const [directionsExpanded, setDirectionsExpanded] = useState(false);
   const [supportSubmitted, setSupportSubmitted] = useState(false);
   const [supportName, setSupportName] = useState("");
   const [supportMsg, setSupportMsg] = useState("");
+  const [supportSubject, setSupportSubject] = useState("Invoice or Lettings Finance question");
+
+  useEffect(() => {
+    if (initialSubject) {
+      setSupportSubject(initialSubject);
+      onSubjectConsumed?.();
+    }
+  }, [initialSubject]);
 
   const handleSupportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,11 +178,12 @@ export const ContactSection: React.FC = () => {
 
                     <div className="mt-4">
                       <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Regarding Subject</label>
-                      <select className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden">
+                      <select value={supportSubject} onChange={(e) => setSupportSubject(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden">
                         <option>Invoice or Lettings Finance question</option>
                         <option>Forgotten/Lost item claim</option>
                         <option>Onboarding my School / Sports club trust</option>
                         <option>Complaint/Feedback on Venue Supervisor</option>
+                        <option>Venue enquiry</option>
                         <option>Other emergency enquiry</option>
                       </select>
                     </div>

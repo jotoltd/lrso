@@ -61,8 +61,8 @@ export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => 
                 </button>
               </li>
               <li>
-                <button onClick={() => handleTabClick("booking")} className="hover:text-white transition-colors">
-                  Space Booking Request
+                <button onClick={() => handleTabClick("contact")} className="hover:text-white transition-colors">
+                  Send Enquiry
                 </button>
               </li>
               <li>
