@@ -52,10 +52,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-36 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo element */}
           <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
-            <Logo className="h-32 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
+            <Logo className="h-14 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
           </div>
 
           {/* Desktop Navigation */}
@@ -67,18 +67,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
                   key={item.id}
                   id={`nav-btn-${item.id}`}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-4 py-2 text-[15px] font-bold transition-all duration-200 rounded-lg hover:bg-slate-50 cursor-pointer ${
+                  className={`relative px-4 py-2 text-sm font-bold transition-all duration-200 rounded-xl cursor-pointer ${
                     isActive
-                      ? "text-lrso-blue-700 font-extrabold"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-lrso-blue-50 text-lrso-blue-700"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
                   {item.label}
                   {isActive && (
-                    <span 
-                      id={`nav-active-line-${item.id}`}
-                      className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 rounded-full" 
-                    />
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-4 bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 rounded-full" />
                   )}
                 </button>
               );

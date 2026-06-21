@@ -219,20 +219,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const filteredE = enquiries.filter(e => [e.name, e.email, e.venue].some(f => f.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const renderOverview = () => (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          { label: "Total Venues", val: loadingV ? "—" : venues.length, icon: <Building2 className="h-4 w-4" />, color: "bg-blue-50 text-blue-600", refresh: fetchV },
-          { label: "Pending Enquiries", val: loadingE ? "—" : enquiries.filter(e => e.status === "pending").length, icon: <Mail className="h-4 w-4" />, color: "bg-amber-50 text-amber-600", refresh: fetchE },
-          { label: "Unread Messages", val: loadingC ? "—" : contacts.filter(c => !c.read).length, icon: <Users className="h-4 w-4" />, color: "bg-rose-50 text-rose-600", refresh: fetchC },
+          { label: "Total Venues", val: loadingV ? "—" : venues.length, icon: <Building2 className="h-5 w-5" />, gradient: "from-lrso-blue-600 to-lrso-blue-700", light: "bg-lrso-blue-50 text-lrso-blue-600", refresh: fetchV },
+          { label: "Pending Enquiries", val: loadingE ? "—" : enquiries.filter(e => e.status === "pending").length, icon: <Mail className="h-5 w-5" />, gradient: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-600", refresh: fetchE },
+          { label: "Unread Messages", val: loadingC ? "—" : contacts.filter(c => !c.read).length, icon: <Users className="h-5 w-5" />, gradient: "from-lrso-crimson-600 to-rose-600", light: "bg-rose-50 text-rose-600", refresh: fetchC },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className={`inline-flex items-center justify-center h-9 w-9 rounded-xl ${s.color}`}>{s.icon}</span>
-              <button onClick={s.refresh} className="text-slate-400 hover:text-slate-600 cursor-pointer"><RefreshCw className="h-3.5 w-3.5" /></button>
+          <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between">
+              <span className={`inline-flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br ${s.gradient} text-white shadow-sm`}>{s.icon}</span>
+              <button onClick={s.refresh} className="text-slate-300 hover:text-slate-500 cursor-pointer transition-colors mt-0.5"><RefreshCw className="h-3.5 w-3.5" /></button>
             </div>
-            <div className="text-2xl font-bold text-slate-900">{String(s.val)}</div>
-            <div className="text-xs font-bold text-slate-500 mt-1">{s.label}</div>
+            <div className="mt-4 text-3xl font-extrabold text-slate-900 font-display">{String(s.val)}</div>
+            <div className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wide">{s.label}</div>
           </div>
         ))}
       </div>
@@ -548,52 +548,105 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     contacts: renderContacts(),
   };
 
+  const tabMeta: Record<AdminTab, { title: string; subtitle: string }> = {
+    overview: { title: "Overview", subtitle: "Welcome back, Josh. Live data from Supabase." },
+    venues: { title: "Venues", subtitle: "Manage venue listings and facilities." },
+    enquiries: { title: "Enquiries", subtitle: "Review and respond to hire enquiries." },
+    contacts: { title: "Messages", subtitle: "View messages from partners and customers." },
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      <aside className="w-64 bg-slate-900 text-white flex-col hidden md:flex shrink-0">
-        <div className="p-6 border-b border-slate-800">
-          <h2 className="font-display text-lg font-bold">LRSO Admin</h2>
-          <p className="text-xs text-slate-400 mt-1">Management Portal</p>
+      {/* Sidebar */}
+      <aside className="w-60 bg-slate-950 text-white flex-col hidden md:flex shrink-0 fixed top-0 bottom-0 left-0 z-40">
+        {/* Logo area */}
+        <div className="px-5 py-5 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-lrso-crimson-600 flex items-center justify-center shrink-0">
+              <span className="text-white font-display font-black text-sm">L</span>
+            </div>
+            <div>
+              <p className="font-display text-sm font-extrabold text-white leading-tight">LRSO</p>
+              <p className="text-[10px] text-slate-400 font-medium">Admin Portal</p>
+            </div>
+          </div>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 space-y-0.5">
           {navItems.map(item => (
-            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-lrso-crimson-600 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`}>
-              {item.icon}{item.label}
+            <button key={item.id} onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition-all cursor-pointer ${
+                activeTab === item.id
+                  ? "bg-white/10 text-white"
+                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+              }`}>
+              <span className={activeTab === item.id ? "text-lrso-crimson-400" : ""}>{item.icon}</span>
+              {item.label}
+              {item.id === "enquiries" && enquiries.filter(e => e.status === "pending").length > 0 && (
+                <span className="ml-auto bg-lrso-crimson-600 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
+                  {enquiries.filter(e => e.status === "pending").length}
+                </span>
+              )}
+              {item.id === "contacts" && contacts.filter(c => !c.read).length > 0 && (
+                <span className="ml-auto bg-amber-500 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
+                  {contacts.filter(c => !c.read).length}
+                </span>
+              )}
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t border-slate-800">
-          <button onClick={onLogout} className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition-all cursor-pointer">
+
+        {/* Sign out */}
+        <div className="px-3 py-4 border-t border-white/5">
+          <button onClick={onLogout}
+            className="w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all cursor-pointer">
             <LogOut className="h-4 w-4" />Sign Out
           </button>
         </div>
       </aside>
 
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
-        <h2 className="font-display text-base font-bold">LRSO Admin</h2>
-        <button onClick={onLogout} className="text-xs font-bold text-slate-300 flex items-center gap-1 cursor-pointer"><LogOut className="h-3 w-3" /> Sign Out</button>
+      {/* Mobile top bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-12 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="h-6 w-6 rounded-lg bg-lrso-crimson-600 flex items-center justify-center">
+            <span className="text-white font-display font-black text-[10px]">L</span>
+          </div>
+          <span className="font-display text-sm font-bold">LRSO Admin</span>
+        </div>
+        <button onClick={onLogout} className="text-xs font-bold text-slate-400 flex items-center gap-1 cursor-pointer hover:text-white transition-colors">
+          <LogOut className="h-3.5 w-3.5" /> Sign Out
+        </button>
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="md:hidden fixed top-12 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto">
-          <div className="flex px-2 py-2 gap-1">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0 md:ml-60">
+        {/* Mobile tab bar */}
+        <div className="md:hidden fixed top-12 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto shadow-xs">
+          <div className="flex px-3 py-2 gap-1">
             {navItems.map(item => (
-              <button key={item.id} onClick={() => setActiveTab(item.id)} className={`shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition-all cursor-pointer ${activeTab === item.id ? "bg-lrso-crimson-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
+              <button key={item.id} onClick={() => setActiveTab(item.id)}
+                className={`shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === item.id ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
+                }`}>
                 {item.icon}{item.label}
               </button>
             ))}
           </div>
         </div>
-        <main className="flex-1 p-6 pt-20 md:pt-6 max-w-7xl w-full mx-auto">
-          <div className="mb-6">
-            <h1 className="font-display text-2xl font-bold text-slate-900 capitalize">{activeTab}</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              {activeTab === "overview" && "Welcome back, Josh. Live data from Supabase."}
-              {activeTab === "venues" && "Manage venue listings. Bookings via Bookteq."}
-              {activeTab === "enquiries" && "Review and respond to hire enquiries."}
-              {activeTab === "contacts" && "View messages from potential partners and customers."}
-            </p>
+
+        {/* Page header */}
+        <header className="hidden md:flex items-center justify-between bg-white border-b border-slate-200 px-8 py-4 sticky top-0 z-20">
+          <div>
+            <h1 className="font-display text-xl font-extrabold text-slate-900">{tabMeta[activeTab].title}</h1>
+            <p className="text-xs text-slate-400 mt-0.5">{tabMeta[activeTab].subtitle}</p>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-xl bg-lrso-blue-50 border border-lrso-blue-100 flex items-center justify-center text-xs font-extrabold text-lrso-blue-700">J</div>
+          </div>
+        </header>
+
+        <main className="flex-1 p-5 pt-24 md:pt-6">
           {tabContent[activeTab]}
         </main>
       </div>
