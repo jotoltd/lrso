@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { VENUES } from "../data/venues";
 import { Calendar, User, Clock, Dumbbell, Award, CreditCard, Send, CheckCircle2 } from "lucide-react";
+import { supabase } from "../lib/supabase";
+
+interface LiveVenue { id: string; name: string; }
 
 interface BookingFormProps {
   initialVenueName?: string;
@@ -8,7 +10,17 @@ interface BookingFormProps {
 }
 
 export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "", onSuccessSubmit }) => {
-  const [selectedVenue, setSelectedVenue] = useState(initialVenueName || VENUES[0].name);
+  const [liveVenues, setLiveVenues] = useState<LiveVenue[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState(initialVenueName || "");
+
+  useEffect(() => {
+    supabase.from("venues").select("id, name").order("created_at", { ascending: true }).then(({ data }) => {
+      if (data && data.length > 0) {
+        setLiveVenues(data as LiveVenue[]);
+        if (!initialVenueName) setSelectedVenue(data[0].name);
+      }
+    });
+  }, [initialVenueName]);
   const [activity, setActivity] = useState("Football (3G Pitch)");
   const [facilitiesNeeded, setFacilitiesNeeded] = useState("3G All-Weather Pitch");
   const [bookingDate, setBookingDate] = useState("");
@@ -26,14 +38,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Sync initial venue selection if parameter updates
+  // Sync initial venue if passed in
   useEffect(() => {
-    if (initialVenueName) {
-      setSelectedVenue(initialVenueName);
-    }
+    if (initialVenueName) setSelectedVenue(initialVenueName);
   }, [initialVenueName]);
-
-  const venueInfo = VENUES.find((v) => v.name === selectedVenue) || VENUES[0];
 
   const sportsOptions = [
     "Football (3G Pitch)",
@@ -132,9 +140,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
                   onChange={(e) => setSelectedVenue(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden"
                 >
-                  {VENUES.map((v) => (
+                  {liveVenues.length === 0 && <option value="">Loading venues…</option>}
+                  {liveVenues.map((v) => (
                     <option key={v.id} value={v.name}>
-                      {v.name} ({v.region})
+                      {v.name}
                     </option>
                   ))}
                 </select>
@@ -168,12 +177,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
                   onChange={(e) => setFacilitiesNeeded(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden"
                 >
-                  {venueInfo.facilities.map((fac) => (
+                  {["3G All-Weather Pitch", "Sports Hall", "Dance Studio", "Drama Studio", "Main Hall", "Classrooms", "Gymnasium", "Other"].map((fac) => (
                     <option key={fac} value={fac}>
                       {fac}
                     </option>
                   ))}
-                  <option value="Grass Football Pitch">Grass Football Pitch</option>
                 </select>
               </div>
 

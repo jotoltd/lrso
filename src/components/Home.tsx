@@ -4,7 +4,6 @@ import { Logo } from "./Logo";
 import { StatsSection } from "./StatsSection";
 import { motion } from "motion/react";
 import { FadeIn } from "./FadeIn";
-import { VENUES } from "../data/venues";
 
 interface HomepageProps {
   setCurrentTab: (tab: string) => void;
@@ -64,14 +63,6 @@ export const Home: React.FC<HomepageProps> = ({
           <div className="grid lg:grid-cols-2 gap-12 items-center pt-8 sm:pt-12">
             <div className="flex flex-col text-left items-start space-y-8">
             
-            {/* Premium Top Floating Badge */}
-            <div className="flex max-w-fit items-center gap-3 rounded-full border border-white/20 bg-slate-900/60 backdrop-blur-md px-5 py-2.5 shadow-lg animate-pulse">
-              <span className="flex h-2.5 w-2.5 rounded-full bg-[#bf3a3f]" />
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
-                Trusted Lettings & Safeguarding Partner &bull; Nationwide
-              </span>
-            </div>
-
             {/* Majestic Display Headline */}
             <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] max-w-4xl">
               Hire Premium School Facilities <span className="bg-gradient-to-r from-lrso-crimson-500 to-rose-400 bg-clip-text text-transparent">in Your Area</span>
@@ -145,27 +136,19 @@ export const Home: React.FC<HomepageProps> = ({
 
           </div>
 
-          {/* Featured Venue Card */}
+          {/* Venue CTA Panel */}
           <div className="hidden lg:block">
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900/40 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-lrso-crimson-600/20 to-lrso-blue-600/20" />
-              <img
-                src={VENUES[0].image}
-                alt={VENUES[0].name}
-                className="h-48 w-full object-cover"
-              />
-              <div className="relative p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="rounded-full bg-lrso-crimson-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Featured</span>
-                  <span className="flex items-center gap-1 text-xs text-slate-300">
-                    <MapPin className="h-3 w-3" /> {VENUES[0].region}
-                  </span>
+              <div className="relative p-8 flex flex-col gap-5">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-lrso-crimson-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Nationwide</span>
                 </div>
-                <h3 className="font-display text-xl font-bold text-white mb-2">{VENUES[0].name}</h3>
-                <p className="text-sm text-slate-300 mb-4 line-clamp-2">{VENUES[0].description}</p>
+                <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
+                <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more. Available evenings, weekends &amp; school holidays.</p>
                 <button
                   onClick={() => setCurrentTab("venues")}
-                  className="flex items-center gap-2 text-sm font-bold text-white hover:text-lrso-crimson-400 transition-colors"
+                  className="flex items-center gap-2 text-sm font-bold text-white hover:text-lrso-crimson-400 transition-colors cursor-pointer"
                 >
                   View All Venues <ArrowRight className="h-4 w-4" />
                 </button>

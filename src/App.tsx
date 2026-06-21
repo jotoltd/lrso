@@ -9,6 +9,7 @@ import { Footer } from "./components/Footer";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BackToTop } from "./components/BackToTop";
+import { AdminPanel } from "./components/AdminPanel";
 import { School } from "lucide-react";
 
 // Import Home component representing classic split layout
@@ -119,6 +120,18 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentTab]);
 
+  // Secret keyboard shortcut to open admin: Ctrl+Shift+A
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "A") {
+        e.preventDefault();
+        setCurrentTab("admin");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const currentThemeBgColor = "bg-white";
 
   const tabContent = {
@@ -156,6 +169,10 @@ export default function App() {
     ),
     contact: <ContactSection />,
   };
+
+  if (currentTab === "admin") {
+    return <AdminPanel />;
+  }
 
   return (
     <div className={`min-h-screen ${currentThemeBgColor} text-slate-800 font-sans selection:bg-lrso-crimson-600 selection:text-white flex flex-col justify-between transition-colors duration-300`}>

@@ -5,6 +5,7 @@ interface LogoProps {
   showText?: boolean; // toggle side text
   darkText?: boolean; // light vs dark header text
   showBookteqPartner?: boolean; // display bookteq partnership
+  imageSrc?: string; // optional image file to replace SVG
 }
 
 export const Logo: React.FC<LogoProps> = ({
@@ -12,10 +13,17 @@ export const Logo: React.FC<LogoProps> = ({
   showText = true,
   darkText = true,
   showBookteqPartner = false,
+  imageSrc,
 }) => {
   return (
     <div className="flex items-center gap-3 select-none">
-      {/* Dynamic Handcrafted SVG Logo recreating the exact layout and proportions */}
+      {imageSrc ? (
+        <img
+          src={imageSrc}
+          alt="LRSO logo"
+          className={`${className} object-contain transition-transform duration-300 hover:scale-[1.05]`}
+        />
+      ) : (
       <svg
         className={`${className} transition-transform duration-300 hover:scale-[1.05]`}
         viewBox="0 0 400 450"
@@ -226,6 +234,7 @@ export const Logo: React.FC<LogoProps> = ({
           )}
         </g>
       </svg>
+      )}
 
       {/* Side Name Text */}
       {showText && (

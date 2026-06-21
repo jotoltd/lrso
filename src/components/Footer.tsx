@@ -147,6 +147,22 @@ export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => 
         </div>
       </div>
 
+      {/* Bottom bar */}
+      <div className="border-t border-slate-800">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <p className="text-[10px] text-slate-600 font-semibold">
+            &copy; {new Date().getFullYear()} LRSO Ltd. All rights reserved.
+          </p>
+          <button
+            onClick={() => setCurrentTab("admin")}
+            className="text-[10px] text-slate-700 hover:text-slate-500 font-semibold transition-colors cursor-pointer"
+            title="Admin Login"
+          >
+            Admin
+          </button>
+        </div>
+      </div>
+
     </footer>
   );
 };

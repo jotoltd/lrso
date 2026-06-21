@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Logo } from "./Logo";
+import logoImage from "../assets/lrso_logo.jpg";
 import { Phone, Mail, Menu, X, Calendar } from "lucide-react";
 
 interface NavbarProps {
@@ -13,7 +14,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
   const navItems = [
     { label: "Home", id: "home" },
     { label: "Our Venues", id: "venues" },
-    { label: "Book Now", id: "booking" },
     { label: "Partnership (Join Us)", id: "partnership" },
     { label: "Contact & Support", id: "contact" },
   ];
@@ -30,7 +30,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
       <div className="bg-gradient-to-r from-lrso-blue-800 to-lrso-blue-700 py-2.5 text-xs text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 font-medium tracking-wide">
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             Generating Money for Schools & Community Facilities
           </div>
           <div className="hidden items-center gap-6 sm:flex">
@@ -53,10 +52,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-36 items-center justify-between">
           {/* Logo element */}
           <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
-            <Logo className="h-11 w-11" showBookteqPartner={false} />
+            <Logo className="h-32 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
           </div>
 
           {/* Desktop Navigation */}
