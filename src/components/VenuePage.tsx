@@ -110,9 +110,7 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
     );
   }
 
-  const facilitiesWithImages = facilities.filter((f) => f.image_url);
-  const facilitiesWithoutImages = facilities.filter((f) => !f.image_url);
-  const heroBg = facilitiesWithImages[0]?.image_url ?? null;
+  const heroBg = facilities.find((f) => f.image_url)?.image_url ?? null;
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue.address)}`;
 
   return (
@@ -224,47 +222,38 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
           Available Facilities <span className="text-slate-400 font-semibold text-lg">({facilities.length})</span>
         </h2>
 
-        {/* Facilities with images — large cards */}
-        {facilitiesWithImages.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 mb-6">
-            {facilitiesWithImages.map((fac) => (
+        {/* All facilities — unified card grid */}
+        {facilities.length > 0 && (
+          <div className="grid gap-6 sm:grid-cols-2 mb-12">
+            {facilities.map((fac) => (
               <a key={fac.id} href={venue.book_link} target="_blank" rel="noopener noreferrer"
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-                <div className="relative h-52 overflow-hidden bg-slate-100">
-                  <img src={fac.image_url!} alt={fac.name} loading="lazy"
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-3 left-4 font-display text-lg font-bold text-white drop-shadow">{fac.name}</span>
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                {/* Image or icon placeholder */}
+                <div className="relative h-44 overflow-hidden bg-slate-100 shrink-0">
+                  {fac.image_url ? (
+                    <>
+                      <img src={fac.image_url} alt={fac.name} loading="lazy"
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    </>
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-lrso-blue-50 to-slate-100 flex items-center justify-center">
+                      <div className="h-14 w-14 rounded-2xl bg-lrso-blue-100 group-hover:bg-lrso-blue-200 flex items-center justify-center text-lrso-blue-600 transition-colors">
+                        <span className="scale-150">{facilityIcon(fac.name)}</span>
+                      </div>
+                    </div>
+                  )}
                   <span className="absolute top-3 right-3 bg-lrso-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                     Book →
                   </span>
                 </div>
-                {fac.description && (
-                  <div className="p-4">
-                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">{fac.description}</p>
-                  </div>
-                )}
-              </a>
-            ))}
-          </div>
-        )}
-
-        {/* Facilities without images — icon list */}
-        {facilitiesWithoutImages.length > 0 && (
-          <div className="grid gap-3 sm:grid-cols-2 mb-12">
-            {facilitiesWithoutImages.map((fac) => (
-              <a key={fac.id} href={venue.book_link} target="_blank" rel="noopener noreferrer"
-                className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-lrso-blue-50 hover:border-lrso-blue-200 p-4 transition-all">
-                <div className="mt-0.5 h-8 w-8 rounded-xl bg-lrso-blue-100 group-hover:bg-lrso-blue-200 flex items-center justify-center shrink-0 text-lrso-blue-600 transition-colors">
-                  {facilityIcon(fac.name)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-800 group-hover:text-lrso-blue-700">{fac.name}</p>
+                {/* Text body */}
+                <div className="flex flex-col flex-1 p-5">
+                  <p className="font-display text-base font-extrabold text-slate-900 group-hover:text-lrso-blue-700 transition-colors mb-2">{fac.name}</p>
                   {fac.description && (
-                    <p className="mt-0.5 text-xs text-slate-500 leading-relaxed line-clamp-2">{fac.description}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{fac.description}</p>
                   )}
                 </div>
-                <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-lrso-blue-500 shrink-0 mt-0.5" />
               </a>
             ))}
           </div>
