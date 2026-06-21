@@ -96,10 +96,10 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
               <img
                 src={venue.logo_url}
                 alt={`${venue.name} logo`}
-                className="h-24 w-24 rounded-2xl object-contain bg-white/10 border border-white/20 p-2 shrink-0"
+                className="h-36 w-28 rounded-2xl object-contain bg-white/10 border border-white/20 p-2 shrink-0"
               />
             ) : (
-              <div className="h-24 w-24 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+              <div className="h-36 w-28 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
                 <span className="text-3xl font-display font-bold text-white/60">
                   {venue.name.charAt(0)}
                 </span>

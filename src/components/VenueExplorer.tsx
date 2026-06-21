@@ -114,19 +114,18 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
               className="group flex flex-col justify-between overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 transition-all duration-300"
             >
               {/* Header banner with logo */}
-              <div className="relative h-40 bg-gradient-to-br from-lrso-blue-800 to-slate-800 flex flex-col items-center justify-center gap-3 px-6">
+              <div className="relative h-52 bg-gradient-to-br from-lrso-blue-800 to-slate-800 flex items-center justify-center overflow-hidden">
                 {venue.logo_url ? (
                   <img
                     src={venue.logo_url}
                     alt={`${venue.name} logo`}
-                    className="h-16 w-16 rounded-2xl object-contain bg-white/10 p-1 border border-white/20"
+                    className="h-full w-full object-contain p-4"
                   />
                 ) : (
-                  <div className="h-16 w-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-                    <span className="text-2xl font-display font-bold text-white/60">{venue.name.charAt(0)}</span>
-                  </div>
+                  <span className="text-4xl font-display font-bold text-white/40">{venue.name.charAt(0)}</span>
                 )}
-                <span className="font-display text-base font-bold text-white text-center leading-tight">{venue.name}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-4 right-4 font-display text-base font-bold text-white leading-tight drop-shadow">{venue.name}</span>
               </div>
 
               <div className="flex-1 p-6 flex flex-col justify-between">
