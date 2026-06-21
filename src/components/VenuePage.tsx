@@ -251,8 +251,13 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
                 <div className="flex flex-col flex-1 p-5">
                   <p className="font-display text-base font-extrabold text-slate-900 group-hover:text-lrso-blue-700 transition-colors mb-2">{fac.name}</p>
                   {fac.description && (
-                    <p className="text-sm text-slate-600 leading-relaxed">{fac.description}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed mb-4">{fac.description}</p>
                   )}
+                  <div className="mt-auto pt-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-lrso-blue-600 group-hover:bg-lrso-blue-700 px-4 py-2 text-xs font-bold text-white transition-colors">
+                      <ExternalLink className="h-3 w-3" /> Book Now
+                    </span>
+                  </div>
                 </div>
               </a>
             ))}
