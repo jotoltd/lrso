@@ -2,7 +2,6 @@
 """
 Re-scrape ALL facility images (jpg + png) from each venue's facilities page.
 Matches by vertical position pairing and uploads to Supabase storage.
-Only updates facilities that don't already have an image_url.
 """
 import re, time, requests
 from bs4 import BeautifulSoup
@@ -38,14 +37,16 @@ VENUES = {
 
 def extract_pairs(soup: BeautifulSoup) -> list[tuple[str, str | None]]:
     """Return (facility_name, image_url|None).
-    
-    Images have their absolute page top in their own style attribute.
-    Facility headings are in Heading_2_b divs whose page top is on the div itself.
-    We sort both by top and match each facility to the nearest photo below it.
-    """
-    elements = []
 
-    # Facility headings — top is on the Heading_2_b div
+    The original LRSO pages use a block layout: 2 (or 1) photos appear first,
+    then 2 facility headings directly below them. Each photo block belongs to the
+    facility block beneath it. We therefore group facilities by their vertical
+    position, then assign the nearest photos above each block to the names in
+    that block.
+    """
+    # Facility headings — one Heading_2_b div is one visual block. It may contain
+    # multiple h2 headings (e.g. "Floodlit Netball, Courts").
+    fac_blocks: list[tuple[int, list[str]]] = []
     for div in soup.find_all("div", class_=lambda c: c and "Heading_2_b" in c):
         top_m = re.search(r"top:\s*(-?\d+)px", div.get("style", ""))
         if not top_m:
@@ -54,9 +55,10 @@ def extract_pairs(soup: BeautifulSoup) -> list[tuple[str, str | None]]:
         names = [h.get_text(" ", strip=True) for h in div.find_all("h2")
                  if h.get_text(strip=True) and len(h.get_text(strip=True)) < 80]
         if names:
-            elements.append({"type": "fac", "top": top, "names": names})
+            fac_blocks.append((top, names))
 
     # Photos — top is in the img's own style
+    imgs: list[tuple[int, str]] = []
     for img in soup.find_all("img"):
         src = img.get("src", "")
         style = img.get("style", "")
@@ -71,21 +73,60 @@ def extract_pairs(soup: BeautifulSoup) -> list[tuple[str, str | None]]:
         w, h = int(wm.group(1)), int(hm.group(1))
         # Real facility photo: landscape, reasonable size, skip UI banners
         if w >= 200 and h >= 150 and w < 800:
-            elements.append({"type": "img", "top": top, "src": f"{BASE}/{src}"})
+            imgs.append((top, f"{BASE}/{src}"))
 
-    elements.sort(key=lambda x: x["top"])
+    fac_blocks.sort(key=lambda x: x[0])
+    imgs.sort()
 
-    # Match: for each facility block, find photos between it and the next block
-    fac_indices = [i for i, e in enumerate(elements) if e["type"] == "fac"]
-    pairs = []
+    if not fac_blocks:
+        return []
 
-    for fi, fac_idx in enumerate(fac_indices):
-        fac = elements[fac_idx]
-        next_top = elements[fac_indices[fi + 1]]["top"] if fi + 1 < len(fac_indices) else 999999
-        photos = [e for e in elements
-                  if e["type"] == "img" and fac["top"] <= e["top"] < next_top]
-        for i, name in enumerate(fac["names"]):
-            pairs.append((name, photos[i]["src"] if i < len(photos) else None))
+    # Group images into vertical blocks by exact top
+    img_blocks: list[tuple[int, list[str]]] = []
+    for top, src in imgs:
+        if img_blocks and top == img_blocks[-1][0]:
+            img_blocks[-1][1].append(src)
+        else:
+            img_blocks.append((top, [src]))
+
+    # Assign each facility block the nearest image block(s) above it that haven't
+    # already been consumed by a later facility block.
+    pairs: list[tuple[str, str | None]] = []
+    img_consumed = [False] * len(img_blocks)
+
+    for bi, (fac_top, names) in enumerate(fac_blocks):
+        # Images must be above this facility block
+        eligible = [i for i, (top, _) in enumerate(img_blocks)
+                    if top < fac_top and not img_consumed[i]]
+        if not eligible:
+            for name in names:
+                pairs.append((name, None))
+            continue
+
+        # If there is an earlier facility block, only consume images above that block
+        prev_fac_top = fac_blocks[bi - 1][0] if bi > 0 else -999999
+        chosen = [i for i in eligible if img_blocks[i][0] > prev_fac_top]
+        if not chosen:
+            chosen = eligible
+
+        # Use the closest image block(s) to the facility block.
+        # Each image block may contain 2 photos (a pair), so flatten the chosen
+        # images and take as many as there are facilities, or as many as available.
+        chosen.sort(key=lambda i: img_blocks[i][0], reverse=True)
+        flat_images: list[tuple[int, str]] = []
+        for idx in chosen:
+            for src in img_blocks[idx][1]:
+                flat_images.append((img_blocks[idx][0], src))
+
+        selected = flat_images[:len(names)]
+        selected_idx = 0
+
+        for i, name in enumerate(names):
+            if selected_idx < len(selected):
+                pairs.append((name, selected[selected_idx][1]))
+                selected_idx += 1
+            else:
+                pairs.append((name, None))
 
     return pairs
 
