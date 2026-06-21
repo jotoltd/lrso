@@ -37,6 +37,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [step, setStep] = useState(1);
 
   // Sync initial venue if passed in
   useEffect(() => {
@@ -121,13 +122,33 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
           onSubmit={handleSubmit}
           className="rounded-3xl bg-white p-6 border border-slate-200 shadow-xl lg:p-10"
         >
-          <div className="grid gap-8 md:grid-cols-2">
+          {/* Progress steps */}
+          <div className="mb-10">
+            <div className="flex items-center gap-0">
+              {[{n:1,label:"Venue & Space"},{n:2,label:"Your Details"}].map((s, i) => (
+                <React.Fragment key={s.n}>
+                  <button type="button" onClick={() => s.n < step || (s.n === 1) ? setStep(s.n) : undefined}
+                    className={`flex items-center gap-2.5 cursor-pointer ${ step === s.n ? "" : "opacity-50"}` }>
+                    <span className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-extrabold shrink-0 transition-all ${
+                      step > s.n ? "bg-emerald-500 text-white" : step === s.n ? "bg-lrso-blue-600 text-white shadow-lg" : "bg-slate-100 text-slate-400"
+                    }`}>
+                      {step > s.n ? <Award className="h-4 w-4" /> : s.n}
+                    </span>
+                    <span className={`text-sm font-bold hidden sm:block ${ step === s.n ? "text-slate-900" : "text-slate-400" }`}>{s.label}</span>
+                  </button>
+                  {i < 1 && <div className={`flex-1 h-0.5 mx-3 rounded-full transition-all ${ step > 1 ? "bg-emerald-400" : "bg-slate-200" }`} />}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-1">
             
             {/* Step 1: Booking parameters */}
-            <div className="space-y-6">
+            {step === 1 && <div className="space-y-6">
               <h3 className="font-display text-lg font-bold text-slate-950 flex items-center gap-2 border-b border-slate-100 pb-3">
                 <Dumbbell className="h-5 w-5 text-lrso-blue-600" />
-                1. Select Venue & Space
+                Select Venue & Space
               </h3>
 
               {/* Venue Dropdown */}
@@ -246,13 +267,18 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
                   />
                 </div>
               </div>
-            </div>
+              {/* Next step button */}
+              <button type="button" onClick={() => setStep(2)}
+                className="w-full rounded-xl bg-lrso-blue-600 px-6 py-3.5 text-sm font-extrabold text-white hover:bg-lrso-blue-700 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer mt-2">
+                Continue to Your Details →
+              </button>
+            </div>}
 
             {/* Step 2: Customer Contact info */}
-            <div className="space-y-6">
+            {step === 2 && <div className="space-y-6">
               <h3 className="font-display text-lg font-bold text-slate-950 flex items-center gap-2 border-b border-slate-100 pb-3">
                 <User className="h-5 w-5 text-lrso-crimson-600" />
-                2. Contact Details
+                Your Contact Details
               </h3>
 
               {/* Full name */}
@@ -327,11 +353,15 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-hidden resize-none"
                 />
               </div>
-            </div>
+              <button type="button" onClick={() => setStep(1)}
+                className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                ← Back to Venue & Space
+              </button>
+            </div>}
           </div>
 
-          {/* Pricing Estimation Banner & Submission */}
-          <div className="mt-10 rounded-2xl bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Pricing Estimation Banner & Submission — step 2 only */}
+          {step === 2 && <div className="mt-10 rounded-2xl bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="rounded-xl bg-white/10 p-3 text-emerald-400">
                 <CreditCard className="h-6 w-6" />
@@ -367,7 +397,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialVenueName = "",
                 </>
               )}
             </button>
-          </div>
+          </div>}
         </form>
       ) : (
         /* Submission Success Screen */

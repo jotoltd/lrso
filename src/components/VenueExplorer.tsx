@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, MapPin, ExternalLink, Loader2, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, ExternalLink, SlidersHorizontal } from "lucide-react";
 import { FadeIn } from "./FadeIn";
 import { supabase } from "../lib/supabase";
 
@@ -147,10 +147,24 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
         <span className="text-sm font-semibold text-slate-400">Evenings, Weekends & School Holidays</span>
       </div>
 
-      {/* Loading */}
+      {/* Skeleton loading */}
       {loading && (
-        <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs animate-pulse">
+              <div className="h-52 bg-slate-200" />
+              <div className="p-6 space-y-3">
+                <div className="h-4 bg-slate-200 rounded-full w-3/4" />
+                <div className="h-3 bg-slate-100 rounded-full w-1/2" />
+                <div className="flex gap-2 pt-1">
+                  <div className="h-5 w-16 bg-slate-100 rounded-full" />
+                  <div className="h-5 w-20 bg-slate-100 rounded-full" />
+                  <div className="h-5 w-14 bg-slate-100 rounded-full" />
+                </div>
+                <div className="h-9 bg-slate-100 rounded-xl w-full mt-2" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -179,12 +193,39 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onBookClick: _onBo
               </div>
 
               <div className="flex-1 p-6 flex flex-col justify-between">
-                <p className="flex items-start gap-1.5 text-sm font-semibold text-slate-500">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-                  {venue.address}
-                </p>
+                <div>
+                  <p className="flex items-start gap-1.5 text-sm font-semibold text-slate-500">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                    {venue.address}
+                  </p>
+                  {/* Facility tag pills */}
+                  {venueFacilityNames[venue.id] && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {Array.from(new Set(
+                        venueFacilityNames[venue.id]
+                          .map((n) => {
+                            if (n.includes("3g") || n.includes("pitch") || n.includes("football")) return "3G Pitch";
+                            if (n.includes("sports hall")) return "Sports Hall";
+                            if (n.includes("dance")) return "Dance";
+                            if (n.includes("drama")) return "Drama";
+                            if (n.includes("swim") || n.includes("pool")) return "Pool";
+                            if (n.includes("gym") || n.includes("fitness")) return "Gym";
+                            if (n.includes("netball") || n.includes("tennis")) return "Courts";
+                            if (n.includes("main hall")) return "Main Hall";
+                            return null;
+                          })
+                          .filter(Boolean)
+                      )).slice(0, 4).map((tag) => (
+                        <span key={tag as string}
+                          className="rounded-full bg-lrso-blue-50 border border-lrso-blue-100 px-2.5 py-0.5 text-[10px] font-bold text-lrso-blue-700">
+                          {tag as string}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-5">
                   <span className="text-sm font-bold text-lrso-blue-600 group-hover:text-lrso-blue-800 transition-colors underline decoration-2 underline-offset-4">
                     View Facilities
                   </span>
