@@ -209,9 +209,17 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               { icon: <Search className="h-8 w-8" />, step: "01", title: "Browse", desc: "Search and filter venues by location, facilities, and availability. View detailed facility information and photos." },
               { icon: <CalendarDays className="h-8 w-8" />, step: "02", title: "Enquire or Book", desc: "Send us an enquiry, or book directly on the venue's Bookteq page. We'll confirm availability and access details." },
               { icon: <Trophy className="h-8 w-8" />, step: "03", title: "Play", desc: "Arrive to a fully supervised, unlocked facility. Our DBS-vetted Venue Supervisors ensure everything runs smoothly." },
-            ].map((item) => (
+            ].map((item, index) => (
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
-                <span className="absolute top-6 right-6 font-display text-5xl font-black text-slate-100">{item.step}</span>
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.4, duration: 0.5, ease: "easeOut" }}
+                  className="absolute top-6 right-6 font-display text-5xl font-black bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 bg-clip-text text-transparent"
+                >
+                  {item.step}
+                </motion.span>
                 <div className="h-14 w-14 rounded-2xl bg-lrso-blue-50 text-lrso-blue-600 flex items-center justify-center mb-6">
                   {item.icon}
                 </div>
