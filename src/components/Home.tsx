@@ -114,11 +114,11 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             </div>
 
             {/* Call-To-Action Options */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2 p-[3px] rounded-[22px] bg-gradient-to-r from-lrso-blue-600 via-lrso-crimson-600 to-lrso-blue-600 bg-[length:200%_100%] animate-gradient-strobe">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2">
               <button
                 onClick={() => navigate("/venues")}
                 id="hero-view-venues-btn"
-                className="group flex-1 flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 px-10 py-5 text-base font-bold uppercase tracking-wider text-slate-950 shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="group flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 hover:from-lrso-blue-700 hover:to-lrso-crimson-700 px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-xl shadow-lrso-crimson-600/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 {value("home.hero.cta_primary", "Browse Hire Venues")}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -126,7 +126,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               <button
                 onClick={() => navigate("/partnership")}
                 id="hero-join-us-btn"
-                className="flex-1 flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-slate-950/30 hover:bg-slate-950/50 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="flex items-center justify-center gap-3 rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 {value("home.hero.cta_secondary", "Onboard My School")}
               </button>
