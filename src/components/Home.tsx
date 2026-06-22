@@ -18,9 +18,17 @@ interface HomepageProps {
 
 const heroImages = [heroImg1, heroImg2, heroImg3, heroImg4];
 
-const SectionDivider = () => (
-  <div className="h-1 w-full bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600" aria-hidden="true" />
-);
+const SectionDivider = ({ flip = false, size = "md" }: { flip?: boolean; size?: "md" | "lg" | "xl" }) => {
+  const sizeClass = { md: "h-2", lg: "h-3", xl: "h-5" }[size];
+  return (
+    <div
+      className={`w-full ${sizeClass} bg-gradient-to-r ${
+        flip ? "from-lrso-crimson-600 to-lrso-blue-600" : "from-lrso-blue-600 to-lrso-crimson-600"
+      }`}
+      aria-hidden="true"
+    />
+  );
+};
 
 const defaultHeroStocks = [
   { category: "MAIN HALL", badge: "Celebrate & Gather", img: heroImages[0] },
@@ -106,11 +114,11 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             </div>
 
             {/* Call-To-Action Options */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2 p-[3px] rounded-[22px] bg-gradient-to-r from-lrso-blue-600 via-lrso-crimson-600 to-lrso-blue-600 bg-[length:200%_100%] animate-gradient-strobe">
               <button
                 onClick={() => navigate("/venues")}
                 id="hero-view-venues-btn"
-                className="group flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 px-10 py-5 text-base font-bold uppercase tracking-wider text-slate-950 shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="group flex-1 flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 px-10 py-5 text-base font-bold uppercase tracking-wider text-slate-950 shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 {value("home.hero.cta_primary", "Browse Hire Venues")}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -118,7 +126,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               <button
                 onClick={() => navigate("/partnership")}
                 id="hero-join-us-btn"
-                className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-slate-950/30 hover:bg-slate-950/50 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-slate-950/30 hover:bg-slate-950/50 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 {value("home.hero.cta_secondary", "Onboard My School")}
               </button>
@@ -158,7 +166,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider size="xl" />
 
       <FadeIn>
       <section className="bg-white py-8">
@@ -185,7 +193,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider flip size="lg" />
 
       <FadeIn delay={0.1}>
       <section className="bg-slate-50 py-24" id="how-it-works">
@@ -216,7 +224,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider size="xl" />
 
       <FadeIn delay={0.1}>
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8" id="welcome-details">
@@ -271,7 +279,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider flip size="md" />
 
       <FadeIn delay={0.1}>
       <section className="bg-white py-20">
@@ -291,7 +299,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider size="lg" />
 
       <FadeIn delay={0.1}>
       <section className="bg-slate-900 py-24 text-white" id="schools-cta">
@@ -318,13 +326,13 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider flip size="xl" />
 
       <FadeIn delay={0.1}>
         <StatsSection />
       </FadeIn>
 
-      <SectionDivider />
+      <SectionDivider size="lg" />
 
       <FadeIn delay={0.1}>
       <section className="bg-gradient-to-br from-lrso-blue-800 to-lrso-blue-700 py-24 text-white relative overflow-hidden" id="homescreen-support">

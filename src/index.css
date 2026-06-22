@@ -19,3 +19,14 @@
   --color-primary-dark: #041624;
 }
 
+@keyframes gradient-strobe {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-strobe {
+  background-size: 200% 200%;
+  animation: gradient-strobe 2s ease infinite;
+}
+
