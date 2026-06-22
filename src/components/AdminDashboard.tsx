@@ -8,8 +8,6 @@ import {
   Search,
   Plus,
   CheckCircle2,
-  Clock,
-  XCircle,
   ExternalLink,
   MapPin,
   Tag,
@@ -43,20 +41,8 @@ const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: "content", label: "Site Content", icon: <FileText className="h-4 w-4" /> },
 ];
 
-const StatusBadge = ({ status }: { status: string }) => {
-  const s: Record<string, string> = { pending: "bg-amber-50 text-amber-700 border-amber-200", approved: "bg-emerald-50 text-emerald-700 border-emerald-200", rejected: "bg-red-50 text-red-700 border-red-200" };
-  return (
-    <span className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${s[status] || s.pending}`}>
-      {status === "approved" && <CheckCircle2 className="h-3 w-3" />}
-      {status === "pending" && <Clock className="h-3 w-3" />}
-      {status === "rejected" && <XCircle className="h-3 w-3" />}
-      {status}
-    </span>
-  );
-};
-
-const Spinner = () => <div className="p-10 text-center"><Loader2 className="h-5 w-5 animate-spin mx-auto text-slate-400" /></div>;
-const Empty = ({ msg }: { msg: string }) => <p className="px-6 py-10 text-sm text-slate-400 text-center">{msg}</p>;
+const Spinner = () => <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm"><Loader2 className="h-6 w-6 animate-spin mx-auto text-slate-400 mb-2" /><p className="text-sm text-slate-400 font-medium">Loading...</p></div>;
+const Empty = ({ msg }: { msg: string }) => <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm"><p className="text-sm text-slate-400 font-medium">{msg}</p></div>;
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
@@ -225,51 +211,58 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const updateContactNotes = async (id: string, notes: string) => { await supabase.from("contacts").update({ notes }).eq("id", id); fetchC(); };
 
   const renderOverview = () => (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="space-y-8">
+      <div className="grid gap-5 sm:grid-cols-3">
         {[
-          { label: "Total Venues", val: loadingV ? "—" : venues.length, icon: <Building2 className="h-5 w-5" />, gradient: "from-lrso-blue-600 to-lrso-blue-700", light: "bg-lrso-blue-50 text-lrso-blue-600", refresh: fetchV },
-          { label: "Open Messages", val: loadingC ? "—" : contacts.filter(c => c.status === "open").length, icon: <Mail className="h-5 w-5" />, gradient: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-600", refresh: fetchC },
-          { label: "Unread Messages", val: loadingC ? "—" : contacts.filter(c => !c.read).length, icon: <Users className="h-5 w-5" />, gradient: "from-lrso-crimson-600 to-rose-600", light: "bg-rose-50 text-rose-600", refresh: fetchC },
+          { label: "Total Venues", val: loadingV ? "—" : venues.length, icon: Building2, gradient: "from-blue-600 to-blue-700", refresh: fetchV },
+          { label: "Open Messages", val: loadingC ? "—" : contacts.filter(c => c.status === "open").length, icon: Mail, gradient: "from-amber-500 to-orange-500", refresh: fetchC },
+          { label: "Unread Messages", val: loadingC ? "—" : contacts.filter(c => !c.read).length, icon: Users, gradient: "from-rose-600 to-pink-600", refresh: fetchC },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition-shadow">
+          <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between">
-              <span className={`inline-flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br ${s.gradient} text-white shadow-sm`}>{s.icon}</span>
-              <button onClick={s.refresh} className="text-slate-300 hover:text-slate-500 cursor-pointer transition-colors mt-0.5"><RefreshCw className="h-3.5 w-3.5" /></button>
+              <div className={`inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br ${s.gradient} text-white shadow-md`}>
+                <s.icon className="h-5 w-5" />
+              </div>
+              <button onClick={s.refresh} className="text-slate-300 hover:text-slate-500 cursor-pointer transition-colors"><RefreshCw className="h-4 w-4" /></button>
             </div>
-            <div className="mt-4 text-3xl font-extrabold text-slate-900 font-display">{String(s.val)}</div>
-            <div className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wide">{s.label}</div>
+            <div className="mt-5 text-4xl font-extrabold text-slate-900 font-display">{String(s.val)}</div>
+            <div className="text-sm font-semibold text-slate-500 mt-1">{s.label}</div>
           </div>
         ))}
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900">Recent Messages</h3>
-            <button onClick={() => setActiveTab("contacts")} className="text-xs font-bold text-lrso-crimson-600 hover:underline cursor-pointer">View All</button>
-          </div>
-          {loadingC ? <Spinner /> : contacts.length === 0 ? <Empty msg="No messages yet." /> : (
-            <div className="divide-y divide-slate-100">
-              {contacts.slice(0, 5).map(c => (
-                <div key={c.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-bold text-slate-900">{c.name}</p>
-                    {!c.read && <span className="h-2 w-2 rounded-full bg-lrso-crimson-600" />}
-                  </div>
-                  <ContactStatusBadge status={c.status} />
-                </div>
-              ))}
-            </div>
-          )}
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <h3 className="font-bold text-slate-900 text-lg">Recent Messages</h3>
+          <button onClick={() => setActiveTab("contacts")} className="text-sm font-bold text-lrso-blue-600 hover:underline">View all</button>
         </div>
+        {loadingC ? <Spinner /> : contacts.length === 0 ? <Empty msg="No messages yet." /> : (
+          <div className="divide-y divide-slate-100">
+            {contacts.slice(0, 5).map(c => (
+              <div key={c.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold ${!c.read ? "bg-rose-100 text-rose-600" : "bg-slate-100 text-slate-500"}`}>{c.name.charAt(0).toUpperCase()}</div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">{c.name} <span className="text-xs font-normal text-slate-400">· {c.subject}</span></p>
+                    <p className="text-xs text-slate-500">{new Date(c.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <ContactStatusBadge status={c.status} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 
   const renderVenues = () => (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div><h3 className="font-bold text-slate-900">Venue Management</h3><p className="text-sm text-slate-500">Bookings via Bookteq.</p></div>
+      <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div>
+          <h3 className="font-bold text-slate-900 text-lg">Venue Management</h3>
+          <p className="text-sm text-slate-500">Add venues, upload logos, and manage facilities.</p>
+        </div>
         <button onClick={() => {
           const opening = !showForm;
           setShowForm(opening); setSaveErr("");
@@ -278,14 +271,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             setLogoFile(null); setLogoPreview(null);
             setFacilityRows([{ uid: crypto.randomUUID(), name: "", description: "", file: null, preview: null }]);
           }
-        }} className="flex items-center gap-2 rounded-xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-sm font-bold text-white px-5 py-2.5 transition-all cursor-pointer">
+        }} className="flex items-center gap-2 rounded-xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-sm font-bold text-white px-5 py-2.5 transition-all cursor-pointer shadow-sm">
           <Plus className="h-4 w-4" />{showForm ? "Cancel" : "Add Venue"}
         </button>
       </div>
-      {saved && <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 flex items-center gap-2"><CheckCircle2 className="h-4 w-4" />Venue saved successfully.</div>}
+      {saved && <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 flex items-center gap-2 shadow-sm"><CheckCircle2 className="h-4 w-4" />Venue saved successfully.</div>}
       {showForm && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-          <h4 className="font-bold text-slate-900 mb-5">Add New Venue</h4>
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h4 className="font-bold text-slate-900 text-lg mb-5">Add New Venue</h4>
           <form onSubmit={addVenue} className="space-y-5">
 
             {/* Venue details */}
@@ -363,8 +356,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         </div>
       )}
       {editingVenue && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-          <h4 className="font-bold text-slate-900 mb-5">Edit Venue</h4>
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h4 className="font-bold text-slate-900 text-lg mb-5">Edit Venue</h4>
           <form onSubmit={saveEditVenue} className="space-y-5">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="md:col-span-2">
@@ -422,40 +415,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </form>
         </div>
       )}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-100">
-              <tr>
-                {["Venue","Address","Book Link",""].map(h => <th key={h} className="px-6 py-3 text-xs font-bold uppercase tracking-wide text-slate-500">{h}</th>)}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loadingV ? (
-                <tr><td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-400"><Loader2 className="h-5 w-5 animate-spin mx-auto mb-2" />Loading...</td></tr>
-              ) : venues.length === 0 ? (
-                <tr><td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-400">No venues added yet. Click &lsquo;Add Venue&rsquo; to get started.</td></tr>
-              ) : venues.map(v => (
-                <tr key={v.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      {v.logo_url ? <img src={v.logo_url} alt={v.name} className="h-8 w-8 rounded-lg object-contain border border-slate-200 bg-slate-50 shrink-0" /> : <div className="h-8 w-8 rounded-lg bg-slate-100 shrink-0" />}
-                      <span className="text-sm font-bold text-slate-900">{v.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">{v.address}</td>
-                  <td className="px-6 py-4"><a href={v.book_link} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-lrso-blue-600 hover:underline flex items-center gap-1">Bookteq <ExternalLink className="h-3 w-3" /></a></td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => startEdit(v)} className="text-slate-300 hover:text-lrso-blue-600 transition-colors cursor-pointer"><Pencil className="h-4 w-4" /></button>
-                      <button onClick={() => deleteVenue(v.id)} className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer"><Trash2 className="h-4 w-4" /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {loadingV ? (
+          <div className="col-span-full"><Spinner /></div>
+        ) : venues.length === 0 ? (
+          <div className="col-span-full bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">No venues added yet. Click <strong>Add Venue</strong> to get started.</div>
+        ) : venues.map(v => (
+          <div key={v.id} className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col">
+            <div className="flex items-start gap-4">
+              {v.logo_url ? (
+                <img src={v.logo_url} alt={v.name} className="h-14 w-14 rounded-xl object-contain border border-slate-200 bg-slate-50 shrink-0" />
+              ) : (
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-display font-bold text-xl shrink-0">{v.name.charAt(0)}</div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-slate-900 truncate">{v.name}</h4>
+                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{v.address}</p>
+              </div>
+            </div>
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+              <a href={v.book_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-lrso-blue-600 hover:text-lrso-blue-800 hover:underline">
+                Bookteq <ExternalLink className="h-3 w-3" />
+              </a>
+              <div className="flex items-center gap-1">
+                <button onClick={() => startEdit(v)} className="p-2 rounded-lg text-slate-400 hover:text-lrso-blue-600 hover:bg-slate-50 transition-colors cursor-pointer"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => deleteVenue(v.id)} className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"><Trash2 className="h-4 w-4" /></button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -466,61 +454,68 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   };
 
   const renderContacts = () => (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-      <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-bold text-slate-900">Contact Submissions</h3>
-        <button onClick={fetchC} className="text-slate-400 hover:text-slate-600 cursor-pointer"><RefreshCw className="h-4 w-4" /></button>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-bold text-slate-900 text-lg">Contact Submissions</h3>
+          <p className="text-sm text-slate-500">Messages from the public contact form.</p>
+        </div>
+        <button onClick={fetchC} className="flex items-center gap-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 transition-colors cursor-pointer shadow-sm">
+          <RefreshCw className="h-4 w-4" /> Refresh
+        </button>
       </div>
+
       {loadingC ? <Spinner /> : contacts.length === 0 ? <Empty msg="No contact submissions yet." /> : (
-        <div className="divide-y divide-slate-100">
+        <div className="grid gap-5 lg:grid-cols-2">
           {contacts.map(c => (
-            <div key={c.id} className="px-6 py-5 hover:bg-slate-50 transition-colors">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-bold text-slate-900">{c.name}</p>
-                    {!c.read && <span className="h-2 w-2 rounded-full bg-lrso-crimson-600" />}
-                    <span className="text-xs text-slate-400 ml-auto">{new Date(c.created_at).toLocaleDateString()}</span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-0.5">{c.email}</p>
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <p className="text-sm font-medium text-slate-700">{c.subject}</p>
-                    <ContactStatusBadge status={c.status} />
-                  </div>
-                  {c.message && <p className="text-sm text-slate-600 mt-2 leading-relaxed bg-slate-50 rounded-xl p-3 border border-slate-100">{c.message}</p>}
-
-                  {/* Notes */}
-                  <div className="mt-3">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Internal notes</label>
-                    <div className="flex items-start gap-2 mt-1">
-                      <textarea
-                        value={c.notes || ""}
-                        onChange={(e) => updateContactNotes(c.id, e.target.value)}
-                        placeholder="Add reply notes..."
-                        rows={2}
-                        className="flex-1 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700 focus:bg-white focus:outline-hidden resize-none"
-                      />
-                    </div>
+            <div key={c.id} className={`bg-white rounded-2xl border shadow-sm p-5 flex flex-col gap-4 transition-all ${!c.read ? "border-l-4 border-l-rose-500 border-slate-200" : "border-slate-200"}`}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className={`h-11 w-11 rounded-full flex items-center justify-center text-sm font-bold ${!c.read ? "bg-rose-100 text-rose-600" : "bg-slate-100 text-slate-500"}`}>{c.name.charAt(0).toUpperCase()}</div>
+                  <div>
+                    <p className="font-bold text-slate-900">{c.name}</p>
+                    <p className="text-xs text-slate-500">{c.email}</p>
                   </div>
                 </div>
-
-                {/* Actions */}
-                <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 shrink-0">
-                  <select
-                    value={c.status}
-                    onChange={(e) => updateContactStatus(c.id, e.target.value as Contact["status"])}
-                    className="rounded-lg border border-slate-200 bg-slate-50 py-1.5 px-2 text-xs font-bold text-slate-700 focus:outline-hidden cursor-pointer"
-                  >
-                    <option value="open">Open</option>
-                    <option value="replied">Replied</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                  {!c.read && (
-                    <button onClick={() => markRead(c.id)} className="text-xs font-bold text-lrso-blue-600 hover:underline cursor-pointer whitespace-nowrap">
-                      Mark read
-                    </button>
-                  )}
+                <div className="flex flex-col items-end gap-1">
+                  <ContactStatusBadge status={c.status} />
+                  <span className="text-xs text-slate-400">{new Date(c.created_at).toLocaleDateString()}</span>
                 </div>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-slate-700 mb-1">{c.subject}</p>
+                {c.message && <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded-xl p-3 border border-slate-100">{c.message}</p>}
+              </div>
+
+              <div className="mt-auto pt-4 border-t border-slate-100">
+                <label className="text-xs font-bold text-slate-500 mb-1.5 block">Internal notes</label>
+                <textarea
+                  value={c.notes || ""}
+                  onChange={(e) => updateContactNotes(c.id, e.target.value)}
+                  placeholder="Add reply notes..."
+                  rows={2}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-3">
+                <select
+                  value={c.status}
+                  onChange={(e) => updateContactStatus(c.id, e.target.value as Contact["status"])}
+                  className="rounded-lg border border-slate-200 bg-slate-50 py-2 px-3 text-sm font-bold text-slate-700 focus:outline-hidden cursor-pointer"
+                >
+                  <option value="open">Open</option>
+                  <option value="replied">Replied</option>
+                  <option value="closed">Closed</option>
+                </select>
+                {!c.read ? (
+                  <button onClick={() => markRead(c.id)} className="rounded-lg bg-lrso-blue-50 hover:bg-lrso-blue-100 text-lrso-blue-700 px-4 py-2 text-sm font-bold transition-colors cursor-pointer">
+                    Mark read
+                  </button>
+                ) : (
+                  <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Read</span>
+                )}
               </div>
             </div>
           ))}
@@ -583,9 +578,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     return matchesSearch && matchesPage;
   });
 
+  const pageBadge = (page: string) => (
+    <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 border border-slate-200">
+      {page || "global"}
+    </span>
+  );
+
   const renderContent = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -594,13 +595,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
               placeholder="Search content keys or labels..."
               value={contentSearch}
               onChange={(e) => setContentSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 py-2 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden"
             />
           </div>
           <select
             value={contentPage}
             onChange={(e) => setContentPage(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden cursor-pointer"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden cursor-pointer"
           >
             <option value="">All pages</option>
             {pages.map(p => <option key={p} value={p}>{p}</option>)}
@@ -608,65 +609,80 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         </div>
         <button
           onClick={() => setShowContentForm(s => !s)}
-          className="flex items-center gap-2 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2 text-sm font-bold transition-all cursor-pointer"
+          className="flex items-center gap-2 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2.5 text-sm font-bold transition-all cursor-pointer shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add Content
         </button>
       </div>
 
       {showContentForm && (
-        <form onSubmit={createContent} className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
-          <h3 className="font-bold text-slate-900">Add new content item</h3>
+        <form onSubmit={createContent} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <h3 className="font-bold text-slate-900 text-lg">Add new content item</h3>
           <div className="grid sm:grid-cols-3 gap-4">
-            <input required value={newContent.key} onChange={e => setNewContent(c => ({ ...c, key: e.target.value }))} placeholder="Key (e.g. home.hero.title)" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
-            <input required value={newContent.label} onChange={e => setNewContent(c => ({ ...c, label: e.target.value }))} placeholder="Label" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
-            <input value={newContent.page} onChange={e => setNewContent(c => ({ ...c, page: e.target.value }))} placeholder="Page (e.g. home)" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            <div>
+              <label className="text-xs font-bold text-slate-500 mb-1.5 block">Key</label>
+              <input required value={newContent.key} onChange={e => setNewContent(c => ({ ...c, key: e.target.value }))} placeholder="home.hero.title" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-500 mb-1.5 block">Label</label>
+              <input required value={newContent.label} onChange={e => setNewContent(c => ({ ...c, label: e.target.value }))} placeholder="Hero title" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-500 mb-1.5 block">Page</label>
+              <input value={newContent.page} onChange={e => setNewContent(c => ({ ...c, page: e.target.value }))} placeholder="home" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            </div>
           </div>
-          <textarea value={newContent.content} onChange={e => setNewContent(c => ({ ...c, content: e.target.value }))} placeholder="Content" rows={3} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none" />
+          <div>
+            <label className="text-xs font-bold text-slate-500 mb-1.5 block">Content</label>
+            <textarea value={newContent.content} onChange={e => setNewContent(c => ({ ...c, content: e.target.value }))} placeholder="Text or HTML content..." rows={3} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none" />
+          </div>
           <div className="flex items-center gap-3">
-            <button type="submit" className="rounded-xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-white px-4 py-2 text-sm font-bold cursor-pointer">Create</button>
+            <button type="submit" className="rounded-xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-white px-5 py-2.5 text-sm font-bold cursor-pointer shadow-sm">Create</button>
             <button type="button" onClick={() => setShowContentForm(false)} className="text-sm font-bold text-slate-500 hover:text-slate-700 cursor-pointer">Cancel</button>
           </div>
         </form>
       )}
 
       {loadingContent ? <Spinner /> : filteredContent.length === 0 ? <Empty msg="No content items found." /> : (
-        <div className="grid gap-4">
+        <div className="grid gap-5 lg:grid-cols-2">
           {filteredContent.map(item => (
-            <div key={item.id} className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-3">
-              <div className="flex items-center justify-between gap-4">
+            <div key={item.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-bold text-slate-900">{item.label}</p>
-                  <p className="text-xs text-slate-400 font-mono">{item.key} <span className="text-slate-300">·</span> {item.page}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    {pageBadge(item.page)}
+                    <p className="text-sm font-bold text-slate-900">{item.label}</p>
+                  </div>
+                  <p className="text-xs text-slate-400 font-mono">{item.key}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {savingContent === item.id && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
-                  <button onClick={() => deleteContent(item.id)} className="text-slate-400 hover:text-red-600 cursor-pointer"><Trash2 className="h-4 w-4" /></button>
+                  <button onClick={() => deleteContent(item.id)} className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
               <textarea
                 value={item.content}
                 onChange={(e) => setContentItems(items => items.map(i => i.id === item.id ? { ...i, content: e.target.value } : i))}
                 onBlur={(e) => saveContent(item.id, e.target.value)}
-                rows={Math.min(6, Math.max(2, item.content.split("\n").length))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none"
+                rows={Math.min(8, Math.max(3, item.content.split("\n").length))}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none"
               />
               <div className="flex items-center gap-4">
                 {item.image_url ? (
                   <div className="relative group">
-                    <img src={item.image_url} alt="" className="h-24 w-24 object-cover rounded-xl border border-slate-200" />
+                    <img src={item.image_url} alt="" className="h-28 w-28 object-cover rounded-xl border border-slate-200" />
                     <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
                       <ImagePlus className="h-5 w-5 text-white" />
                       <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) saveContentImage(item.id, f); }} />
                     </label>
                   </div>
                 ) : (
-                  <label className="flex items-center justify-center h-24 w-24 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors">
+                  <label className="flex items-center justify-center h-28 w-28 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors bg-slate-50">
                     <ImagePlus className="h-6 w-6" />
                     <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) saveContentImage(item.id, f); }} />
                   </label>
                 )}
-                <p className="text-xs text-slate-400">Upload or replace image for this item.</p>
+                <p className="text-xs text-slate-400">Upload or replace image.</p>
               </div>
             </div>
           ))}
@@ -683,63 +699,61 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   };
 
   const tabMeta: Record<AdminTab, { title: string; subtitle: string }> = {
-    overview: { title: "Overview", subtitle: "Welcome back, Josh. Live data from Supabase." },
-    venues: { title: "Venues", subtitle: "Manage venue listings and facilities." },
-    contacts: { title: "Messages", subtitle: "View messages from partners and customers." },
-    content: { title: "Site Content", subtitle: "Edit website copy and images." },
+    overview: { title: "Overview", subtitle: "Live snapshot of your site and messages." },
+    venues: { title: "Venues", subtitle: "Manage venues and their facilities." },
+    contacts: { title: "Messages", subtitle: "Contact form submissions from visitors." },
+    content: { title: "Site Content", subtitle: "Edit copy and images across the site." },
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      {/* Sidebar */}
-      <aside className="w-60 bg-slate-950 text-white flex-col hidden md:flex shrink-0 fixed top-0 bottom-0 left-0 z-40">
-        {/* Logo area */}
-        <div className="px-5 py-5 border-b border-white/5">
+      {/* Desktop Sidebar */}
+      <aside className="w-64 bg-slate-950 text-white hidden md:flex flex-col shrink-0 fixed top-0 bottom-0 left-0 z-40 border-r border-slate-800">
+        <div className="px-5 py-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-lrso-crimson-600 flex items-center justify-center shrink-0">
-              <span className="text-white font-display font-black text-sm">L</span>
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-lrso-crimson-600 to-rose-700 flex items-center justify-center shadow-lg shadow-rose-900/20">
+              <span className="text-white font-display font-black text-lg">L</span>
             </div>
             <div>
-              <p className="font-display text-sm font-extrabold text-white leading-tight">LRSO</p>
-              <p className="text-[10px] text-slate-400 font-medium">Admin Portal</p>
+              <p className="font-display text-base font-extrabold text-white leading-tight">LRSO</p>
+              <p className="text-xs text-slate-500 font-medium">Admin Portal</p>
             </div>
           </div>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {navItems.map(item => (
-            <button key={item.id} onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition-all cursor-pointer ${
-                activeTab === item.id
-                  ? "bg-white/10 text-white"
-                  : "text-slate-400 hover:bg-white/5 hover:text-white"
-              }`}>
-              <span className={activeTab === item.id ? "text-lrso-crimson-400" : ""}>{item.icon}</span>
-              {item.label}
-              {item.id === "contacts" && contacts.filter(c => !c.read).length > 0 && (
-                <span className="ml-auto bg-amber-500 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
-                  {contacts.filter(c => !c.read).length}
-                </span>
-              )}
-            </button>
-          ))}
+        <nav className="flex-1 px-3 py-5 space-y-1">
+          {navItems.map(item => {
+            const isActive = activeTab === item.id;
+            return (
+              <button key={item.id} onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-bold transition-all cursor-pointer group ${
+                  isActive ? "bg-white/10 text-white shadow-inner" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                }`}>
+                <span className={`${isActive ? "text-lrso-crimson-400" : "text-slate-500 group-hover:text-slate-300"} transition-colors`}>{item.icon}</span>
+                {item.label}
+                {item.id === "contacts" && contacts.filter(c => !c.read).length > 0 && (
+                  <span className="ml-auto bg-amber-500 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
+                    {contacts.filter(c => !c.read).length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Sign out */}
-        <div className="px-3 py-4 border-t border-white/5">
+        <div className="px-3 py-4 border-t border-slate-800">
           <button onClick={onLogout}
-            className="w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all cursor-pointer">
+            className="w-full flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all cursor-pointer">
             <LogOut className="h-4 w-4" />Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-12 flex items-center justify-between">
+      {/* Mobile header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-14 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="h-6 w-6 rounded-lg bg-lrso-crimson-600 flex items-center justify-center">
-            <span className="text-white font-display font-black text-[10px]">L</span>
+          <div className="h-7 w-7 rounded-lg bg-lrso-crimson-600 flex items-center justify-center">
+            <span className="text-white font-display font-black text-xs">L</span>
           </div>
           <span className="font-display text-sm font-bold">LRSO Admin</span>
         </div>
@@ -748,34 +762,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         </button>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 md:ml-60">
-        {/* Mobile tab bar */}
-        <div className="md:hidden fixed top-12 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto shadow-xs">
-          <div className="flex px-3 py-2 gap-1">
-            {navItems.map(item => (
-              <button key={item.id} onClick={() => setActiveTab(item.id)}
-                className={`shrink-0 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === item.id ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
-                }`}>
-                {item.icon}{item.label}
-              </button>
-            ))}
-          </div>
+      {/* Mobile tab bar */}
+      <div className="md:hidden fixed top-14 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto shadow-sm">
+        <div className="flex px-3 py-2.5 gap-2">
+          {navItems.map(item => (
+            <button key={item.id} onClick={() => setActiveTab(item.id)}
+              className={`shrink-0 flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeTab === item.id ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"
+              }`}>
+              {item.icon}{item.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Page header */}
-        <header className="hidden md:flex items-center justify-between bg-white border-b border-slate-200 px-8 py-4 sticky top-0 z-20">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0 md:ml-64">
+        <header className="hidden md:flex items-center justify-between bg-white border-b border-slate-200 px-8 py-5 sticky top-0 z-20">
           <div>
-            <h1 className="font-display text-xl font-extrabold text-slate-900">{tabMeta[activeTab].title}</h1>
-            <p className="text-xs text-slate-400 mt-0.5">{tabMeta[activeTab].subtitle}</p>
+            <h1 className="font-display text-2xl font-extrabold text-slate-900 tracking-tight">{tabMeta[activeTab].title}</h1>
+            <p className="text-sm text-slate-500 mt-0.5">{tabMeta[activeTab].subtitle}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-xl bg-lrso-blue-50 border border-lrso-blue-100 flex items-center justify-center text-xs font-extrabold text-lrso-blue-700">J</div>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-lrso-blue-50 to-white border border-lrso-blue-100 flex items-center justify-center text-sm font-extrabold text-lrso-blue-700 shadow-sm">J</div>
           </div>
         </header>
 
-        <main className="flex-1 p-5 pt-24 md:pt-6">
+        <main className="flex-1 p-6 pt-28 md:pt-8">
           {tabContent[activeTab]}
         </main>
       </div>
