@@ -96,7 +96,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
 
         {/* Giant faded logo watermark */}
         <div className="absolute bottom-0 left-0 z-0 p-6 sm:p-10 pointer-events-none select-none">
-          <Logo className="h-[28rem] w-auto opacity-[0.08]" showText={false} imageSrc={logoImage} />
+          <Logo className="h-[56rem] w-auto opacity-[0.08]" showText={false} imageSrc={logoImage} />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
@@ -247,7 +247,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-lrso-blue-100/40 blur-3xl" />
             
             <div className="relative rounded-3xl border border-slate-200 bg-white p-8 shadow-xl flex flex-col items-center">
-              <Logo className="h-44 w-auto" showText={false} imageSrc={logoImage} />
+              <Logo className="h-96 w-auto" showText={false} imageSrc={logoImage} />
               <div className="text-center mt-6">
                 <h3 className="font-display font-bold text-xl text-slate-950">Generating Money for Schools</h3>
                 <p className="text-xs text-slate-500 mt-2">Connecting regional community demand directly with empty educational supply.</p>

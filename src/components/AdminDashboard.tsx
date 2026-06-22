@@ -738,7 +738,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       <aside className="w-64 bg-slate-950 text-white hidden md:flex flex-col shrink-0 fixed top-0 bottom-0 left-0 z-40 border-r border-slate-800">
         <div className="px-5 py-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <Logo className="h-10 w-auto" showText={false} imageSrc={logoImage} />
+            <Logo className="h-20 w-auto" showText={false} imageSrc={logoImage} />
             <div>
               <p className="font-display text-base font-extrabold text-white leading-tight">LRSO</p>
               <p className="text-xs text-slate-500 font-medium">Admin Portal</p>
@@ -775,9 +775,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       </aside>
 
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-14 flex items-center justify-between border-b border-slate-800">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-20 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <Logo className="h-7 w-auto" showText={false} imageSrc={logoImage} />
+          <Logo className="h-14 w-auto" showText={false} imageSrc={logoImage} />
           <span className="font-display text-sm font-bold">LRSO Admin</span>
         </div>
         <button onClick={onLogout} className="text-xs font-bold text-slate-400 flex items-center gap-1 cursor-pointer hover:text-white transition-colors">
@@ -786,7 +786,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       </div>
 
       {/* Mobile tab bar */}
-      <div className="md:hidden fixed top-14 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto shadow-sm">
+      <div className="md:hidden fixed top-20 left-0 right-0 z-30 bg-white border-b border-slate-200 overflow-x-auto shadow-sm">
         <div className="flex px-3 py-2.5 gap-2">
           {navItems.map(item => (
             <button key={item.id} onClick={() => setActiveTab(item.id)}
@@ -811,7 +811,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           </div>
         </header>
 
-        <main className="flex-1 p-6 pt-28 md:pt-8">
+        <main className="flex-1 p-6 pt-36 md:pt-8">
           {tabContent[activeTab]}
         </main>
       </div>

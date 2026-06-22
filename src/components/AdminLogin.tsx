@@ -34,7 +34,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center h-16 w-auto rounded-2xl bg-white/5 p-2 mb-4">
-            <Logo className="h-12 w-auto" showText={false} imageSrc={logoImage} />
+            <Logo className="h-24 w-auto" showText={false} imageSrc={logoImage} />
           </div>
           <h1 className="font-display text-2xl font-bold text-white">Admin Portal</h1>
           <p className="text-sm text-slate-400 mt-1">LRSO Management Dashboard</p>
