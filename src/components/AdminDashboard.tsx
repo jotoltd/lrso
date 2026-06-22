@@ -310,39 +310,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                   <Plus className="h-3.5 w-3.5" />Add Facility
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {facilityRows.map((fac, idx) => (
-                  <div key={fac.uid} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="flex-1 grid gap-2">
-                      <input
-                        type="text"
-                        placeholder={`Facility ${idx + 1} name, e.g. Sports Hall`}
-                        value={fac.name || ""}
-                        onChange={e => updateFacilityName(fac.uid, e.target.value)}
-                        className="rounded-lg border border-slate-200 bg-white py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden transition-all"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Short description (optional)"
-                        value={fac.description || ""}
-                        onChange={e => updateFacilityDescription(fac.uid, e.target.value)}
-                        className="rounded-lg border border-slate-200 bg-white py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden transition-all"
-                      />
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={e => updateFacilityImage(fac.uid, e.target.files?.[0] ?? null)}
-                          className="flex-1 text-xs text-slate-500 file:mr-2 file:rounded-lg file:border-0 file:bg-slate-200 file:px-2 file:py-1.5 file:text-xs file:font-bold file:text-slate-700 hover:file:bg-slate-300 cursor-pointer min-w-0"
-                        />
-                        {fac.preview && <img src={fac.preview} alt="" className="h-8 w-8 rounded-lg object-cover border border-slate-200 shrink-0" />}
-                      </div>
+                  <div key={fac.uid} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col gap-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Facility {idx + 1}</span>
+                      {facilityRows.length > 1 && (
+                        <button type="button" onClick={() => removeFacilityRow(fac.uid)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
-                    {facilityRows.length > 1 && (
-                      <button type="button" onClick={() => removeFacilityRow(fac.uid)} className="text-slate-300 hover:text-red-500 transition-colors mt-1 cursor-pointer shrink-0">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    )}
+                    <input
+                      type="text"
+                      placeholder="e.g. Sports Hall"
+                      value={fac.name || ""}
+                      onChange={e => updateFacilityName(fac.uid, e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Short description (optional)"
+                      value={fac.description || ""}
+                      onChange={e => updateFacilityDescription(fac.uid, e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all"
+                    />
+                    <div className="flex items-center gap-3">
+                      {fac.preview ? (
+                        <div className="relative group shrink-0">
+                          <img src={fac.preview} alt="" className="h-20 w-20 rounded-xl object-cover border border-slate-200" />
+                          <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
+                            <ImagePlus className="h-5 w-5 text-white" />
+                            <input type="file" accept="image/*" className="hidden" onChange={e => updateFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
+                          </label>
+                        </div>
+                      ) : (
+                        <label className="flex items-center justify-center h-20 w-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors bg-slate-50 shrink-0">
+                          <ImagePlus className="h-6 w-6" />
+                          <input type="file" accept="image/*" className="hidden" onChange={e => updateFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
+                        </label>
+                      )}
+                      <p className="text-xs text-slate-400">Upload facility image.</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -385,20 +394,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                   <Plus className="h-3.5 w-3.5" />Add Facility
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {editFacilityRows.map((fac, idx) => (
-                  <div key={fac.uid} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="flex-1 grid gap-2">
-                      <input type="text" placeholder={`Facility ${idx + 1} name`} value={fac.name || ""} onChange={e => updateEditFacilityName(fac.uid, e.target.value)} className="rounded-lg border border-slate-200 bg-white py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden transition-all" />
-                      <input type="text" placeholder="Short description (optional)" value={fac.description || ""} onChange={e => updateEditFacilityDescription(fac.uid, e.target.value)} className="rounded-lg border border-slate-200 bg-white py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden transition-all" />
-                      <div className="flex items-center gap-2">
-                        <input type="file" accept="image/*" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} className="flex-1 text-xs text-slate-500 file:mr-2 file:rounded-lg file:border-0 file:bg-slate-200 file:px-2 file:py-1.5 file:text-xs file:font-bold file:text-slate-700 hover:file:bg-slate-300 cursor-pointer min-w-0" />
-                        {fac.preview ? <img src={fac.preview} alt="" className="h-8 w-8 rounded-lg object-cover border border-slate-200 shrink-0" /> : fac.existingImageUrl ? <img src={fac.existingImageUrl} alt="" className="h-8 w-8 rounded-lg object-cover border border-slate-200 shrink-0" /> : null}
-                      </div>
+                  <div key={fac.uid} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col gap-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Facility {idx + 1}</span>
+                      {editFacilityRows.length > 1 && (
+                        <button type="button" onClick={() => removeEditFacilityRow(fac.uid)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
-                    {editFacilityRows.length > 1 && (
-                      <button type="button" onClick={() => removeEditFacilityRow(fac.uid)} className="text-slate-300 hover:text-red-500 transition-colors mt-1 cursor-pointer shrink-0"><Trash2 className="h-4 w-4" /></button>
-                    )}
+                    <input type="text" placeholder="e.g. Sports Hall" value={fac.name || ""} onChange={e => updateEditFacilityName(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                    <input type="text" placeholder="Short description (optional)" value={fac.description || ""} onChange={e => updateEditFacilityDescription(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                    <div className="flex items-center gap-3">
+                      {fac.preview || fac.existingImageUrl ? (
+                        <div className="relative group shrink-0">
+                          <img src={fac.preview || fac.existingImageUrl || undefined} alt="" className="h-20 w-20 rounded-xl object-cover border border-slate-200" />
+                          <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
+                            <ImagePlus className="h-5 w-5 text-white" />
+                            <input type="file" accept="image/*" className="hidden" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
+                          </label>
+                        </div>
+                      ) : (
+                        <label className="flex items-center justify-center h-20 w-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors bg-slate-50 shrink-0">
+                          <ImagePlus className="h-6 w-6" />
+                          <input type="file" accept="image/*" className="hidden" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
+                        </label>
+                      )}
+                      <p className="text-xs text-slate-400">Upload or replace image.</p>
+                    </div>
                   </div>
                 ))}
               </div>
