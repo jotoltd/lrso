@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Heart, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
+import heroImg1 from "../assets/pexels-break-media-186685971-37989204.jpg";
+import heroImg2 from "../assets/pexels-edwardeyer-10611956.jpg";
+import heroImg3 from "../assets/pexels-jeffrey-paa-kwesi-opare-157343-36862523.jpg";
+import heroImg4 from "../assets/pexels-risingstudio07-34563722.jpg";
 import { StatsSection } from "./StatsSection";
 import { motion } from "motion/react";
 import { FadeIn } from "./FadeIn";
@@ -12,47 +16,17 @@ interface HomepageProps {
   handleEnquire: (subject: string) => void;
 }
 
+const heroImages = [heroImg1, heroImg2, heroImg3, heroImg4];
+
 const defaultHeroStocks = [
-  {
-    category: "MAIN HALL",
-    badge: "Celebrate & Gather",
-    img: "https://images.unsplash.com/photo-1516629081224-6b95a55535cd?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "SPORTS HALL",
-    badge: "Compete & Succeed",
-    img: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "7-A-SIDE",
-    badge: "Play & Dominate",
-    img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "5-A-SIDE",
-    badge: "High-Energy Action",
-    img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "DANCE",
-    badge: "Create & Express",
-    img: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "DRAMA",
-    badge: "Rehearse & Perform",
-    img: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "RUGBY",
-    badge: "Power & Teamwork",
-    img: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    category: "SPACE HIRE",
-    badge: "Learn & Collaborate",
-    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1000",
-  },
+  { category: "MAIN HALL", badge: "Celebrate & Gather", img: heroImages[0] },
+  { category: "SPORTS HALL", badge: "Compete & Succeed", img: heroImages[1] },
+  { category: "7-A-SIDE", badge: "Play & Dominate", img: heroImages[2] },
+  { category: "5-A-SIDE", badge: "High-Energy Action", img: heroImages[3] },
+  { category: "DANCE", badge: "Create & Express", img: heroImages[0] },
+  { category: "DRAMA", badge: "Rehearse & Perform", img: heroImages[1] },
+  { category: "RUGBY", badge: "Power & Teamwork", img: heroImages[2] },
+  { category: "SPACE HIRE", badge: "Learn & Collaborate", img: heroImages[3] },
 ];
 
 export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
