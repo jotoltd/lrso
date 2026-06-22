@@ -189,10 +189,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900/40 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-lrso-crimson-600/20 to-lrso-blue-600/20" />
               <div className="relative p-8 flex flex-col gap-5">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-lrso-crimson-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Nationwide</span>
-                </div>
-                <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
+                  <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more. Available evenings, weekends &amp; school holidays.</p>
                 <button
                   onClick={() => navigate("/venues")}
@@ -281,9 +278,6 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
           </div>
 
           <div className="lg:col-span-7 space-y-5 text-left">
-            <span className="text-sm font-bold uppercase tracking-wider text-lrso-blue-600 bg-lrso-blue-50 px-3.5 py-1.5 rounded-full">
-              Welcome to LRSO
-            </span>
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
               Utilising Schools to Enrich Lives and Earning Potential
             </h2>
@@ -342,9 +336,6 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       <section className="bg-slate-900 py-24 text-white" id="schools-cta">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="space-y-5 max-w-3xl text-left">
-            <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#bf3a3f] bg-rose-950/40 px-3.5 py-1.5 rounded-full border border-rose-800">
-              For School Administrators
-            </span>
             <h3 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">
               Want to Generate Extra Income for Your School?
             </h3>
