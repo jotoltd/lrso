@@ -58,10 +58,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-sm font-bold uppercase tracking-wider text-[#c11f38] bg-red-50 border border-red-100 px-4 py-2 rounded-full">
-            Get in touch
-          </span>
-          <h2 className="mt-5 font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
             {value("contact.page.title", "Contact Headquarters & Support")}
           </h2>
           <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto font-medium">

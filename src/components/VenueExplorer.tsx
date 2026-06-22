@@ -85,10 +85,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) =
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8" id="venue-explorer-container">
       <FadeIn>
         <div className="mb-12 text-center">
-          <span className="text-sm font-bold uppercase tracking-wider text-lrso-blue-600 bg-lrso-blue-50 border border-lrso-blue-100 px-4 py-2 rounded-full">
-            Available Facilities
-          </span>
-          <h2 className="mt-5 font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+          <h2 className="font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
             Browse Our Venues For Hire
           </h2>
           <p className="mt-4 text-base text-slate-600 max-w-2xl mx-auto font-medium">

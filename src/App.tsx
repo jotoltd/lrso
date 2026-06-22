@@ -20,7 +20,6 @@ import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BackToTop } from "./components/BackToTop";
 import { AdminPanel } from "./components/AdminPanel";
 import { VenuePage } from "./components/VenuePage";
-import { School } from "lucide-react";
 import { SiteContentProvider, useSiteContent } from "./context/SiteContentContext";
 
 import { Home } from "./components/Home";
@@ -102,7 +101,6 @@ function PartnershipPage() {
     <>
       <section className="bg-gradient-to-b from-slate-50 via-white to-white py-20 border-b border-slate-100">
         <div className="mx-auto max-w-4xl text-center px-4 space-y-6">
-          <School className="mx-auto h-16 w-16 text-lrso-blue-700 bg-lrso-blue-50 p-3.5 rounded-2xl border border-lrso-blue-100 shadow-xs" />
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
             {value("partnership.header.title", "In Partnership with Educational Sites & Sports Clubs")}
           </h1>
