@@ -20,6 +20,8 @@ import {
   Save,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { Logo } from "./Logo";
+import logoImage from "../assets/lrso_logo.jpg";
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -736,9 +738,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       <aside className="w-64 bg-slate-950 text-white hidden md:flex flex-col shrink-0 fixed top-0 bottom-0 left-0 z-40 border-r border-slate-800">
         <div className="px-5 py-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-lrso-crimson-600 to-rose-700 flex items-center justify-center shadow-lg shadow-rose-900/20">
-              <span className="text-white font-display font-black text-lg">L</span>
-            </div>
+            <Logo className="h-10 w-auto" showText={false} imageSrc={logoImage} />
             <div>
               <p className="font-display text-base font-extrabold text-white leading-tight">LRSO</p>
               <p className="text-xs text-slate-500 font-medium">Admin Portal</p>
@@ -777,9 +777,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       {/* Mobile header */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white px-4 h-14 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="h-7 w-7 rounded-lg bg-lrso-crimson-600 flex items-center justify-center">
-            <span className="text-white font-display font-black text-xs">L</span>
-          </div>
+          <Logo className="h-7 w-auto" showText={false} imageSrc={logoImage} />
           <span className="font-display text-sm font-bold">LRSO Admin</span>
         </div>
         <button onClick={onLogout} className="text-xs font-bold text-slate-400 flex items-center gap-1 cursor-pointer hover:text-white transition-colors">

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
+import logoImage from "../assets/lrso_logo.jpg";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useSiteContent } from "../context/SiteContentContext";
 
@@ -24,7 +25,7 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand details and bookteq partner disclosure */}
           <div className="space-y-6">
             <div className="cursor-pointer" onClick={() => handleTabClick("/")}>
-              <Logo className="h-12 w-12" darkText={false} showText={true} />
+              <Logo className="h-12 w-auto" darkText={false} showText={false} imageSrc={logoImage} />
             </div>
             <p className="text-xs text-slate-400 leading-relaxed font-semibold whitespace-pre-line">
               {value("footer.mission", "Connecting the people who want to Do with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.")}

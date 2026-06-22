@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Heart, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
 import { Logo } from "./Logo";
+import logoImage from "../assets/lrso_logo.jpg";
 import { StatsSection } from "./StatsSection";
 import { motion } from "motion/react";
 import { FadeIn } from "./FadeIn";
@@ -266,13 +267,10 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-lrso-blue-100/40 blur-3xl" />
             
             <div className="relative rounded-3xl border border-slate-200 bg-white p-8 shadow-xl flex flex-col items-center">
-              <Logo className="h-44 w-44" showText={false} />
+              <Logo className="h-44 w-auto" showText={false} imageSrc={logoImage} />
               <div className="text-center mt-6">
                 <h3 className="font-display font-bold text-xl text-slate-950">Generating Money for Schools</h3>
                 <p className="text-xs text-slate-500 mt-2">Connecting regional community demand directly with empty educational supply.</p>
-                <span className="inline-block mt-4 text-[10px] uppercase tracking-wider font-bold px-3 py-1 bg-lrso-crimson-50 text-lrso-crimson-700 rounded-full border border-lrso-crimson-200">
-                  Since 2023 &bull; UK Nationwide
-                </span>
               </div>
             </div>
           </div>
