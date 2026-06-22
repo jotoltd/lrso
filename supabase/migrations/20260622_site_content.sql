@@ -18,13 +18,15 @@ insert into storage.buckets (id, name, public, avif_autodetection, file_size_lim
 values ('site-content', 'site-content', true, false, 5242880, '{image/*}')
 on conflict (id) do nothing;
 
-create policy if not exists "Allow public read access to site content"
+drop policy if exists "Allow public read access to site content" on public.site_content;
+create policy "Allow public read access to site content"
   on public.site_content
   for select
   to public
   using (true);
 
-create policy if not exists "Allow admin full access to site content"
+drop policy if exists "Allow admin full access to site content" on public.site_content;
+create policy "Allow admin full access to site content"
   on public.site_content
   for all
   to public
@@ -32,26 +34,30 @@ create policy if not exists "Allow admin full access to site content"
   with check (true);
 
 -- Storage policies for site-content bucket
-create policy if not exists "Allow public read on site-content"
+drop policy if exists "Allow public read on site-content" on storage.objects;
+create policy "Allow public read on site-content"
   on storage.objects
   for select
   to public
   using (bucket_id = 'site-content');
 
-create policy if not exists "Allow public upload on site-content"
+drop policy if exists "Allow public upload on site-content" on storage.objects;
+create policy "Allow public upload on site-content"
   on storage.objects
   for insert
   to public
   with check (bucket_id = 'site-content');
 
-create policy if not exists "Allow public update on site-content"
+drop policy if exists "Allow public update on site-content" on storage.objects;
+create policy "Allow public update on site-content"
   on storage.objects
   for update
   to public
   using (bucket_id = 'site-content')
   with check (bucket_id = 'site-content');
 
-create policy if not exists "Allow public delete on site-content"
+drop policy if exists "Allow public delete on site-content" on storage.objects;
+create policy "Allow public delete on site-content"
   on storage.objects
   for delete
   to public
