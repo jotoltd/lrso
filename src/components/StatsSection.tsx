@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Coins, ShieldAlert, Award, CalendarCheck, Users, Zap } from "lucide-react";
 
 export const StatsSection: React.FC = () => {
@@ -34,25 +34,53 @@ export const StatsSection: React.FC = () => {
   ];
 
   const statCounters = [
-    { value: "£3.2M+", label: "Generated for Partner Schools" },
-    { value: "100%", label: "Fully Managed & Professionally Staffed" },
-    { value: "12+", label: "Elite Academies & Schools Managed" },
-    { value: "10,000+", label: "Weekly Sport & Community Attendees" },
+    { target: 3.2, format: (v: number) => `£${v.toFixed(1)}M+`, label: "Generated for Partner Schools" },
+    { target: 100, format: (v: number) => `${Math.round(v)}%`, label: "Fully Managed & Professionally Staffed" },
+    { target: 12, format: (v: number) => `${Math.round(v)}+`, label: "Elite Academies & Schools Managed" },
+    { target: 10000, format: (v: number) => `${Math.round(v).toLocaleString()}+`, label: "Weekly Sport & Community Attendees" },
   ];
+
+  const [values, setValues] = useState<number[]>(() => statCounters.map(() => 0));
+  const gridRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !startedRef.current) {
+          startedRef.current = true;
+          const duration = 2000;
+          const start = performance.now();
+          const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 4);
+            setValues(statCounters.map(s => s.target * eased));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="bg-slate-50 py-20 border-y border-slate-200" id="stats-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Dynamic Trust Figures */}
-        <div id="trust-counter-grid" className="mb-20 grid grid-cols-2 gap-6 md:grid-cols-4">
+        <div id="trust-counter-grid" ref={gridRef} className="mb-20 grid grid-cols-2 gap-6 md:grid-cols-4">
           {statCounters.map((stat, i) => (
             <div
               key={i}
               className="flex flex-col items-center justify-center rounded-2xl bg-white p-6 text-center border border-slate-200 shadow-xs hover:shadow-md transition-shadow"
             >
               <span className="font-display text-4xl font-bold text-lrso-blue-700 lg:text-5xl">
-                {stat.value}
+                {stat.format(values[i])}
               </span>
               <span className="mt-2 text-sm font-semibold uppercase tracking-wider text-slate-500">
                 {stat.label}
@@ -63,10 +91,7 @@ export const StatsSection: React.FC = () => {
 
         {/* Section Title */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-sm font-bold uppercase tracking-wider text-lrso-crimson-600 bg-lrso-crimson-50 border border-lrso-crimson-600/10 px-4 py-2 rounded-full">
-            Our Guarantee
-          </span>
-          <h2 className="mt-5 font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
             Why Partner with LRSO?
           </h2>
           <p className="mt-5 text-lg text-slate-600 leading-relaxed font-medium">

@@ -114,7 +114,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             
             {/* Majestic Display Headline */}
             <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] max-w-4xl">
-              <span className="bg-gradient-to-r from-lrso-crimson-500 to-rose-400 bg-clip-text text-transparent">{value("home.hero.title", "Hire Premium School Facilities in Your Area")}</span>
+              {value("home.hero.title", "Hire Premium School Facilities in Your Area")}
             </h1>
 
             {/* Consolidative, Elegant Slogan Subtitle */}
@@ -144,32 +144,6 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               >
                 {value("home.hero.cta_secondary", "Onboard My School")}
               </button>
-            </div>
-
-            {/* Simplified Category Strip */}
-            <div className="w-full pt-6">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">
-                Popular Facilities
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {heroStocks.slice(0, 4).map((stock, idx) => {
-                  const isCurrent = idx === activeStockIdx;
-                  return (
-                    <button
-                      key={stock.category}
-                      onClick={() => setActiveStockIdx(idx)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 cursor-pointer text-sm font-medium ${
-                        isCurrent
-                          ? "bg-white text-slate-950 border-white shadow-md"
-                          : "bg-slate-900/50 hover:bg-slate-900/70 border-white/10 text-slate-300 backdrop-blur-sm"
-                      }`}
-                    >
-                      {isCurrent && <span className="h-1.5 w-1.5 rounded-full bg-lrso-crimson-500" />}
-                      {stock.category}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             {/* Trust Badge Integration Details */}
