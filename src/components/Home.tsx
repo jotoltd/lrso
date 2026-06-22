@@ -143,7 +143,8 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-lrso-crimson-600/20 to-lrso-blue-600/20" />
               <div className="relative p-8 flex flex-col gap-5">
                   <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more. Available evenings, weekends &amp; school holidays.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Available evenings, weekends &amp; school holidays.</p>
                 <button
                   onClick={() => navigate("/venues")}
                   className="flex items-center gap-2 text-sm font-bold text-white hover:text-lrso-crimson-400 transition-colors cursor-pointer"

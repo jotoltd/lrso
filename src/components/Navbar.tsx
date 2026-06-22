@@ -52,14 +52,9 @@ export const Navbar: React.FC = () => {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          {/* Logo element */}
-          <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
-            <Logo className="h-14 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
-          </div>
-
+        <div className="flex h-20 items-center">
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1.5 md:flex">
+          <nav className="hidden flex-1 items-center gap-1.5 md:flex">
             {navItems.map((item) => {
               const isActive = currentPath === item.path;
               return (
@@ -82,24 +77,32 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Enquiry CTA Button (Right Action) */}
-          <div className="hidden items-center gap-3 md:flex">
-            <button
-              onClick={() => handleNavClick("contact")}
-              id="header-enquiry-cta"
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-lrso-crimson-600 to-lrso-crimson-700 px-6 py-3 text-[15px] font-bold text-white shadow-md shadow-lrso-crimson-600/10 transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-lrso-crimson-600/20 active:scale-[0.98] cursor-pointer"
-            >
-              <MessageSquare className="h-4 w-4 text-white" />
-              Send Enquiry
-            </button>
+          {/* Logo element */}
+          <div className="flex flex-1 items-center justify-center md:flex-initial">
+            <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
+              <Logo className="h-16 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
+            </div>
           </div>
 
-          {/* Mobile Menu Icon */}
-          <div className="flex items-center md:hidden">
+          {/* Right actions */}
+          <div className="flex flex-1 items-center justify-end gap-3">
+            {/* Enquiry CTA Button */}
+            <div className="hidden items-center gap-3 md:flex">
+              <button
+                onClick={() => handleNavClick("contact")}
+                id="header-enquiry-cta"
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-lrso-crimson-600 to-lrso-crimson-700 px-6 py-3 text-[15px] font-bold text-white shadow-md shadow-lrso-crimson-600/10 transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-lrso-crimson-600/20 active:scale-[0.98] cursor-pointer"
+              >
+                <MessageSquare className="h-4 w-4 text-white" />
+                Send Enquiry
+              </button>
+            </div>
+
+            {/* Mobile Menu Icon */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               id="mobile-menu-toggle"
-              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-hidden"
+              className="md:hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-hidden"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
