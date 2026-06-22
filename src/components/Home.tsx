@@ -49,7 +49,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => setActiveStockIdx((prev) => (prev + 1) % heroStocks.length), 3800);
+    const timer = setInterval(() => setActiveStockIdx((prev) => (prev + 1) % heroStocks.length), 7000);
     return () => clearInterval(timer);
   }, [heroStocks.length]);
   return (
@@ -64,7 +64,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             return (
               <div
                 key={stock.category}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                className={`absolute inset-0 transition-opacity duration-1500 ease-in-out ${
                   isCurrent ? "opacity-100" : "opacity-0"
                 }`}
               >
@@ -72,7 +72,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
                   src={stock.img} 
                   alt={stock.title} 
                   referrerPolicy="no-referrer"
-                  className="h-full w-full object-cover object-center scale-[1.02] transition-transform duration-[8000ms] ease-out"
+                  className="h-full w-full object-cover object-center scale-[1.02] transition-transform duration-[7000ms] ease-out"
                 />
               </div>
             );
