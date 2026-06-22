@@ -4,7 +4,6 @@ import {
   MapPin,
   ExternalLink,
   ShieldCheck,
-  Mail,
   Loader2,
   Dumbbell,
   Music,
@@ -40,7 +39,6 @@ interface Facility {
 interface VenuePageProps {
   venueId: string;
   onBack: () => void;
-  onEnquire: (subject: string) => void;
 }
 
 function facilityIcon(name: string) {
@@ -58,7 +56,7 @@ function facilityIcon(name: string) {
   return <Dumbbell className="h-4 w-4" />;
 }
 
-export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire }) => {
+export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
   const [venue, setVenue] = useState<Venue | null>(null);
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,10 +125,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
             <span className="font-display font-bold text-slate-900 truncate text-sm">{venue?.name}</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => onEnquire(`Enquiry about ${venue!.name}`)}
-              className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all cursor-pointer">
-              <Mail className="h-3.5 w-3.5" /> Enquire
-            </button>
             <a href={venue?.book_link} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 rounded-xl bg-lrso-blue-600 px-4 py-2 text-xs font-extrabold text-white hover:bg-lrso-blue-700 transition-all shadow-sm">
               Book Now <ExternalLink className="h-3.5 w-3.5" />
@@ -185,10 +179,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
               className="flex items-center gap-2 rounded-2xl bg-white px-6 py-3 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
               Book Online <ExternalLink className="h-4 w-4" />
             </a>
-            <button onClick={() => onEnquire(venue.name)}
-              className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition-all cursor-pointer">
-              <Mail className="h-4 w-4" /> Send Enquiry
-            </button>
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition-all">
               <Navigation className="h-4 w-4" /> Get Directions
@@ -280,16 +270,12 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack, onEnquire
         {/* Bottom CTA */}
         <div className="rounded-3xl bg-gradient-to-br from-lrso-blue-800 to-slate-800 p-8 text-center">
           <h3 className="font-display text-2xl font-extrabold text-white mb-2">Ready to book {venue.name}?</h3>
-          <p className="text-sm text-white/60 mb-6">Book instantly online or send us an enquiry.</p>
+          <p className="text-sm text-white/60 mb-6">Book instantly online or contact us for support.</p>
           <div className="flex flex-wrap justify-center gap-3">
             <a href={venue.book_link} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-extrabold text-lrso-blue-800 shadow-lg hover:bg-lrso-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
               Book Now <ExternalLink className="h-4 w-4" />
             </a>
-            <button onClick={() => onEnquire(venue.name)}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-8 py-3.5 text-sm font-bold text-white hover:bg-white/20 transition-all cursor-pointer">
-              <Mail className="h-4 w-4" /> Send Enquiry
-            </button>
           </div>
         </div>
       </div>

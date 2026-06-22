@@ -27,10 +27,9 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminTab = "overview" | "venues" | "enquiries" | "contacts" | "content";
+type AdminTab = "overview" | "venues" | "contacts" | "content";
 
 interface Venue { id: string; name: string; address: string; book_link: string; logo_url: string | null; created_at: string; }
-interface Enquiry { id: string; name: string; email: string; venue: string; message: string | null; status: "pending" | "approved" | "rejected"; created_at: string; }
 interface Contact { id: string; name: string; email: string; subject: string; message: string | null; read: boolean; status: "open" | "replied" | "closed"; notes: string | null; created_at: string; }
 interface VenueForm { name: string; address: string; book_link: string; logo_url: string | null; }
 interface FacilityRow { uid: string; name: string; description: string; file: File | null; preview: string | null; }
@@ -40,7 +39,6 @@ interface SiteContentItem { id: string; key: string; page: string; label: string
 const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "venues", label: "Venues", icon: <Building2 className="h-4 w-4" /> },
-  { id: "enquiries", label: "Enquiries", icon: <Mail className="h-4 w-4" /> },
   { id: "contacts", label: "Contacts", icon: <Users className="h-4 w-4" /> },
   { id: "content", label: "Site Content", icon: <FileText className="h-4 w-4" /> },
 ];
@@ -64,10 +62,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [venues, setVenues] = useState<Venue[]>([]);
-  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loadingV, setLoadingV] = useState(true);
-  const [loadingE, setLoadingE] = useState(true);
   const [loadingC, setLoadingC] = useState(true);
   const [contentItems, setContentItems] = useState<SiteContentItem[]>([]);
   const [loadingContent, setLoadingContent] = useState(false);
@@ -97,11 +93,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [editErr, setEditErr] = useState("");
 
   const fetchV = useCallback(async () => { setLoadingV(true); const { data } = await supabase.from("venues").select("*").order("created_at", { ascending: false }); if (data) setVenues(data as Venue[]); setLoadingV(false); }, []);
-  const fetchE = useCallback(async () => { setLoadingE(true); const { data } = await supabase.from("enquiries").select("*").order("created_at", { ascending: false }); if (data) setEnquiries(data as Enquiry[]); setLoadingE(false); }, []);
   const fetchC = useCallback(async () => { setLoadingC(true); const { data } = await supabase.from("contacts").select("*").order("created_at", { ascending: false }); if (data) setContacts(data as Contact[]); setLoadingC(false); }, []);
   const fetchContent = useCallback(async () => { setLoadingContent(true); const { data } = await supabase.from("site_content").select("*").order("page", { ascending: true }).order("label", { ascending: true }); if (data) setContentItems(data as SiteContentItem[]); setLoadingContent(false); }, []);
 
-  useEffect(() => { fetchV(); fetchE(); fetchC(); fetchContent(); }, [fetchV, fetchE, fetchC, fetchContent]);
+  useEffect(() => { fetchV(); fetchC(); fetchContent(); }, [fetchV, fetchC, fetchContent]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -225,19 +220,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     setEditSaving(false);
   };
 
-  const updateEnquiryStatus = async (id: string, status: Enquiry["status"]) => { await supabase.from("enquiries").update({ status }).eq("id", id); fetchE(); };
   const markRead = async (id: string) => { await supabase.from("contacts").update({ read: true }).eq("id", id); fetchC(); };
   const updateContactStatus = async (id: string, status: Contact["status"]) => { await supabase.from("contacts").update({ status }).eq("id", id); fetchC(); };
   const updateContactNotes = async (id: string, notes: string) => { await supabase.from("contacts").update({ notes }).eq("id", id); fetchC(); };
-
-  const filteredE = enquiries.filter(e => [e.name, e.email, e.venue].some(f => f.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const renderOverview = () => (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-3">
         {[
           { label: "Total Venues", val: loadingV ? "—" : venues.length, icon: <Building2 className="h-5 w-5" />, gradient: "from-lrso-blue-600 to-lrso-blue-700", light: "bg-lrso-blue-50 text-lrso-blue-600", refresh: fetchV },
-          { label: "Pending Enquiries", val: loadingE ? "—" : enquiries.filter(e => e.status === "pending").length, icon: <Mail className="h-5 w-5" />, gradient: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-600", refresh: fetchE },
+          { label: "Open Messages", val: loadingC ? "—" : contacts.filter(c => c.status === "open").length, icon: <Mail className="h-5 w-5" />, gradient: "from-amber-500 to-orange-500", light: "bg-amber-50 text-amber-600", refresh: fetchC },
           { label: "Unread Messages", val: loadingC ? "—" : contacts.filter(c => !c.read).length, icon: <Users className="h-5 w-5" />, gradient: "from-lrso-crimson-600 to-rose-600", light: "bg-rose-50 text-rose-600", refresh: fetchC },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition-shadow">
@@ -253,22 +245,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
           <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900">Recent Enquiries</h3>
-            <button onClick={() => setActiveTab("enquiries")} className="text-xs font-bold text-lrso-crimson-600 hover:underline cursor-pointer">View All</button>
-          </div>
-          {loadingE ? <Spinner /> : enquiries.length === 0 ? <Empty msg="No enquiries yet." /> : (
-            <div className="divide-y divide-slate-100">
-              {enquiries.slice(0, 5).map(e => (
-                <div key={e.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50">
-                  <div><p className="text-sm font-bold text-slate-900">{e.name}</p><p className="text-xs text-slate-500">{e.venue} &bull; {new Date(e.created_at).toLocaleDateString()}</p></div>
-                  <StatusBadge status={e.status} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
             <h3 className="font-bold text-slate-900">Recent Messages</h3>
             <button onClick={() => setActiveTab("contacts")} className="text-xs font-bold text-lrso-crimson-600 hover:underline cursor-pointer">View All</button>
           </div>
@@ -277,10 +253,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
               {contacts.slice(0, 5).map(c => (
                 <div key={c.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50">
                   <div className="flex items-center gap-2">
-                    {!c.read && <span className="h-2 w-2 rounded-full bg-lrso-crimson-600 shrink-0" />}
-                    <div><p className="text-sm font-bold text-slate-900">{c.name}</p><p className="text-xs text-slate-500">{c.subject}</p></div>
+                    <p className="text-sm font-bold text-slate-900">{c.name}</p>
+                    {!c.read && <span className="h-2 w-2 rounded-full bg-lrso-crimson-600" />}
                   </div>
-                  <span className="text-xs text-slate-400">{new Date(c.created_at).toLocaleDateString()}</span>
+                  <ContactStatusBadge status={c.status} />
                 </div>
               ))}
             </div>
@@ -480,49 +456,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
-  );
-
-  const renderEnquiries = () => (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-      <div className="px-6 py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <h3 className="font-bold text-slate-900">All Enquiries</h3>
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden w-full sm:w-56" />
-          </div>
-          <button onClick={fetchE} className="text-slate-400 hover:text-slate-600 cursor-pointer"><RefreshCw className="h-4 w-4" /></button>
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="bg-slate-50 border-b border-slate-100">
-            <tr>{["Name","Email","Venue","Date","Status"].map(h => <th key={h} className="px-6 py-3 text-xs font-bold uppercase tracking-wide text-slate-500">{h}</th>)}</tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {loadingE ? (
-              <tr><td colSpan={5} className="px-6 py-10 text-center text-sm text-slate-400"><Loader2 className="h-5 w-5 animate-spin mx-auto mb-2" />Loading...</td></tr>
-            ) : filteredE.length === 0 ? (
-              <tr><td colSpan={5} className="px-6 py-10 text-center text-sm text-slate-400">No enquiries yet.</td></tr>
-            ) : filteredE.map(e => (
-              <tr key={e.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-4 text-sm font-bold text-slate-900">{e.name}</td>
-                <td className="px-6 py-4 text-sm text-slate-600">{e.email}</td>
-                <td className="px-6 py-4 text-sm text-slate-600">{e.venue}</td>
-                <td className="px-6 py-4 text-sm text-slate-500">{new Date(e.created_at).toLocaleDateString()}</td>
-                <td className="px-6 py-4">
-                  <select value={e.status} onChange={ev => updateEnquiryStatus(e.id, ev.target.value as Enquiry["status"])} className="rounded-lg border border-slate-200 bg-slate-50 py-1.5 px-2 text-xs font-bold text-slate-700 focus:outline-hidden cursor-pointer">
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );
@@ -745,7 +678,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const tabContent: Record<AdminTab, React.ReactNode> = {
     overview: renderOverview(),
     venues: renderVenues(),
-    enquiries: renderEnquiries(),
     contacts: renderContacts(),
     content: renderContent(),
   };
@@ -753,7 +685,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const tabMeta: Record<AdminTab, { title: string; subtitle: string }> = {
     overview: { title: "Overview", subtitle: "Welcome back, Josh. Live data from Supabase." },
     venues: { title: "Venues", subtitle: "Manage venue listings and facilities." },
-    enquiries: { title: "Enquiries", subtitle: "Review and respond to hire enquiries." },
     contacts: { title: "Messages", subtitle: "View messages from partners and customers." },
     content: { title: "Site Content", subtitle: "Edit website copy and images." },
   };
@@ -786,11 +717,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
               }`}>
               <span className={activeTab === item.id ? "text-lrso-crimson-400" : ""}>{item.icon}</span>
               {item.label}
-              {item.id === "enquiries" && enquiries.filter(e => e.status === "pending").length > 0 && (
-                <span className="ml-auto bg-lrso-crimson-600 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
-                  {enquiries.filter(e => e.status === "pending").length}
-                </span>
-              )}
               {item.id === "contacts" && contacts.filter(c => !c.read).length > 0 && (
                 <span className="ml-auto bg-amber-500 text-white text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center">
                   {contacts.filter(c => !c.read).length}

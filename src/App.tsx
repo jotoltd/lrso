@@ -86,7 +86,6 @@ function VenueDetailPage() {
     <VenuePage
       venueId={id}
       onBack={() => navigate("/venues")}
-      onEnquire={(subject) => navigate(`/contact?subject=${encodeURIComponent(subject)}`)}
     />
   );
 }
