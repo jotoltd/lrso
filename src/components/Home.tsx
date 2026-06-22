@@ -18,6 +18,10 @@ interface HomepageProps {
 
 const heroImages = [heroImg1, heroImg2, heroImg3, heroImg4];
 
+const SectionDivider = () => (
+  <div className="h-1 w-full bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600" aria-hidden="true" />
+);
+
 const defaultHeroStocks = [
   { category: "MAIN HALL", badge: "Celebrate & Gather", img: heroImages[0] },
   { category: "SPORTS HALL", badge: "Compete & Succeed", img: heroImages[1] },
@@ -153,8 +157,10 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </div>
       </section>
 
+      <SectionDivider />
+
       <FadeIn>
-      <section className="bg-white border-b border-slate-100 py-8">
+      <section className="bg-white py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
             <div className="flex items-center gap-2.5 text-slate-500">
@@ -177,6 +183,8 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
         </div>
       </section>
       </FadeIn>
+
+      <SectionDivider />
 
       <FadeIn delay={0.1}>
       <section className="bg-slate-50 py-24" id="how-it-works">
@@ -207,8 +215,10 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
+      <SectionDivider />
+
       <FadeIn delay={0.1}>
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 border-t border-slate-100" id="welcome-details">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8" id="welcome-details">
         <div className="grid gap-16 lg:grid-cols-12 items-center">
           
           <div className="lg:col-span-5 relative">
@@ -260,8 +270,10 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
+      <SectionDivider />
+
       <FadeIn delay={0.1}>
-      <section className="bg-white py-20 border-t border-slate-100">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <Star className="mx-auto h-8 w-8 text-amber-400 mb-6" />
           <blockquote className="font-display text-2xl sm:text-3xl font-bold text-slate-900 leading-snug mb-6">
@@ -277,6 +289,8 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
         </div>
       </section>
       </FadeIn>
+
+      <SectionDivider />
 
       <FadeIn delay={0.1}>
       <section className="bg-slate-900 py-24 text-white" id="schools-cta">
@@ -303,9 +317,13 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </section>
       </FadeIn>
 
+      <SectionDivider />
+
       <FadeIn delay={0.1}>
         <StatsSection />
       </FadeIn>
+
+      <SectionDivider />
 
       <FadeIn delay={0.1}>
       <section className="bg-gradient-to-br from-lrso-blue-800 to-lrso-blue-700 py-24 text-white relative overflow-hidden" id="homescreen-support">

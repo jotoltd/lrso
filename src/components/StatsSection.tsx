@@ -69,7 +69,7 @@ export const StatsSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-slate-50 py-20 border-y border-slate-200" id="stats-section">
+    <section className="bg-slate-50 py-20" id="stats-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Dynamic Trust Figures */}
