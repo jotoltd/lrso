@@ -1,25 +1,25 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
 import { Phone, Mail, Menu, X, MessageSquare } from "lucide-react";
 
-interface NavbarProps {
-  currentTab: string;
-  setCurrentTab: (tab: string) => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => {
+export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
-    { label: "Home", id: "home" },
-    { label: "Our Venues", id: "venues" },
-    { label: "Partnership (Join Us)", id: "partnership" },
-    { label: "Contact & Support", id: "contact" },
+    { label: "Home", path: "/" },
+    { label: "Our Venues", path: "/venues" },
+    { label: "Partnership (Join Us)", path: "/partnership" },
+    { label: "Contact & Support", path: "/contact" },
   ];
 
-  const handleNavClick = (id: string) => {
-    setCurrentTab(id);
+  const currentPath = location.pathname;
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
     setIsOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -54,19 +54,19 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo element */}
-          <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
+          <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
             <Logo className="h-14 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-1.5 md:flex">
             {navItems.map((item) => {
-              const isActive = currentTab === item.id;
+              const isActive = currentPath === item.path;
               return (
                 <button
-                  key={item.id}
-                  id={`nav-btn-${item.id}`}
-                  onClick={() => handleNavClick(item.id)}
+                  key={item.path}
+                  id={`nav-btn-${item.path.replace(/\//g, "-") || "home"}`}
+                  onClick={() => handleNavClick(item.path)}
                   className={`relative px-4 py-2 text-sm font-bold transition-all duration-200 rounded-xl cursor-pointer ${
                     isActive
                       ? "bg-lrso-blue-50 text-lrso-blue-700"
@@ -113,11 +113,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => 
           <div className="space-y-1">
             {navItems.map((item) => (
               <button
-                key={item.id}
-                id={`mobile-nav-${item.id}`}
-                onClick={() => handleNavClick(item.id)}
+                key={item.path}
+                id={`mobile-nav-${item.path.replace(/\//g, "-") || "home"}`}
+                onClick={() => handleNavClick(item.path)}
                 className={`flex w-full items-center rounded-xl px-4 py-3 text-base font-semibold transition-colors ${
-                  currentTab === item.id
+                  currentPath === item.path
                     ? "bg-lrso-blue-50 text-lrso-blue-700"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}

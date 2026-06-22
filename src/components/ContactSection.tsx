@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Send, CheckCircle2, Navigation } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle2, Navigation, Loader2 } from "lucide-react";
+import { supabase } from "../lib/supabase";
 
 interface ContactSectionProps {
   initialSubject?: string;
-  onSubjectConsumed?: () => void;
 }
 
-export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject, onSubjectConsumed }) => {
+export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }) => {
   const [directionsExpanded, setDirectionsExpanded] = useState(false);
   const [supportSubmitted, setSupportSubmitted] = useState(false);
   const [supportName, setSupportName] = useState("");
+  const [supportEmail, setSupportEmail] = useState("");
   const [supportMsg, setSupportMsg] = useState("");
   const [supportSubject, setSupportSubject] = useState("Invoice or Lettings Finance question");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (initialSubject) {
       setSupportSubject(initialSubject);
-      onSubjectConsumed?.();
     }
   }, [initialSubject]);
 
-  const handleSupportSubmit = (e: React.FormEvent) => {
+  const handleSupportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSupportSubmitted(true);
+    setSubmitting(true);
+    setSubmitError("");
+    const { error } = await supabase.from("contacts").insert({
+      name: supportName,
+      email: supportEmail,
+      subject: supportSubject,
+      message: supportMsg,
+    });
+    setSubmitting(false);
+    if (error) {
+      setSubmitError(error.message);
+    } else {
+      setSupportSubmitted(true);
+    }
   };
 
   const stepsM23 = [
@@ -170,6 +185,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject, 
                         <input
                           type="email"
                           required
+                          value={supportEmail}
+                          onChange={(e) => setSupportEmail(e.target.value)}
                           placeholder="e.g. sarah@outlook.com"
                           className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden"
                         />
@@ -201,13 +218,19 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject, 
                     </div>
                   </div>
 
+                  {submitError && (
+                    <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-bold text-red-700">
+                      {submitError}
+                    </div>
+                  )}
                   <button
                     type="submit"
+                    disabled={submitting}
                     id="submit-support-ticket"
-                    className="w-full mt-6 flex items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-xs font-bold text-white cursor-pointer select-none hover:bg-slate-800"
+                    className="w-full mt-6 flex items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-xs font-bold text-white cursor-pointer select-none hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Send className="h-4 w-4" />
-                    Submit Ticket Enquiry
+                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    {submitting ? "Sending..." : "Submit Enquiry"}
                   </button>
                 </form>
               ) : (
@@ -227,7 +250,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject, 
                     onClick={() => {
                       setSupportSubmitted(false);
                       setSupportName("");
+                      setSupportEmail("");
                       setSupportMsg("");
+                      setSubmitError("");
                     }}
                     id="new-ticket-btn"
                     className="rounded-xl border border-slate-200 text-xs font-semibold px-5 py-2.5 text-slate-700 hover:bg-slate-50"

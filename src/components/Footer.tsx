@@ -1,17 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Phone, Mail, MapPin } from "lucide-react";
 
-interface FooterProps {
-  currentTab: string;
-  setCurrentTab: (tab: string) => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => {
+export const Footer: React.FC = () => {
+  const navigate = useNavigate();
   const regions = ["Nottingham", "Ipswich", "Croydon & London", "Swindon", "Derby"];
 
-  const handleTabClick = (tabId: string) => {
-    setCurrentTab(tabId);
+  const handleTabClick = (path: string) => {
+    navigate(path);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -51,27 +48,27 @@ export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => 
             </h4>
             <ul className="space-y-2 text-xs font-semibold text-slate-400">
               <li>
-                <button onClick={() => handleTabClick("home")} className="hover:text-white transition-colors">
+                <button onClick={() => handleTabClick("/")} className="hover:text-white transition-colors">
                   Home Landing & Mission
                 </button>
               </li>
               <li>
-                <button onClick={() => handleTabClick("venues")} className="hover:text-white transition-colors">
+                <button onClick={() => handleTabClick("/venues")} className="hover:text-white transition-colors">
                   Our Hire Venues
                 </button>
               </li>
               <li>
-                <button onClick={() => handleTabClick("contact")} className="hover:text-white transition-colors">
+                <button onClick={() => handleTabClick("/contact")} className="hover:text-white transition-colors">
                   Send Enquiry
                 </button>
               </li>
               <li>
-                <button onClick={() => handleTabClick("partnership")} className="hover:text-white transition-colors">
+                <button onClick={() => handleTabClick("/partnership")} className="hover:text-white transition-colors">
                   Join Us (School Trusts)
                 </button>
               </li>
               <li>
-                <button onClick={() => handleTabClick("contact")} className="hover:text-white transition-colors">
+                <button onClick={() => handleTabClick("/contact")} className="hover:text-white transition-colors">
                   Contact & Support
                 </button>
               </li>
@@ -87,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => 
               {regions.map((reg) => (
                 <li key={reg}>
                   <button
-                    onClick={() => handleTabClick("venues")}
+                    onClick={() => handleTabClick("/venues")}
                     className="hover:text-white transition-colors text-left"
                   >
                     Sport halls in {reg}
@@ -154,7 +151,7 @@ export const Footer: React.FC<FooterProps> = ({ currentTab, setCurrentTab }) => 
             &copy; {new Date().getFullYear()} LRSO Ltd. All rights reserved.
           </p>
           <button
-            onClick={() => setCurrentTab("admin")}
+            onClick={() => navigate("/admin")}
             className="text-[10px] text-slate-700 hover:text-slate-500 font-semibold transition-colors cursor-pointer"
             title="Admin Login"
           >

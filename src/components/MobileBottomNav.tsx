@@ -1,24 +1,22 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Home, MapPin, Users, MessageCircle } from "lucide-react";
 
-interface MobileBottomNavProps {
-  currentTab: string;
-  setCurrentTab: (tab: string) => void;
-}
+export const MobileBottomNav: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
-  currentTab,
-  setCurrentTab,
-}) => {
   const items = [
-    { id: "home", label: "Home", icon: Home },
-    { id: "venues", label: "Venues", icon: MapPin },
-    { id: "partnership", label: "Join", icon: Users },
-    { id: "contact", label: "Contact", icon: MessageCircle },
+    { path: "/", label: "Home", icon: Home },
+    { path: "/venues", label: "Venues", icon: MapPin },
+    { path: "/partnership", label: "Join", icon: Users },
+    { path: "/contact", label: "Contact", icon: MessageCircle },
   ];
 
-  const handleClick = (id: string) => {
-    setCurrentTab(id);
+  const currentPath = location.pathname;
+
+  const handleClick = (path: string) => {
+    navigate(path);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -26,12 +24,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-xl pb-safe shadow-[0_-1px_12px_rgba(0,0,0,0.06)]">
       <div className="flex items-center justify-around h-[60px] px-2">
         {items.map((item) => {
-          const isActive = currentTab === item.id;
+          const isActive = currentPath === item.path;
           const Icon = item.icon;
           return (
             <button
-              key={item.id}
-              onClick={() => handleClick(item.id)}
+              key={item.path}
+              onClick={() => handleClick(item.path)}
               className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full py-2 transition-all cursor-pointer"
             >
               <span className={`flex items-center justify-center h-8 w-8 rounded-xl transition-all duration-200 ${

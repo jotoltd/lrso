@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Heart, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
 import { Logo } from "./Logo";
 import { StatsSection } from "./StatsSection";
@@ -6,7 +7,6 @@ import { motion } from "motion/react";
 import { FadeIn } from "./FadeIn";
 
 interface HomepageProps {
-  setCurrentTab: (tab: string) => void;
   handleEnquire: (subject: string) => void;
   cyclingWordIdx: number;
   verbs: string[];
@@ -22,7 +22,6 @@ interface HomepageProps {
 }
 
 export const Home: React.FC<HomepageProps> = ({
-  setCurrentTab,
   handleEnquire,
   cyclingWordIdx,
   verbs,
@@ -30,6 +29,7 @@ export const Home: React.FC<HomepageProps> = ({
   setActiveStockIdx,
   heroStocks,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="animate-in fade-in duration-500">
       {/* MASSIVE ULTRA-PREMIUM FULL-WIDTH HERO SLIDER SECTION */}
@@ -82,7 +82,7 @@ export const Home: React.FC<HomepageProps> = ({
             {/* Call-To-Action Options */}
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-2">
               <button
-                onClick={() => setCurrentTab("venues")}
+                onClick={() => navigate("/venues")}
                 id="hero-view-venues-btn"
                 className="group flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 px-10 py-5 text-base font-bold uppercase tracking-wider text-slate-950 shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
@@ -90,7 +90,7 @@ export const Home: React.FC<HomepageProps> = ({
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
               <button
-                onClick={() => setCurrentTab("partnership")}
+                onClick={() => navigate("/partnership")}
                 id="hero-join-us-btn"
                 className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-slate-950/30 hover:bg-slate-950/50 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
@@ -148,7 +148,7 @@ export const Home: React.FC<HomepageProps> = ({
                 <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more. Available evenings, weekends &amp; school holidays.</p>
                 <button
-                  onClick={() => setCurrentTab("venues")}
+                  onClick={() => navigate("/venues")}
                   className="flex items-center gap-2 text-sm font-bold text-white hover:text-lrso-crimson-400 transition-colors cursor-pointer"
                 >
                   View All Venues <ArrowRight className="h-4 w-4" />
@@ -197,7 +197,7 @@ export const Home: React.FC<HomepageProps> = ({
           <div className="grid gap-8 sm:grid-cols-3">
             {[
               { icon: <Search className="h-8 w-8" />, step: "01", title: "Browse", desc: "Search and filter venues by location, facilities, and availability. View detailed facility information and photos." },
-              { icon: <CalendarDays className="h-8 w-8" />, step: "02", title: "Book", desc: "Book directly on the venue's Bookteq page, or send us an enquiry and we'll point you to the right space." },
+              { icon: <CalendarDays className="h-8 w-8" />, step: "02", title: "Enquire or Book", desc: "Send us an enquiry, or book directly on the venue's Bookteq page. We'll confirm availability and access details." },
               { icon: <Trophy className="h-8 w-8" />, step: "03", title: "Play", desc: "Arrive to a fully supervised, unlocked facility. Our DBS-vetted Venue Supervisors ensure everything runs smoothly." },
             ].map((item) => (
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
@@ -307,7 +307,7 @@ export const Home: React.FC<HomepageProps> = ({
           </div>
           <div className="shrink-0 w-full md:w-auto">
             <button
-              onClick={() => setCurrentTab("partnership")}
+              onClick={() => navigate("/partnership")}
               id="welcome-partnership-btn"
               className="w-full md:w-auto text-center rounded-2xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-base font-bold text-white px-8 py-4 shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
@@ -341,7 +341,7 @@ export const Home: React.FC<HomepageProps> = ({
               Send an Enquiry
             </button>
             <button
-              onClick={() => setCurrentTab("contact")}
+              onClick={() => navigate("/contact")}
               id="support-cta-contact-btn"
               className="rounded-2xl bg-white/10 hover:bg-white/20 text-sm font-bold text-white px-8 py-4 border border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >

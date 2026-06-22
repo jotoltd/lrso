@@ -29,7 +29,7 @@ type AdminTab = "overview" | "venues" | "enquiries" | "contacts";
 
 interface Venue { id: string; name: string; address: string; book_link: string; logo_url: string | null; created_at: string; }
 interface Enquiry { id: string; name: string; email: string; venue: string; message: string | null; status: "pending" | "approved" | "rejected"; created_at: string; }
-interface Contact { id: string; name: string; email: string; subject: string; message: string | null; read: boolean; created_at: string; }
+interface Contact { id: string; name: string; email: string; subject: string; message: string | null; read: boolean; status: "open" | "replied" | "closed"; notes: string | null; created_at: string; }
 interface VenueForm { name: string; address: string; book_link: string; logo_url: string | null; }
 interface FacilityRow { uid: string; name: string; description: string; file: File | null; preview: string | null; }
 interface EditFacilityRow { uid: string; dbId?: string; name: string; description: string; existingImageUrl: string | null; file: File | null; preview: string | null; }
@@ -215,6 +215,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
 
   const updateEnquiryStatus = async (id: string, status: Enquiry["status"]) => { await supabase.from("enquiries").update({ status }).eq("id", id); fetchE(); };
   const markRead = async (id: string) => { await supabase.from("contacts").update({ read: true }).eq("id", id); fetchC(); };
+  const updateContactStatus = async (id: string, status: Contact["status"]) => { await supabase.from("contacts").update({ status }).eq("id", id); fetchC(); };
+  const updateContactNotes = async (id: string, notes: string) => { await supabase.from("contacts").update({ notes }).eq("id", id); fetchC(); };
 
   const filteredE = enquiries.filter(e => [e.name, e.email, e.venue].some(f => f.toLowerCase().includes(searchQuery.toLowerCase())));
 
@@ -513,6 +515,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     </div>
   );
 
+  const ContactStatusBadge = ({ status }: { status: Contact["status"] }) => {
+    const s: Record<string, string> = { open: "bg-amber-50 text-amber-700 border-amber-200", replied: "bg-blue-50 text-blue-700 border-blue-200", closed: "bg-emerald-50 text-emerald-700 border-emerald-200" };
+    return <span className={`inline-flex items-center rounded-lg border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${s[status]}`}>{status}</span>;
+  };
+
   const renderContacts = () => (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
       <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
@@ -522,18 +529,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
       {loadingC ? <Spinner /> : contacts.length === 0 ? <Empty msg="No contact submissions yet." /> : (
         <div className="divide-y divide-slate-100">
           {contacts.map(c => (
-            <div key={c.id} className="px-6 py-4 flex items-start gap-4 hover:bg-slate-50 transition-colors">
-              <div className={`h-2 w-2 rounded-full mt-2 shrink-0 ${c.read ? "bg-slate-300" : "bg-lrso-crimson-600"}`} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold text-slate-900">{c.name}</p>
-                  <span className="text-xs text-slate-400">{new Date(c.created_at).toLocaleDateString()}</span>
+            <div key={c.id} className="px-6 py-5 hover:bg-slate-50 transition-colors">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-bold text-slate-900">{c.name}</p>
+                    {!c.read && <span className="h-2 w-2 rounded-full bg-lrso-crimson-600" />}
+                    <span className="text-xs text-slate-400 ml-auto">{new Date(c.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">{c.email}</p>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <p className="text-sm font-medium text-slate-700">{c.subject}</p>
+                    <ContactStatusBadge status={c.status} />
+                  </div>
+                  {c.message && <p className="text-sm text-slate-600 mt-2 leading-relaxed bg-slate-50 rounded-xl p-3 border border-slate-100">{c.message}</p>}
+
+                  {/* Notes */}
+                  <div className="mt-3">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Internal notes</label>
+                    <div className="flex items-start gap-2 mt-1">
+                      <textarea
+                        value={c.notes || ""}
+                        onChange={(e) => updateContactNotes(c.id, e.target.value)}
+                        placeholder="Add reply notes..."
+                        rows={2}
+                        className="flex-1 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700 focus:bg-white focus:outline-hidden resize-none"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">{c.email}</p>
-                <p className="text-sm text-slate-700 mt-1 font-medium">{c.subject}</p>
-                {c.message && <p className="text-xs text-slate-500 mt-1 leading-relaxed">{c.message}</p>}
+
+                {/* Actions */}
+                <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                  <select
+                    value={c.status}
+                    onChange={(e) => updateContactStatus(c.id, e.target.value as Contact["status"])}
+                    className="rounded-lg border border-slate-200 bg-slate-50 py-1.5 px-2 text-xs font-bold text-slate-700 focus:outline-hidden cursor-pointer"
+                  >
+                    <option value="open">Open</option>
+                    <option value="replied">Replied</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  {!c.read && (
+                    <button onClick={() => markRead(c.id)} className="text-xs font-bold text-lrso-blue-600 hover:underline cursor-pointer whitespace-nowrap">
+                      Mark read
+                    </button>
+                  )}
+                </div>
               </div>
-              {!c.read && <button onClick={() => markRead(c.id)} className="text-xs font-bold text-lrso-blue-600 hover:underline shrink-0 cursor-pointer">Mark read</button>}
             </div>
           ))}
         </div>
