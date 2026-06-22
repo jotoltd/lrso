@@ -94,6 +94,11 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent" />
         </div>
 
+        {/* Giant faded logo watermark */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none">
+          <Logo className="h-[40rem] w-auto opacity-[0.05]" showText={false} />
+        </div>
+
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center pt-8 sm:pt-12">
             <div className="flex flex-col text-left items-start space-y-8">

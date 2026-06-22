@@ -52,7 +52,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center">
+        <div className="flex h-24 items-center">
           {/* Desktop Navigation */}
           <nav className="hidden flex-1 items-center gap-1.5 md:flex">
             {navItems.map((item) => {
@@ -80,7 +80,7 @@ export const Navbar: React.FC = () => {
           {/* Logo element */}
           <div className="flex flex-1 items-center justify-center md:flex-initial">
             <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
-              <Logo className="h-16 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
+              <Logo className="h-20 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
             </div>
           </div>
 
