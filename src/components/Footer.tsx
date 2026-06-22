@@ -2,9 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { useSiteContent } from "../context/SiteContentContext";
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
+  const { value } = useSiteContent();
   const regions = ["Nottingham", "Ipswich", "Croydon & London", "Swindon", "Derby"];
 
   const handleTabClick = (path: string) => {
@@ -21,11 +23,11 @@ export const Footer: React.FC = () => {
           
           {/* Col 1: Brand details and bookteq partner disclosure */}
           <div className="space-y-6">
-            <div className="cursor-pointer" onClick={() => handleTabClick("home")}>
+            <div className="cursor-pointer" onClick={() => handleTabClick("/")}>
               <Logo className="h-12 w-12" darkText={false} showText={true} />
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
-              Connecting the people who want to <strong className="text-white">Do</strong> with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.
+            <p className="text-xs text-slate-400 leading-relaxed font-semibold whitespace-pre-line">
+              {value("footer.mission", "Connecting the people who want to Do with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.")}
             </p>
             <div className="flex gap-4">
               <a
@@ -100,20 +102,18 @@ export const Footer: React.FC = () => {
               HQ Helplines
             </h4>
             <div className="space-y-3.5 text-xs text-slate-400 font-semibold">
-              <a href="tel:03333355944" className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href={`tel:${value("footer.phone", "03333355944")}`} className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone className="h-4 w-4 shrink-0 text-lrso-crimson-600" />
-                <span>0333 3355 944</span>
+                <span>{value("footer.phone", "0333 3355 944")}</span>
               </a>
-              <a href="mailto:enquiries@lrso.co.uk" className="flex items-center gap-2 hover:text-white transition-colors">
+              <a href={`mailto:${value("footer.email", "enquiries@lrso.co.uk")}`} className="flex items-center gap-2 hover:text-white transition-colors">
                 <Mail className="h-4 w-4 shrink-0 text-lrso-blue-600" />
-                <span>enquiries@lrso.co.uk</span>
+                <span>{value("footer.email", "enquiries@lrso.co.uk")}</span>
               </a>
               <div className="flex items-start gap-2 pt-1">
                 <MapPin className="h-4 w-4 shrink-0 text-slate-500 mt-0.5" />
-                <span className="leading-relaxed text-[11px] text-slate-400">
-                  Unit 8, Amberley Court,<br />
-                  Whitworth Road, Crawley,<br />
-                  West Sussex, <strong className="text-white">RH11 7XL</strong>
+                <span className="leading-relaxed text-[11px] text-slate-400 whitespace-pre-line">
+                  {value("footer.address", "Unit 8, Amberley Court,\nWhitworth Road, Crawley,\nWest Sussex, RH11 7XL")}
                 </span>
               </div>
             </div>
@@ -126,8 +126,8 @@ export const Footer: React.FC = () => {
       <div className="bg-slate-950 text-slate-500 py-8 border-t border-slate-800/40 text-[11px] font-semibold">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
-            <p>&copy; {new Date().getFullYear()} LRSO Ltd. All rights reserved.</p>
-            <p className="text-slate-600">Generating Money for Schools, Sports Clubs and Community Facilities. Registered office: Unit 8 Amberley Court, Crawley.</p>
+            <p>&copy; {new Date().getFullYear()} {value("footer.company_name", "LRSO Ltd")}. All rights reserved.</p>
+            <p className="text-slate-600">{value("footer.tagline", "Generating Money for Schools, Sports Clubs and Community Facilities. Registered office: Unit 8 Amberley Court, Crawley.")}</p>
           </div>
 
           {/* Bookteq Partnership Badge */}

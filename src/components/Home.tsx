@@ -1,35 +1,82 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Heart, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
 import { Logo } from "./Logo";
 import { StatsSection } from "./StatsSection";
 import { motion } from "motion/react";
 import { FadeIn } from "./FadeIn";
+import { useSiteContent } from "../context/SiteContentContext";
 
 interface HomepageProps {
   handleEnquire: (subject: string) => void;
-  cyclingWordIdx: number;
-  verbs: string[];
-  activeStockIdx: number;
-  setActiveStockIdx: (idx: number) => void;
-  heroStocks: Array<{
-    category: string;
-    title: string;
-    desc: string;
-    img: string;
-    badge: string;
-  }>;
 }
 
-export const Home: React.FC<HomepageProps> = ({
-  handleEnquire,
-  cyclingWordIdx,
-  verbs,
-  activeStockIdx,
-  setActiveStockIdx,
-  heroStocks,
-}) => {
+const defaultHeroStocks = [
+  {
+    category: "MAIN HALL",
+    badge: "Celebrate & Gather",
+    img: "https://images.unsplash.com/photo-1516629081224-6b95a55535cd?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "SPORTS HALL",
+    badge: "Compete & Succeed",
+    img: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "7-A-SIDE",
+    badge: "Play & Dominate",
+    img: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "5-A-SIDE",
+    badge: "High-Energy Action",
+    img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "DANCE",
+    badge: "Create & Express",
+    img: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "DRAMA",
+    badge: "Rehearse & Perform",
+    img: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "RUGBY",
+    badge: "Power & Teamwork",
+    img: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    category: "SPACE HIRE",
+    badge: "Learn & Collaborate",
+    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1000",
+  },
+];
+
+export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
   const navigate = useNavigate();
+  const { value, image } = useSiteContent();
+  const [cyclingWordIdx, setCyclingWordIdx] = useState(0);
+  const [activeStockIdx, setActiveStockIdx] = useState(0);
+
+  const verbs = ["Play", "Train", "Dance", "Sing", "Worship", "Socialise", "Learn", "Celebrate", "Act", "Paint", "Cook"];
+  const heroStocks = defaultHeroStocks.map((stock, idx) => ({
+    ...stock,
+    title: value(`home.hero.stock_${idx + 1}.title`, stock.category),
+    desc: value(`home.hero.stock_${idx + 1}.desc`, ""),
+    img: image(`home.hero.stock_${idx + 1}.image`) || stock.img,
+  }));
+
+  useEffect(() => {
+    const interval = setInterval(() => setCyclingWordIdx((prev) => (prev + 1) % verbs.length), 1500);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => setActiveStockIdx((prev) => (prev + 1) % heroStocks.length), 3800);
+    return () => clearInterval(timer);
+  }, [heroStocks.length]);
   return (
     <div className="animate-in fade-in duration-500">
       {/* MASSIVE ULTRA-PREMIUM FULL-WIDTH HERO SLIDER SECTION */}
@@ -66,16 +113,16 @@ export const Home: React.FC<HomepageProps> = ({
             
             {/* Majestic Display Headline */}
             <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] max-w-4xl">
-              Hire Premium School Facilities <span className="bg-gradient-to-r from-lrso-crimson-500 to-rose-400 bg-clip-text text-transparent">in Your Area</span>
+              <span className="bg-gradient-to-r from-lrso-crimson-500 to-rose-400 bg-clip-text text-transparent">{value("home.hero.title", "Hire Premium School Facilities in Your Area")}</span>
             </h1>
 
             {/* Consolidative, Elegant Slogan Subtitle */}
             <div className="space-y-3.5 max-w-2xl text-left border-l-2 border-[#bf3a3f] pl-4 sm:pl-6 my-2">
               <p className="text-lg sm:text-xl font-medium text-slate-200 leading-relaxed font-display">
-                Maximising educational assets to support community wellness and local growth.
+                {value("home.hero.subtitle", "Maximising educational assets to support community wellness and local growth.")}
               </p>
               <p className="text-sm text-slate-300 leading-relaxed">
-                We bridge regional demand with vacant educational facilities. LRSO handles all marketing, operations, booking, billing, and DBS-vetted Venue Supervision for our trusted partners.
+                {value("home.hero.description", "We bridge regional demand with vacant educational facilities. LRSO handles all marketing, operations, booking, billing, and DBS-vetted Venue Supervision for our trusted partners.")}
               </p>
             </div>
 
@@ -86,7 +133,7 @@ export const Home: React.FC<HomepageProps> = ({
                 id="hero-view-venues-btn"
                 className="group flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 px-10 py-5 text-base font-bold uppercase tracking-wider text-slate-950 shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
-                Browse Hire Venues
+                {value("home.hero.cta_primary", "Browse Hire Venues")}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
               <button
@@ -94,7 +141,7 @@ export const Home: React.FC<HomepageProps> = ({
                 id="hero-join-us-btn"
                 className="flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-slate-950/30 hover:bg-slate-950/50 backdrop-blur-md px-10 py-5 text-base font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
-                Onboard My School
+                {value("home.hero.cta_secondary", "Onboard My School")}
               </button>
             </div>
 
@@ -328,9 +375,9 @@ export const Home: React.FC<HomepageProps> = ({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.03]" />
         <div className="relative mx-auto max-w-4xl px-4 text-center space-y-8">
           <Heart className="mx-auto h-14 w-14 text-lrso-crimson-600 animate-pulse bg-white/95 p-3.5 rounded-2xl shadow-md" />
-          <h3 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">Ready to Secure Your Space?</h3>
+          <h3 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">{value("home.support.title", "Ready to Secure Your Space?")}</h3>
           <p className="text-base text-slate-200 max-w-xl mx-auto leading-relaxed font-medium">
-            We look forward to arranging booking calendars or answering trust guidelines on Microsoft Teams. Feel free to contact Crawley staff directly!
+            {value("home.support.body", "We look forward to arranging booking calendars or answering trust guidelines on Microsoft Teams. Feel free to contact Crawley staff directly!")}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
             <button
@@ -338,14 +385,14 @@ export const Home: React.FC<HomepageProps> = ({
               id="support-cta-enquire-btn"
               className="rounded-2xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-sm font-bold text-white px-8 py-4 shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
-              Send an Enquiry
+              {value("home.support.cta_primary", "Send an Enquiry")}
             </button>
             <button
               onClick={() => navigate("/contact")}
               id="support-cta-contact-btn"
               className="rounded-2xl bg-white/10 hover:bg-white/20 text-sm font-bold text-white px-8 py-4 border border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
-              Contact Support HQ
+              {value("home.support.cta_secondary", "Contact Support HQ")}
             </button>
           </div>
         </div>

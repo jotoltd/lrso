@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle2, Navigation, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { useSiteContent } from "../context/SiteContentContext";
 
 interface ContactSectionProps {
   initialSubject?: string;
 }
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }) => {
+  const { value } = useSiteContent();
   const [directionsExpanded, setDirectionsExpanded] = useState(false);
   const [supportSubmitted, setSupportSubmitted] = useState(false);
   const [supportName, setSupportName] = useState("");
@@ -60,10 +62,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
             Get in touch
           </span>
           <h2 className="mt-5 font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            Contact Headquarters & Support
+            {value("contact.page.title", "Contact Headquarters & Support")}
           </h2>
           <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto font-medium">
-            We operate fully staffed administrations from Crawley, handling reservations, payments, and site health audits.
+            {value("contact.page.subtitle", "We operate fully staffed administrations from Crawley, handling reservations, payments, and site health audits.")}
           </p>
         </div>
 
@@ -77,23 +79,23 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
               <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-xs">
                 <h3 className="font-display text-lg font-bold text-slate-950 mb-4">Contact Info</h3>
                 <div className="space-y-4">
-                  <a href="tel:03333355944" className="flex items-center gap-3.5 hover:text-lrso-blue-600 transition-colors group">
+                  <a href={`tel:${value("footer.phone", "03333355944")}`} className="flex items-center gap-3.5 hover:text-lrso-blue-600 transition-colors group">
                     <span className="rounded-xl bg-lrso-blue-50 p-2.5 text-lrso-blue-600 group-hover:bg-lrso-blue-100">
                       <Phone className="h-5 w-5" />
                     </span>
                     <div>
                       <span className="block text-[10px] uppercase font-bold text-slate-400">Call Support Office</span>
-                      <span className="text-sm font-bold text-slate-800 font-mono">0333 3355 944</span>
+                      <span className="text-sm font-bold text-slate-800 font-mono">{value("footer.phone", "0333 3355 944")}</span>
                     </div>
                   </a>
 
-                  <a href="mailto:enquiries@lrso.co.uk" className="flex items-center gap-3.5 hover:text-lrso-crimson-600 transition-colors group">
+                  <a href={`mailto:${value("footer.email", "enquiries@lrso.co.uk")}`} className="flex items-center gap-3.5 hover:text-lrso-crimson-600 transition-colors group">
                     <span className="rounded-xl bg-lrso-crimson-50 p-2.5 text-[#c11f38] group-hover:bg-red-100">
                       <Mail className="h-5 w-5" />
                     </span>
                     <div>
                       <span className="block text-[10px] uppercase font-bold text-slate-400">General Enquiries</span>
-                      <span className="text-sm font-bold text-slate-800">enquiries@lrso.co.uk</span>
+                      <span className="text-sm font-bold text-slate-800">{value("footer.email", "enquiries@lrso.co.uk")}</span>
                     </div>
                   </a>
 
@@ -103,10 +105,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
                     </span>
                     <div>
                       <span className="block text-[10px] uppercase font-bold text-slate-400">Sales & Marketing HQ</span>
-                      <span className="text-xs text-slate-600 font-semibold leading-relaxed">
-                        LRSO Ltd, Unit 8, Amberley Court,<br />
-                        Whitworth Road, Crawley, West Sussex,<br />
-                        <strong className="font-bold text-slate-800">RH11 7XL</strong>
+                      <span className="text-xs text-slate-600 font-semibold leading-relaxed whitespace-pre-line">
+                        {value("contact.address", "LRSO Ltd, Unit 8, Amberley Court,\nWhitworth Road, Crawley, West Sussex,\nRH11 7XL")}
                       </span>
                     </div>
                   </div>

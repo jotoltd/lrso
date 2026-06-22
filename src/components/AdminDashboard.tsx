@@ -18,6 +18,8 @@ import {
   RefreshCw,
   ImagePlus,
   Pencil,
+  FileText,
+  Save,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
@@ -25,7 +27,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminTab = "overview" | "venues" | "enquiries" | "contacts";
+type AdminTab = "overview" | "venues" | "enquiries" | "contacts" | "content";
 
 interface Venue { id: string; name: string; address: string; book_link: string; logo_url: string | null; created_at: string; }
 interface Enquiry { id: string; name: string; email: string; venue: string; message: string | null; status: "pending" | "approved" | "rejected"; created_at: string; }
@@ -33,12 +35,14 @@ interface Contact { id: string; name: string; email: string; subject: string; me
 interface VenueForm { name: string; address: string; book_link: string; logo_url: string | null; }
 interface FacilityRow { uid: string; name: string; description: string; file: File | null; preview: string | null; }
 interface EditFacilityRow { uid: string; dbId?: string; name: string; description: string; existingImageUrl: string | null; file: File | null; preview: string | null; }
+interface SiteContentItem { id: string; key: string; page: string; label: string; content: string; image_url: string | null; updated_at: string; }
 
 const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "venues", label: "Venues", icon: <Building2 className="h-4 w-4" /> },
   { id: "enquiries", label: "Enquiries", icon: <Mail className="h-4 w-4" /> },
   { id: "contacts", label: "Contacts", icon: <Users className="h-4 w-4" /> },
+  { id: "content", label: "Site Content", icon: <FileText className="h-4 w-4" /> },
 ];
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -65,6 +69,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [loadingV, setLoadingV] = useState(true);
   const [loadingE, setLoadingE] = useState(true);
   const [loadingC, setLoadingC] = useState(true);
+  const [contentItems, setContentItems] = useState<SiteContentItem[]>([]);
+  const [loadingContent, setLoadingContent] = useState(false);
+  const [contentSearch, setContentSearch] = useState("");
+  const [contentPage, setContentPage] = useState("");
+  const [savingContent, setSavingContent] = useState<string | null>(null);
+  const [showContentForm, setShowContentForm] = useState(false);
+  const [newContent, setNewContent] = useState({ key: "", page: "global", label: "", content: "" });
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<VenueForm>({ name: "", address: "", book_link: "", logo_url: null });
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -88,8 +99,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const fetchV = useCallback(async () => { setLoadingV(true); const { data } = await supabase.from("venues").select("*").order("created_at", { ascending: false }); if (data) setVenues(data as Venue[]); setLoadingV(false); }, []);
   const fetchE = useCallback(async () => { setLoadingE(true); const { data } = await supabase.from("enquiries").select("*").order("created_at", { ascending: false }); if (data) setEnquiries(data as Enquiry[]); setLoadingE(false); }, []);
   const fetchC = useCallback(async () => { setLoadingC(true); const { data } = await supabase.from("contacts").select("*").order("created_at", { ascending: false }); if (data) setContacts(data as Contact[]); setLoadingC(false); }, []);
+  const fetchContent = useCallback(async () => { setLoadingContent(true); const { data } = await supabase.from("site_content").select("*").order("page", { ascending: true }).order("label", { ascending: true }); if (data) setContentItems(data as SiteContentItem[]); setLoadingContent(false); }, []);
 
-  useEffect(() => { fetchV(); fetchE(); fetchC(); }, [fetchV, fetchE, fetchC]);
+  useEffect(() => { fetchV(); fetchE(); fetchC(); fetchContent(); }, [fetchV, fetchE, fetchC, fetchContent]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -584,11 +596,158 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     </div>
   );
 
+  // Content management functions
+  const saveContent = async (id: string, content: string) => {
+    setSavingContent(id);
+    const { error } = await supabase.from("site_content").update({ content, updated_at: new Date().toISOString() }).eq("id", id);
+    setSavingContent(null);
+    if (!error) fetchContent();
+  };
+
+  const saveContentImage = async (id: string, file: File) => {
+    setSavingContent(id);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("site-content").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const image_url = supabase.storage.from("site-content").getPublicUrl(path).data.publicUrl;
+      const { error } = await supabase.from("site_content").update({ image_url, updated_at: new Date().toISOString() }).eq("id", id);
+      if (error) throw error;
+      await fetchContent();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Image upload failed");
+    }
+    setSavingContent(null);
+  };
+
+  const createContent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newContent.key.trim() || !newContent.label.trim()) return;
+    const { error } = await supabase.from("site_content").insert([{
+      key: newContent.key.trim(),
+      page: newContent.page.trim() || "global",
+      label: newContent.label.trim(),
+      content: newContent.content,
+    }]);
+    if (!error) {
+      setNewContent({ key: "", page: "global", label: "", content: "" });
+      setShowContentForm(false);
+      fetchContent();
+    }
+  };
+
+  const deleteContent = async (id: string) => {
+    if (!confirm("Delete this content item?")) return;
+    await supabase.from("site_content").delete().eq("id", id);
+    fetchContent();
+  };
+
+  const pages = Array.from(new Set(contentItems.map(i => i.page))).sort();
+  const filteredContent = contentItems.filter(i => {
+    const matchesSearch = i.label.toLowerCase().includes(contentSearch.toLowerCase()) || i.key.toLowerCase().includes(contentSearch.toLowerCase());
+    const matchesPage = !contentPage || i.page === contentPage;
+    return matchesSearch && matchesPage;
+  });
+
+  const renderContent = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search content keys or labels..."
+              value={contentSearch}
+              onChange={(e) => setContentSearch(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 py-2 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden"
+            />
+          </div>
+          <select
+            value={contentPage}
+            onChange={(e) => setContentPage(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 focus:bg-white focus:outline-hidden cursor-pointer"
+          >
+            <option value="">All pages</option>
+            {pages.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </div>
+        <button
+          onClick={() => setShowContentForm(s => !s)}
+          className="flex items-center gap-2 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2 text-sm font-bold transition-all cursor-pointer"
+        >
+          <Plus className="h-4 w-4" /> Add Content
+        </button>
+      </div>
+
+      {showContentForm && (
+        <form onSubmit={createContent} className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-4">
+          <h3 className="font-bold text-slate-900">Add new content item</h3>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <input required value={newContent.key} onChange={e => setNewContent(c => ({ ...c, key: e.target.value }))} placeholder="Key (e.g. home.hero.title)" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            <input required value={newContent.label} onChange={e => setNewContent(c => ({ ...c, label: e.target.value }))} placeholder="Label" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+            <input value={newContent.page} onChange={e => setNewContent(c => ({ ...c, page: e.target.value }))} placeholder="Page (e.g. home)" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
+          </div>
+          <textarea value={newContent.content} onChange={e => setNewContent(c => ({ ...c, content: e.target.value }))} placeholder="Content" rows={3} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none" />
+          <div className="flex items-center gap-3">
+            <button type="submit" className="rounded-xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-white px-4 py-2 text-sm font-bold cursor-pointer">Create</button>
+            <button type="button" onClick={() => setShowContentForm(false)} className="text-sm font-bold text-slate-500 hover:text-slate-700 cursor-pointer">Cancel</button>
+          </div>
+        </form>
+      )}
+
+      {loadingContent ? <Spinner /> : filteredContent.length === 0 ? <Empty msg="No content items found." /> : (
+        <div className="grid gap-4">
+          {filteredContent.map(item => (
+            <div key={item.id} className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 space-y-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">{item.label}</p>
+                  <p className="text-xs text-slate-400 font-mono">{item.key} <span className="text-slate-300">·</span> {item.page}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {savingContent === item.id && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
+                  <button onClick={() => deleteContent(item.id)} className="text-slate-400 hover:text-red-600 cursor-pointer"><Trash2 className="h-4 w-4" /></button>
+                </div>
+              </div>
+              <textarea
+                value={item.content}
+                onChange={(e) => setContentItems(items => items.map(i => i.id === item.id ? { ...i, content: e.target.value } : i))}
+                onBlur={(e) => saveContent(item.id, e.target.value)}
+                rows={Math.min(6, Math.max(2, item.content.split("\n").length))}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:bg-white focus:outline-hidden resize-none"
+              />
+              <div className="flex items-center gap-4">
+                {item.image_url ? (
+                  <div className="relative group">
+                    <img src={item.image_url} alt="" className="h-24 w-24 object-cover rounded-xl border border-slate-200" />
+                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
+                      <ImagePlus className="h-5 w-5 text-white" />
+                      <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) saveContentImage(item.id, f); }} />
+                    </label>
+                  </div>
+                ) : (
+                  <label className="flex items-center justify-center h-24 w-24 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors">
+                    <ImagePlus className="h-6 w-6" />
+                    <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) saveContentImage(item.id, f); }} />
+                  </label>
+                )}
+                <p className="text-xs text-slate-400">Upload or replace image for this item.</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const tabContent: Record<AdminTab, React.ReactNode> = {
     overview: renderOverview(),
     venues: renderVenues(),
     enquiries: renderEnquiries(),
     contacts: renderContacts(),
+    content: renderContent(),
   };
 
   const tabMeta: Record<AdminTab, { title: string; subtitle: string }> = {
@@ -596,6 +755,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     venues: { title: "Venues", subtitle: "Manage venue listings and facilities." },
     enquiries: { title: "Enquiries", subtitle: "Review and respond to hire enquiries." },
     contacts: { title: "Messages", subtitle: "View messages from partners and customers." },
+    content: { title: "Site Content", subtitle: "Edit website copy and images." },
   };
 
   return (
