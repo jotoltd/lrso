@@ -95,8 +95,8 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
         </div>
 
         {/* Giant faded logo watermark */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none">
-          <Logo className="h-[40rem] w-auto opacity-[0.05]" showText={false} />
+        <div className="absolute bottom-0 left-0 z-0 p-6 sm:p-10 pointer-events-none select-none">
+          <Logo className="h-[28rem] w-auto opacity-[0.08]" showText={false} imageSrc={logoImage} />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
