@@ -26,26 +26,29 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md">
-      {/* Top micro-bar for direct school assistance */}
-      <div className="bg-gradient-to-r from-lrso-blue-800 to-lrso-blue-700 py-2.5 text-xs text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 font-medium tracking-wide">
-            Generating Money for Schools & Community Facilities
-          </div>
+      {/* Top contact bar */}
+      <div className="bg-white border-b border-slate-200 py-2 text-xs text-slate-700">
+        <div className="mx-auto flex max-w-7xl items-center justify-end px-4 sm:px-6 lg:px-8">
           <div className="hidden items-center gap-6 sm:flex">
             <a
               href="tel:03333355944"
-              className="flex items-center gap-1.5 font-mono hover:text-white/90 transition-colors"
+              className="flex flex-col items-center gap-0.5 font-mono hover:text-slate-900 transition-colors"
             >
-              <Phone className="h-3.5 w-3.5 text-lrso-crimson-500 bg-white/10 p-0.5 rounded-full" />
-              0333 3355 944
+              <span className="flex items-center gap-1.5">
+                <Phone className="h-3.5 w-3.5 text-lrso-crimson-600" />
+                0333 3355 944
+              </span>
+              <span className="h-0.5 w-full bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 rounded-full" />
             </a>
             <a
               href="mailto:enquiries@lrso.co.uk"
-              className="flex items-center gap-1.5 hover:text-white/90 transition-colors font-sans"
+              className="flex flex-col items-center gap-0.5 hover:text-slate-900 transition-colors font-sans"
             >
-              <Mail className="h-3.5 w-3.5 opacity-90" />
-              enquiries@lrso.co.uk
+              <span className="flex items-center gap-1.5">
+                <Mail className="h-3.5 w-3.5 text-lrso-blue-600" />
+                enquiries@lrso.co.uk
+              </span>
+              <span className="h-0.5 w-full bg-gradient-to-r from-lrso-crimson-600 to-lrso-blue-600 rounded-full" />
             </a>
           </div>
         </div>
