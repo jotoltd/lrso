@@ -26,34 +26,6 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md">
-      {/* Top contact bar */}
-      <div className="bg-white border-b border-slate-200 py-2 text-xs text-slate-700">
-        <div className="mx-auto flex max-w-7xl items-center justify-end px-4 sm:px-6 lg:px-8">
-          <div className="hidden items-center gap-6 sm:flex">
-            <a
-              href="tel:03333355944"
-              className="flex flex-col items-center gap-0.5 font-mono hover:text-slate-900 transition-colors"
-            >
-              <span className="flex items-center gap-1.5">
-                <Phone className="h-3.5 w-3.5 text-lrso-crimson-600" />
-                0333 3355 944
-              </span>
-              <span className="h-0.5 w-full bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 rounded-full" />
-            </a>
-            <a
-              href="mailto:enquiries@lrso.co.uk"
-              className="flex flex-col items-center gap-0.5 hover:text-slate-900 transition-colors font-sans"
-            >
-              <span className="flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-lrso-blue-600" />
-                enquiries@lrso.co.uk
-              </span>
-              <span className="h-0.5 w-full bg-gradient-to-r from-lrso-crimson-600 to-lrso-blue-600 rounded-full" />
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-48 items-center">
           {/* Desktop Navigation */}
@@ -88,9 +60,33 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Right actions */}
-          <div className="flex flex-1 items-center justify-end gap-3">
+          <div className="flex flex-1 items-center justify-end gap-4">
+            {/* Phone & Email */}
+            <div className="hidden md:flex items-center gap-4 text-sm font-bold text-slate-600">
+              <a
+                href="tel:03333355944"
+                className="flex flex-col items-center hover:text-slate-900 transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Phone className="h-4 w-4 text-lrso-crimson-600" />
+                  0333 3355 944
+                </span>
+                <span className="h-0.5 w-full bg-gradient-to-r from-lrso-blue-600 to-lrso-crimson-600 rounded-full" />
+              </a>
+              <a
+                href="mailto:enquiries@lrso.co.uk"
+                className="flex flex-col items-center hover:text-slate-900 transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Mail className="h-4 w-4 text-lrso-blue-600" />
+                  enquiries@lrso.co.uk
+                </span>
+                <span className="h-0.5 w-full bg-gradient-to-r from-lrso-crimson-600 to-lrso-blue-600 rounded-full" />
+              </a>
+            </div>
+
             {/* Enquiry CTA Button */}
-            <div className="hidden items-center gap-3 md:flex">
+            <div className="hidden md:flex items-center gap-3">
               <button
                 onClick={() => handleNavClick("contact")}
                 id="header-enquiry-cta"
