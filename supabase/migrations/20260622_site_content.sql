@@ -68,7 +68,7 @@ insert into public.site_content (key, page, label, content)
 values
   ('home.hero.title', 'home', 'Hero title', 'School Venues for Every Community'),
   ('home.hero.subtitle', 'home', 'Hero subtitle', 'Maximising educational assets to support community wellness and local growth.'),
-  ('home.hero.description', 'home', 'Hero description', 'We bridge regional demand with vacant educational facilities. LRSO handles all marketing, operations, booking, billing, and DBS-vetted Venue Supervision for our trusted partners.'),
+  ('home.hero.description', 'home', 'Hero description', 'LRSO offer a fully-managed lettings service to schools and sports clubs all over England. We handle absolutely everything, from sales & marketing, customer service, finance and bookings to professionally staffing the site with our Enhanced DBS checked Venue Supervisors.'),
   ('home.hero.cta_primary', 'home', 'Hero primary CTA', 'Browse Hire Venues'),
   ('home.hero.cta_secondary', 'home', 'Hero secondary CTA', 'Onboard My School'),
   ('home.hero.stock_1.title', 'home', 'Hero slide 1 title', 'Large Multi-Purpose School Assemblies & Events'),
@@ -104,6 +104,6 @@ values
   ('footer.email', 'footer', 'Footer email', 'enquiries@lrso.co.uk'),
   ('footer.phone', 'footer', 'Footer phone', '03333 355 944'),
   ('footer.address', 'footer', 'Footer address', 'Unit 8, Amberley Court,\nWhitworth Road, Crawley,\nWest Sussex, RH11 7XL'),
-  ('footer.mission', 'footer', 'Footer mission', 'Connecting the people who want to Do with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.'),
+  ('footer.mission', 'footer', 'Footer mission', 'Connecting the people who want to Do with the schools that have the facilities to allow the Doing. Maintenance of healthy mind & bodies through local community activity.'),
   ('footer.tagline', 'footer', 'Footer tagline', 'Generating Money for Schools, Sports Clubs and Community Facilities. Registered office: Unit 8 Amberley Court, Crawley.')
-on conflict (key) do nothing;
+on conflict (key) do update set content = excluded.content;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, CheckCircle2, Heart, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, MapPin, Search, CalendarDays, Trophy, ShieldCheck, Star, Users } from "lucide-react";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
 import heroImg1 from "../assets/pexels-break-media-186685971-37989204.jpg";
@@ -105,7 +105,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             
             {/* Majestic Display Headline */}
             <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] max-w-4xl">
-              {value("home.hero.title", "Hire Premium School Facilities in Your Area")}
+              {value("home.hero.title", "School Venues Available to Hire for Every Community")}
             </h1>
 
             {/* Consolidative, Elegant Slogan Subtitle */}
@@ -114,7 +114,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
                 {value("home.hero.subtitle", "Maximising educational assets to support community wellness and local growth.")}
               </p>
               <p className="text-sm text-slate-300 leading-relaxed">
-                {value("home.hero.description", "We bridge regional demand with vacant educational facilities. LRSO handles all marketing, operations, booking, billing, and DBS-vetted Venue Supervision for our trusted partners.")}
+                LRSO offer a fully-managed lettings service to schools and sports clubs all over England. We handle absolutely everything, from sales & marketing, customer service, finance and bookings to professionally staffing the site with our Enhanced DBS checked Venue Supervisors.
               </p>
             </div>
 
@@ -156,8 +156,9 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-lrso-crimson-600/20 to-lrso-blue-600/20" />
               <div className="relative p-8 flex flex-col gap-5">
                   <h3 className="font-display text-2xl font-bold text-white">Premium School Venues Available Now</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">Browse our full catalogue of DBS-supervised educational facilities — sports halls, 3G pitches, dance studios, and more.</p>
-                <p className="text-sm text-slate-300 leading-relaxed">Available evenings, weekends &amp; school holidays.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">We are very proud to work with some excellent schools with outstanding facilities. Whether you want to play a sport on one of our 3G pitches or floodlit netball courts or in one of our sports halls or dance studios we have the perfect space for you.
+                <br /><br />
+                Or, if you're looking for a new home for your worship group, language school or celebration event, we will be happy to help.</p>
                 <button
                   onClick={() => navigate("/venues")}
                   className="flex items-center gap-2 text-sm font-bold text-white hover:text-lrso-crimson-400 transition-colors cursor-pointer"
@@ -248,19 +249,15 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
             
             <div className="relative rounded-3xl border border-slate-200 bg-white p-8 shadow-xl flex flex-col items-center">
               <Logo className="h-96 w-auto" showText={false} imageSrc={logoImage} />
-              <div className="text-center mt-6">
-                <h3 className="font-display font-bold text-xl text-slate-950">Generating Money for Schools</h3>
-                <p className="text-xs text-slate-500 mt-2">Connecting regional community demand directly with empty educational supply.</p>
-              </div>
             </div>
           </div>
 
           <div className="lg:col-span-7 space-y-5 text-left">
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Utilising Schools to Enrich Lives and Earning Potential
+              Utilising Schools to Enrich Lives and Communities, Whilst Providing Schools with a Vital Revenue stream.
             </h2>
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-              Active participation in sports, wellness, and local events is one of the most important factors in maintaining a healthy mind and body. Whether that&rsquo;s kicking a ball around with friends, rehearsing a play, or joining a local community assembly.
+              Active participation in sports, wellness, and local events is one of the most important factors in maintaining a healthy mind and body. Whether that&rsquo;s kicking a ball around with friends, rehearsing a play, or joining a local community group.
             </p>
             <p className="text-base text-slate-500 leading-relaxed">
               Our emphasis is on making premium facilities available so that those life-enriching activities can take place. Schools are the natural solution to the nation&rsquo;s shortage of facilities for community use, and <strong className="text-slate-800">LRSO are the right company</strong> to meet the demand with supply.
@@ -281,8 +278,8 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
                   <CheckCircle2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-base">Fully Safeguarded</h4>
-                  <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">All booking blocks are supervised by professional, security-vetted Venue Supervisors in a secure habitat.</p>
+                  <h4 className="font-bold text-slate-900 text-base">Safe & Secure Sites</h4>
+                  <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">All customers are supported by our professional, fully-trained and DBS checked Venue Supervisors.</p>
                 </div>
               </div>
             </div>
@@ -297,15 +294,22 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       <FadeIn delay={0.1}>
       <section className="bg-white py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-          <Star className="mx-auto h-8 w-8 text-amber-400 mb-6" />
+          <div className="flex justify-center gap-1 mb-6 items-end">
+            <Star className="h-8 w-8 text-amber-400" />
+            <Star className="h-8 w-8 text-amber-400" />
+            <Star className="h-10 w-10 text-amber-400" />
+            <Star className="h-8 w-8 text-amber-400" />
+            <Star className="h-8 w-8 text-amber-400" />
+          </div>
           <blockquote className="font-display text-2xl sm:text-3xl font-bold text-slate-900 leading-snug mb-6">
-            &ldquo;LRSO generated over &pound;12,000 in extra income for our school in the first term alone. The process was seamless and our facilities are now fully utilised.&rdquo;
+            &ldquo;We had tried to manage lettings in-house and then partnered with another lettings management company. Since we appointed LRSO, our revenue has increased from &pound;171,000 to over &pound;480,000 in the space of just 2 years.
+            <br /><br />
+            The LRSO team are professional at all times and leave our facilities clean and secure&rdquo;
           </blockquote>
           <div className="flex items-center justify-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-lrso-blue-100 flex items-center justify-center text-lrso-blue-700 font-bold text-sm">JD</div>
+            <div className="h-10 w-10 rounded-full bg-lrso-blue-100 flex items-center justify-center text-lrso-blue-700 font-bold text-sm">CH</div>
             <div className="text-left">
-              <p className="text-sm font-bold text-slate-900">James Davidson</p>
-              <p className="text-xs text-slate-500">Headteacher, Coombe Wood School</p>
+              <p className="text-sm font-bold text-slate-900">Croydon-based Headteacher</p>
             </div>
           </div>
         </div>
@@ -322,7 +326,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
               Want to Generate Extra Income for Your School?
             </h3>
             <p className="text-base text-slate-300 leading-relaxed">
-              We handle customer service, marketing, automated billing, and trained supervisor staffing. Your only job is deciding how to reinvest the additional funds we secure for you.
+              Whether you are managing lettings in-house, are currently using another lettings company or are yet to see the benefits of community lettings, LRSO will <strong className="font-bold text-white">GUARANTEE</strong> to increase your income whilst providing a superior on-site service.
             </p>
           </div>
           <div className="shrink-0 w-full md:w-auto">
@@ -346,35 +350,6 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       </FadeIn>
 
       <SectionDivider size="lg" />
-
-      <FadeIn delay={0.1}>
-      <section className="bg-gradient-to-br from-lrso-blue-800 to-lrso-blue-700 py-24 text-white relative overflow-hidden" id="homescreen-support">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.03]" />
-        <div className="relative mx-auto max-w-4xl px-4 text-center space-y-8">
-          <Heart className="mx-auto h-14 w-14 text-lrso-crimson-600 animate-pulse bg-white/95 p-3.5 rounded-2xl shadow-md" />
-          <h3 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">{value("home.support.title", "Ready to Secure Your Space?")}</h3>
-          <p className="text-base text-slate-200 max-w-xl mx-auto leading-relaxed font-medium">
-            {value("home.support.body", "We look forward to arranging booking calendars or answering trust guidelines on Microsoft Teams. Feel free to contact Crawley staff directly!")}
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-            <button
-              onClick={() => handleEnquire("General venue enquiry")}
-              id="support-cta-enquire-btn"
-              className="rounded-2xl bg-lrso-crimson-600 hover:bg-lrso-crimson-700 text-sm font-bold text-white px-8 py-4 shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-            >
-              {value("home.support.cta_primary", "Send an Enquiry")}
-            </button>
-            <button
-              onClick={() => navigate("/contact")}
-              id="support-cta-contact-btn"
-              className="rounded-2xl bg-white/10 hover:bg-white/20 text-sm font-bold text-white px-8 py-4 border border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-            >
-              {value("home.support.cta_secondary", "Contact Support HQ")}
-            </button>
-          </div>
-        </div>
-      </section>
-      </FadeIn>
 
     </div>
   );

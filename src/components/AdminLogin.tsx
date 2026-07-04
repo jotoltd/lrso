@@ -20,7 +20,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     setIsLoading(true);
 
     setTimeout(() => {
-      if (username === "Josh" && password === "lalala14") {
+      if (username === "Josh" && password === "R1l3yj014!") {
         onLogin();
       } else {
         setError("Invalid username or password.");

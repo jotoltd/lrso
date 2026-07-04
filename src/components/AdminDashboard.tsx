@@ -18,6 +18,7 @@ import {
   Pencil,
   FileText,
   Save,
+  X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Logo } from "./Logo";
@@ -367,79 +368,87 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         </div>
       )}
       {editingVenue && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <h4 className="font-bold text-slate-900 text-lg mb-5">Edit Venue</h4>
-          <form onSubmit={saveEditVenue} className="space-y-5">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2">Venue Name</label>
-                <input type="text" required value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-slate-400" />Address</label>
-                <input type="text" required value={editForm.address} onChange={e => setEditForm({ ...editForm, address: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><ExternalLink className="h-3.5 w-3.5 text-slate-400" />Book Now Link</label>
-                <input type="url" required value={editForm.book_link} onChange={e => setEditForm({ ...editForm, book_link: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><ImagePlus className="h-3.5 w-3.5 text-slate-400" />Venue Logo</label>
-                <input type="file" accept="image/*" onChange={e => { const file = e.target.files?.[0] ?? null; setEditLogoFile(file); setEditLogoPreview(file ? URL.createObjectURL(file) : editForm.logo_url); }} className="w-full text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-bold file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
-                {editLogoPreview && <img src={editLogoPreview} alt="Logo preview" className="mt-3 h-16 w-16 rounded-xl object-contain border border-slate-200 bg-slate-50 p-1" />}
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={cancelEdit} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+              <h4 className="font-bold text-slate-900 text-lg">Edit Venue: {editingVenue.name}</h4>
+              <button onClick={cancelEdit} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <div className="border-t border-slate-100 pt-5">
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5"><Tag className="h-3.5 w-3.5 text-slate-400" />Facilities</label>
-                <button type="button" onClick={addEditFacilityRow} className="flex items-center gap-1.5 text-xs font-bold text-lrso-blue-600 hover:text-lrso-blue-800 border border-lrso-blue-200 rounded-lg px-3 py-1.5 hover:bg-lrso-blue-50 transition-all cursor-pointer">
-                  <Plus className="h-3.5 w-3.5" />Add Facility
-                </button>
+            <form onSubmit={saveEditVenue} className="p-6 space-y-5">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Venue Name</label>
+                  <input type="text" required value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-slate-400" />Address</label>
+                  <input type="text" required value={editForm.address} onChange={e => setEditForm({ ...editForm, address: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><ExternalLink className="h-3.5 w-3.5 text-slate-400" />Book Now Link</label>
+                  <input type="url" required value={editForm.book_link} onChange={e => setEditForm({ ...editForm, book_link: e.target.value })} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 px-4 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1.5"><ImagePlus className="h-3.5 w-3.5 text-slate-400" />Venue Logo</label>
+                  <input type="file" accept="image/*" onChange={e => { const file = e.target.files?.[0] ?? null; setEditLogoFile(file); setEditLogoPreview(file ? URL.createObjectURL(file) : editForm.logo_url); }} className="w-full text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-bold file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
+                  {editLogoPreview && <img src={editLogoPreview} alt="Logo preview" className="mt-3 h-16 w-16 rounded-xl object-contain border border-slate-200 bg-slate-50 p-1" />}
+                </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {editFacilityRows.map((fac, idx) => (
-                  <div key={fac.uid} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Facility {idx + 1}</span>
-                      {editFacilityRows.length > 1 && (
-                        <button type="button" onClick={() => removeEditFacilityRow(fac.uid)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                    <input type="text" placeholder="e.g. Sports Hall" value={fac.name || ""} onChange={e => updateEditFacilityName(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
-                    <input type="text" placeholder="Short description (optional)" value={fac.description || ""} onChange={e => updateEditFacilityDescription(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
-                    <div className="flex items-center gap-3">
-                      {fac.preview || fac.existingImageUrl ? (
-                        <div className="relative group shrink-0">
-                          <img src={fac.preview || fac.existingImageUrl || undefined} alt="" className="h-20 w-20 rounded-xl object-cover border border-slate-200" />
-                          <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
-                            <ImagePlus className="h-5 w-5 text-white" />
+              <div className="border-t border-slate-100 pt-5">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5"><Tag className="h-3.5 w-3.5 text-slate-400" />Facilities</label>
+                  <button type="button" onClick={addEditFacilityRow} className="flex items-center gap-1.5 text-xs font-bold text-lrso-blue-600 hover:text-lrso-blue-800 border border-lrso-blue-200 rounded-lg px-3 py-1.5 hover:bg-lrso-blue-50 transition-all cursor-pointer">
+                    <Plus className="h-3.5 w-3.5" />Add Facility
+                  </button>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {editFacilityRows.map((fac, idx) => (
+                    <div key={fac.uid} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col gap-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Facility {idx + 1}</span>
+                        {editFacilityRows.length > 1 && (
+                          <button type="button" onClick={() => removeEditFacilityRow(fac.uid)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                      <input type="text" placeholder="e.g. Sports Hall" value={fac.name || ""} onChange={e => updateEditFacilityName(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                      <input type="text" placeholder="Short description (optional)" value={fac.description || ""} onChange={e => updateEditFacilityDescription(fac.uid, e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 text-sm focus:border-lrso-blue-600 focus:outline-hidden focus:bg-white transition-all" />
+                      <div className="flex items-center gap-3">
+                        {fac.preview || fac.existingImageUrl ? (
+                          <div className="relative group shrink-0">
+                            <img src={fac.preview || fac.existingImageUrl || undefined} alt="" className="h-20 w-20 rounded-xl object-cover border border-slate-200" />
+                            <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl cursor-pointer transition-opacity">
+                              <ImagePlus className="h-5 w-5 text-white" />
+                              <input type="file" accept="image/*" className="hidden" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
+                            </label>
+                          </div>
+                        ) : (
+                          <label className="flex items-center justify-center h-20 w-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors bg-slate-50 shrink-0">
+                            <ImagePlus className="h-6 w-6" />
                             <input type="file" accept="image/*" className="hidden" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
                           </label>
-                        </div>
-                      ) : (
-                        <label className="flex items-center justify-center h-20 w-20 rounded-xl border-2 border-dashed border-slate-200 hover:border-lrso-blue-400 cursor-pointer text-slate-400 hover:text-lrso-blue-600 transition-colors bg-slate-50 shrink-0">
-                          <ImagePlus className="h-6 w-6" />
-                          <input type="file" accept="image/*" className="hidden" onChange={e => updateEditFacilityImage(fac.uid, e.target.files?.[0] ?? null)} />
-                        </label>
-                      )}
-                      <p className="text-xs text-slate-400">Upload or replace image.</p>
+                        )}
+                        <p className="text-xs text-slate-400">Upload or replace image.</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-            {editErr && <p className="text-sm text-red-600">{editErr}</p>}
-            <div className="flex items-center gap-3">
-              <button type="submit" disabled={editSaving} className="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-sm font-bold text-white px-6 py-3 cursor-pointer">
-                {editSaving ? <><Loader2 className="h-4 w-4 animate-spin" />Saving...</> : "Save Changes"}
-              </button>
-              <button type="button" onClick={cancelEdit} className="rounded-xl border border-slate-200 hover:bg-slate-100 text-sm font-bold text-slate-600 px-6 py-3 cursor-pointer transition-all">
-                Cancel
-              </button>
-            </div>
-          </form>
+              {editErr && <p className="text-sm text-red-600">{editErr}</p>}
+              <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                <button type="submit" disabled={editSaving} className="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-sm font-bold text-white px-6 py-3 cursor-pointer">
+                  {editSaving ? <><Loader2 className="h-4 w-4 animate-spin" />Saving...</> : "Save Changes"}
+                </button>
+                <button type="button" onClick={cancelEdit} className="rounded-xl border border-slate-200 hover:bg-slate-100 text-sm font-bold text-slate-600 px-6 py-3 cursor-pointer transition-all">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

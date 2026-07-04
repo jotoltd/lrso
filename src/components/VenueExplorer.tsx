@@ -89,7 +89,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) =
             Browse Our Venues For Hire
           </h2>
           <p className="mt-4 text-base text-slate-600 max-w-2xl mx-auto font-medium">
-            We open outstanding educational sport complexes, halls, and classrooms to community groups, schools, sports clubs, and wellness providers.
+            We have some amazing venues available to hire for activities and purposes. Please browse the facilities at each individual school, or if you know the venue you want, click Book Now for your choice of venue to go directly to the booking system.
           </p>
         </div>
       </FadeIn>

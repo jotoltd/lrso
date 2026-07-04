@@ -8,7 +8,6 @@ import { useSiteContent } from "../context/SiteContentContext";
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
   const { value } = useSiteContent();
-  const regions = ["Nottingham", "Ipswich", "Croydon & London", "Swindon", "Derby"];
 
   const handleTabClick = (path: string) => {
     navigate(path);
@@ -28,7 +27,7 @@ export const Footer: React.FC = () => {
               <Logo className="h-24 w-auto" darkText={false} showText={false} imageSrc={logoImage} />
             </div>
             <p className="text-xs text-slate-400 leading-relaxed font-semibold whitespace-pre-line">
-              {value("footer.mission", "Connecting the people who want to Do with the schools and clubs that have the facilities to let. Maintenance of healthy mind & bodies through local sport activity.")}
+              Connecting the people who want to Do with the schools that have the facilities to allow the Doing. Maintenance of healthy mind & bodies through local community activity.
             </p>
             <div className="flex gap-4">
               <a
@@ -78,26 +77,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Col 3: Partner Regions */}
-          <div className="space-y-4">
-            <h4 className="font-display text-sm font-bold text-slate-300 border-l-2 border-lrso-blue-600 pl-3">
-              Hire Regions
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-400 font-semibold">
-              {regions.map((reg) => (
-                <li key={reg}>
-                  <button
-                    onClick={() => handleTabClick("/venues")}
-                    className="hover:text-white transition-colors text-left"
-                  >
-                    Sport halls in {reg}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 4: Corporate Registration & Help Direct lines */}
+          {/* Col 3: Corporate Registration & Help Direct lines */}
           <div className="space-y-4">
             <h4 className="font-display text-sm font-bold text-slate-300 border-l-2 border-lrso-crimson-600 pl-3">
               HQ Helplines

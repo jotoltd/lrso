@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Coins, ShieldAlert, Award, CalendarCheck, Users, Zap } from "lucide-react";
 
 export const StatsSection: React.FC = () => {
+  const navigate = useNavigate();
   const highlights = [
     {
       icon: <Coins className="h-6 w-6 text-emerald-600" />,
       title: "Guaranteed Revenue",
-      description: "We handle sales, marketing, and scheduling to optimize booking slots, ensuring robust passive income lines for educational trusts.",
+      description: "We handle sales, marketing, and scheduling to optimize booking slots, ensuring robust and sustainable income for our schools.",
       badge: "Financial Growth",
       badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-100",
     },
@@ -26,17 +28,17 @@ export const StatsSection: React.FC = () => {
     },
     {
       icon: <CalendarCheck className="h-6 w-6 text-lrso-blue-600" />,
-      title: "Modern Booking Tech",
-      description: "Powered by Bookteq, we build customizable scheduling platforms tailored to geographical metrics and demographic pricing models.",
+      title: "Modern Booking System",
+      description: "Powered by Bookteq, customers and school partners have an easy-to-use, fully transparent system, with enhanced reporting features.",
       badge: "Bookteq Partner",
       badgeColor: "bg-slate-100 text-slate-800 border-slate-200",
     },
   ];
 
   const statCounters = [
-    { target: 3.2, format: (v: number) => `£${v.toFixed(1)}M+`, label: "Generated for Partner Schools" },
+    { target: 4.2, format: (v: number) => `£${v.toFixed(1)}M+`, label: "Generated for Partner Schools" },
     { target: 100, format: (v: number) => `${Math.round(v)}%`, label: "Fully Managed & Professionally Staffed" },
-    { target: 12, format: (v: number) => `${Math.round(v)}+`, label: "Elite Academies & Schools Managed" },
+    { target: 300, format: (v: number) => `${Math.round(v)}+`, label: "Weekly Community Groups" },
     { target: 10000, format: (v: number) => `${Math.round(v).toLocaleString()}+`, label: "Weekly Sport & Community Attendees" },
   ];
 
@@ -95,7 +97,7 @@ export const StatsSection: React.FC = () => {
             Why Partner with LRSO?
           </h2>
           <p className="mt-5 text-lg text-slate-600 leading-relaxed font-medium">
-            We bridge the gap between schools with valuable community space, and the general public longing for professional places to train, worship, and play.
+            We <strong className="font-bold text-slate-900">GUARANTEE</strong> our service and revenue commitments – no excuses. Our specialised sales & marketing approach to filling schools' facilities ensures that we provide the community with the service they need whilst providing the school with increased revenue and an enhanced operational service.
           </p>
         </div>
 
@@ -123,7 +125,7 @@ export const StatsSection: React.FC = () => {
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-slate-100">
-                <span className="text-xs font-bold uppercase tracking-wider text-lrso-blue-600 group-hover:text-lrso-crimson-600 flex items-center gap-1 transition-colors cursor-pointer">
+                <span onClick={() => navigate("/partnership")} className="text-xs font-bold uppercase tracking-wider text-lrso-blue-600 group-hover:text-lrso-crimson-600 flex items-center gap-1 transition-colors cursor-pointer">
                   Learn more &rarr;
                 </span>
               </div>
