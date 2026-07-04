@@ -20,7 +20,7 @@ import {
   Save,
   X,
 } from "lucide-react";
-import { supabase } from "../lib/supabase";
+import { supabase, supabaseAdmin } from "../lib/supabase";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
 
@@ -31,7 +31,7 @@ interface AdminDashboardProps {
 type AdminTab = "overview" | "venues" | "contacts" | "content";
 
 interface Venue { id: string; name: string; address: string; book_link: string; logo_url: string | null; created_at: string; }
-interface Contact { id: string; name: string; email: string; subject: string; message: string | null; read: boolean; status: "open" | "replied" | "closed"; notes: string | null; created_at: string; }
+interface Contact { id: string; name: string; email: string; phone: string | null; subject: string; message: string | null; read: boolean; status: "open" | "replied" | "closed"; notes: string | null; created_at: string; }
 interface VenueForm { name: string; address: string; book_link: string; logo_url: string | null; }
 interface FacilityRow { uid: string; name: string; description: string; file: File | null; preview: string | null; }
 interface EditFacilityRow { uid: string; dbId?: string; name: string; description: string; existingImageUrl: string | null; file: File | null; preview: string | null; }
@@ -40,7 +40,7 @@ interface SiteContentItem { id: string; key: string; page: string; label: string
 const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: "venues", label: "Venues", icon: <Building2 className="h-4 w-4" /> },
-  { id: "contacts", label: "Contacts", icon: <Users className="h-4 w-4" /> },
+  { id: "contacts", label: "Messages", icon: <Users className="h-4 w-4" /> },
   { id: "content", label: "Site Content", icon: <FileText className="h-4 w-4" /> },
 ];
 
@@ -212,6 +212,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const markRead = async (id: string) => { await supabase.from("contacts").update({ read: true }).eq("id", id); fetchC(); };
   const updateContactStatus = async (id: string, status: Contact["status"]) => { await supabase.from("contacts").update({ status }).eq("id", id); fetchC(); };
   const updateContactNotes = async (id: string, notes: string) => { await supabase.from("contacts").update({ notes }).eq("id", id); fetchC(); };
+  const deleteContact = async (id: string) => { await supabaseAdmin.from("contacts").delete().eq("id", id); fetchC(); };
 
   const renderOverview = () => (
     <div className="space-y-8">
@@ -493,7 +494,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-slate-900 text-lg">Contact Submissions</h3>
+          <h3 className="font-bold text-slate-900 text-lg">Messages</h3>
           <p className="text-sm text-slate-500">Messages from the public contact form.</p>
         </div>
         <button onClick={fetchC} className="flex items-center gap-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 transition-colors cursor-pointer shadow-sm">
@@ -510,7 +511,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                   <div className={`h-11 w-11 rounded-full flex items-center justify-center text-sm font-bold ${!c.read ? "bg-rose-100 text-rose-600" : "bg-slate-100 text-slate-500"}`}>{c.name.charAt(0).toUpperCase()}</div>
                   <div>
                     <p className="font-bold text-slate-900">{c.name}</p>
-                    <p className="text-xs text-slate-500">{c.email}</p>
+                    <a href={`mailto:${c.email}`} className="text-xs text-lrso-blue-600 hover:underline">{c.email}</a>
+                    {c.phone && <p className="text-xs text-slate-500 mt-0.5"><a href={`tel:${c.phone}`} className="hover:text-lrso-blue-600">{c.phone}</a></p>}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
@@ -545,13 +547,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                   <option value="replied">Replied</option>
                   <option value="closed">Closed</option>
                 </select>
-                {!c.read ? (
-                  <button onClick={() => markRead(c.id)} className="rounded-lg bg-lrso-blue-50 hover:bg-lrso-blue-100 text-lrso-blue-700 px-4 py-2 text-sm font-bold transition-colors cursor-pointer">
-                    Mark read
+                <div className="flex items-center gap-2">
+                  {!c.read ? (
+                    <button onClick={() => markRead(c.id)} className="rounded-lg bg-lrso-blue-50 hover:bg-lrso-blue-100 text-lrso-blue-700 px-4 py-2 text-sm font-bold transition-colors cursor-pointer">
+                      Mark read
+                    </button>
+                  ) : (
+                    <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Read</span>
+                  )}
+                  <button onClick={() => { if (confirm('Delete this message?')) deleteContact(c.id); }} className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer" title="Delete message">
+                    <Trash2 className="h-4 w-4" />
                   </button>
-                ) : (
-                  <span className="text-xs font-bold text-slate-400 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Read</span>
-                )}
+                </div>
               </div>
             </div>
           ))}

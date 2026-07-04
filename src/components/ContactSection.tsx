@@ -13,6 +13,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
   const [supportSubmitted, setSupportSubmitted] = useState(false);
   const [supportName, setSupportName] = useState("");
   const [supportEmail, setSupportEmail] = useState("");
+  const [supportPhone, setSupportPhone] = useState("");
   const [supportMsg, setSupportMsg] = useState("");
   const [supportSubject, setSupportSubject] = useState("Invoice or Lettings Finance question");
   const [submitting, setSubmitting] = useState(false);
@@ -31,6 +32,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
     const { error } = await supabase.from("contacts").insert({
       name: supportName,
       email: supportEmail,
+      phone: supportPhone || null,
       subject: supportSubject,
       message: supportMsg,
     });
@@ -188,6 +190,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
                           className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden"
                         />
                       </div>
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Phone Number <span className="normal-case font-normal text-slate-400">(optional)</span></label>
+                        <input
+                          type="tel"
+                          value={supportPhone}
+                          onChange={(e) => setSupportPhone(e.target.value)}
+                          placeholder="e.g. 07700 900000"
+                          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-hidden"
+                        />
+                      </div>
                     </div>
 
                     <div className="mt-4">
@@ -248,6 +260,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
                       setSupportSubmitted(false);
                       setSupportName("");
                       setSupportEmail("");
+                      setSupportPhone("");
                       setSupportMsg("");
                       setSubmitError("");
                     }}
