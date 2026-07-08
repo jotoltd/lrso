@@ -51,7 +51,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Site Tour",
       badge: "Inspection",
       shortDesc: "Facility site visit & financial forecasting",
-      longDesc: "Our team tours your campus to assess facilities, generate a tailored demographic pricing study, and present a physical Financial Forecast proposal.",
+      longDesc: "One of our team will visit you at your school to conduct a full assessment of all facilities and to discuss at greater length our enhanced service. Following this, we will provide you with a full proposal detailing the full breadth of our service, including an accurate Financial Forecast, for your consideration.",
     },
     {
       stepNum: 4,
@@ -59,7 +59,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Commitment",
       badge: "Agreement",
       shortDesc: "Launch contract with 6-week guarantee",
-      longDesc: "Once we partner, we execute a comprehensive legal SLA and guarantee a full operational launch in under six weeks.",
+      longDesc: "Once you have reviewed our proposal and any queries have been answered, we can proceed to the specific contractual obligations. Once these are agreed, we commit to a full launch, including intensive marketing campaigns, within six weeks.",
     },
     {
       stepNum: 5,
@@ -67,7 +67,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Bespoke System Build",
       badge: "Technology",
       shortDesc: "Online booking systems powered by Bookteq",
-      longDesc: "We deploy a customized instance of Bookteq specific to your school. Every room, pitch, and court is itemized with pricing mapped to regional demand.",
+      longDesc: "Whilst we are recruiting and vetting staff, preparing operational manuals and completing risk assessments, we will also be building your customised booking system on Bookteq. You will have full access to your Bookteq portal, ensuring that you are always aware of customer bookings and revenue tracking.",
     },
     {
       stepNum: 6,
@@ -75,7 +75,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Staff Vetting",
       badge: "Safeguarding",
       shortDesc: "Recruit & train expert Venue Supervisors",
-      longDesc: "We hire and train localized staff. All staff undergo stringent Enhanced DBS screening and comprehensive safeguarding training before deployment.",
+      longDesc: "All of our staff are interviewed in-person by a manager, and face stringent questions relating to the role and their ability to perform at the highest level. Following a successful interview, we complete Right to Work checks, ID confirmation and Enhanced DBS checks to ensure that the individual is suitable to work at one of our schools. No member of staff will proceed to the training phase until these checks have been satisfied.",
     },
     {
       stepNum: 7,
@@ -83,7 +83,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Customer Onboarding",
       badge: "Migration",
       shortDesc: "Migrate existing school block-bookings",
-      longDesc: "We handle the transitions. Your existing block books and regular community users are migrated seamlessly to avoid sports-club disruption.",
+      longDesc: "We handle the entire transition for your customers. All existing customers are offered their incumbent slots and we walk them through the new process for bookings and payments. After all existing customers have been satisfied, we move onto filling the available space…",
     },
     {
       stepNum: 8,
@@ -91,7 +91,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Proactive Sales Drive",
       badge: "Marketing",
       shortDesc: "Harnessing our bespoke 'Customer Finder' tool",
-      longDesc: "We launch target marketing campaigns and utilize our proprietary CRM tools to pitch local academies, sports leagues, and fitness franchises.",
+      longDesc: "LRSO are unique in the effort in we put into each and every individual school. We first launch a 'complete site' marketing campaign using geographic and demographic targeting. We then assess the facilities that require individual attention, and target relevant groups for those communities. Our sales & marketing doesn't end after a few weeks or months: we will constantly be running campaigns throughout the year to drive revenue growth.",
     },
     {
       stepNum: 9,
@@ -99,7 +99,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Site Training",
       badge: "Operations",
       shortDesc: "Full equipment & safety lock-and-alarm runthroughs",
-      longDesc: "Our Venue Supervisors complete intensive hands-on drills detailing your emergency systems, site mapping, alarms, and utility controls.",
+      longDesc: "Following success at the vetting process, our new Venue Supervisors then embark on their intensive training specific to you school, including all operational elements such as alarms, locking procedures, cleaning requirements, health & safety, and much more. Before the Venue Supervisor is allowed to work independently, they have to complete a written and physical test demonstrating that they full understand and are capable of completing all tasks.",
     },
     {
       stepNum: 10,
@@ -107,7 +107,7 @@ export const PartnershipStepper: React.FC = () => {
       title: "Official Launch",
       badge: "Revenue",
       shortDesc: "Open doors & deposit monthly revenues",
-      longDesc: "Your lettings program opens successfully. You receive regular, detailed financial metrics and premium income lines which are deposited monthly.",
+      longDesc: "We get off to a flying start! Staff meet and introduce themselves to customers, engage with your site teams to establish a healthy working relationship and commence delivery of our enhanced service. You will receive regular, detailed financial metrics and will see the increased income in real-time. Your new, increased revenue will be deposited to your account monthly.",
     },
   ];
 

@@ -102,7 +102,7 @@ function PartnershipPage() {
       <section className="bg-gradient-to-b from-slate-50 via-white to-white py-20 border-b border-slate-100">
         <div className="mx-auto max-w-4xl text-center px-4 space-y-6">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            {value("partnership.header.title", "In Partnership with Educational Sites & Sports Clubs")}
+            {value("partnership.header.title", "In Partnership with Schools and Sports Clubs")}
           </h1>
           <p className="text-lg text-slate-700 leading-relaxed font-semibold max-w-2xl mx-auto">
             {value("partnership.header.lead", "LRSO generate significant and much-needed revenue for schools and sports clubs through the sales and management of their facilities for community use.")}

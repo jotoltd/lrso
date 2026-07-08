@@ -94,7 +94,7 @@ values
   ('home.support.body', 'home', 'Support section body', 'We look forward to arranging booking calendars or answering trust guidelines on Microsoft Teams. Feel free to contact Crawley staff directly!'),
   ('home.support.cta_primary', 'home', 'Support primary CTA', 'Send an Enquiry'),
   ('home.support.cta_secondary', 'home', 'Support secondary CTA', 'Contact Support HQ'),
-  ('partnership.header.title', 'partnership', 'Partnership header title', 'In Partnership with Educational Sites & Sports Clubs'),
+  ('partnership.header.title', 'partnership', 'Partnership header title', 'In Partnership with Schools and Sports Clubs'),
   ('partnership.header.lead', 'partnership', 'Partnership header lead', 'LRSO generate significant and much-needed revenue for schools and sports clubs through the sales and management of their facilities for community use.'),
   ('partnership.header.body', 'partnership', 'Partnership header body', 'We handle absolutely all aspects of the lettings process, from customer service, sales & marketing, bookings and finance through to the safe and professional supervision of all lettings by our highly trained Venue Supervisors.'),
   ('contact.page.title', 'contact', 'Contact page title', 'Contact & Support'),
