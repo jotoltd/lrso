@@ -75,7 +75,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
             <div className="space-y-6">
               
               {/* Core Information Cards */}
-              <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-xs">
+              <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-xs" id="contact-info">
                 <h3 className="font-display text-lg font-bold text-slate-950 mb-4">Contact Info</h3>
                 <div className="space-y-4">
                   <a href={`tel:${value("footer.phone", "03333355944")}`} className="flex items-center gap-3.5 hover:text-lrso-blue-600 transition-colors group">
@@ -113,7 +113,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
               </div>
 
               {/* Driving Directions Accordion (Text pasted from requirements) */}
-              <div className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-xs">
+              <div className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-xs" id="directions">
                 <button
                   onClick={() => setDirectionsExpanded(!directionsExpanded)}
                   className="flex w-full items-center justify-between p-6 text-left select-none font-sans"
@@ -158,7 +158,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
           </div>
 
           {/* Right Block: Instant Ticket submissions */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7" id="contact-form">
             <div className="rounded-3xl bg-white border border-slate-200 p-8 shadow-xs h-full flex flex-col justify-between">
               
               {!supportSubmitted ? (

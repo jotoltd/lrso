@@ -175,7 +175,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       <SectionDivider size="xl" />
 
       <FadeIn>
-      <section className="bg-white py-8">
+      <section className="bg-white py-8" id="trust-badges">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
             <div className="flex items-center gap-2.5 text-slate-500">
@@ -241,7 +241,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       <SectionDivider size="xl" />
 
       <FadeIn delay={0.1}>
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8" id="welcome-details">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8" id="about">
         <div className="grid gap-16 lg:grid-cols-12 items-center">
           
           <div className="lg:col-span-5 relative">
@@ -292,7 +292,7 @@ export const Home: React.FC<HomepageProps> = ({ handleEnquire }) => {
       <SectionDivider flip size="md" />
 
       <FadeIn delay={0.1}>
-      <section className="bg-white py-20">
+      <section className="bg-white py-20" id="testimonials">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex justify-center gap-1 mb-6 items-end">
             <Star className="h-8 w-8 text-amber-400" />

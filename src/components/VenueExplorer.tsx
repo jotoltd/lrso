@@ -95,7 +95,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) =
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <div className="mb-10 rounded-3xl bg-white p-6 border border-slate-200 shadow-xs lg:p-8">
+        <div className="mb-10 rounded-3xl bg-white p-6 border border-slate-200 shadow-xs lg:p-8" id="search-filters">
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
               <Search className="h-5 w-5" />
@@ -166,7 +166,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) =
 
       {/* Venue Cards */}
       {!loading && filteredVenues.length > 0 && (
-        <div id="venues-grid" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div id="venues-list" className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredVenues.map((venue) => (
             <div
               key={venue.id}
