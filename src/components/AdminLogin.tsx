@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { supabase } from "../lib/supabase";
 
 interface AdminLoginProps {
   onLogin: () => void;
@@ -14,19 +15,29 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (username === "Josh" && password === "R1l3yj014!") {
-        onLogin();
-      } else {
+    try {
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("*")
+        .eq("username", username)
+        .eq("password", password)
+        .single();
+
+      if (error || !data) {
         setError("Invalid username or password.");
         setIsLoading(false);
+      } else {
+        onLogin();
       }
-    }, 600);
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   return (
