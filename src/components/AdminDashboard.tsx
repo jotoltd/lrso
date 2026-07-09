@@ -26,6 +26,7 @@ import logoImage from "../assets/lrso_logo.jpg";
 
 interface AdminDashboardProps {
   onLogout: () => void;
+  currentUserRole: string;
 }
 
 type AdminTab = "overview" | "venues" | "contacts" | "content" | "users";
@@ -36,7 +37,7 @@ interface VenueForm { name: string; address: string; book_link: string; logo_url
 interface FacilityRow { uid: string; name: string; description: string; file: File | null; preview: string | null; }
 interface EditFacilityRow { uid: string; dbId?: string; name: string; description: string; existingImageUrl: string | null; file: File | null; preview: string | null; }
 interface SiteContentItem { id: string; key: string; page: string; label: string; content: string; image_url: string | null; updated_at: string; }
-interface AdminUser { id: string; username: string; password: string; email: string | null; name: string | null; created_at: string; updated_at: string; }
+interface AdminUser { id: string; username: string; password: string; email: string | null; name: string | null; role: string; created_at: string; updated_at: string; }
 
 const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
   { id: "overview", label: "Overview", icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -49,7 +50,7 @@ const navItems: { id: AdminTab; label: string; icon: React.ReactNode }[] = [
 const Spinner = () => <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm"><Loader2 className="h-6 w-6 animate-spin mx-auto text-slate-400 mb-2" /><p className="text-sm text-slate-400 font-medium">Loading...</p></div>;
 const Empty = ({ msg }: { msg: string }) => <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm"><p className="text-sm text-slate-400 font-medium">{msg}</p></div>;
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUserRole }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [searchQuery, setSearchQuery] = useState("");
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -86,7 +87,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [editErr, setEditErr] = useState("");
   const [showUserForm, setShowUserForm] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
-  const [userForm, setUserForm] = useState({ username: "", password: "", email: "", name: "" });
+  const [userForm, setUserForm] = useState({ username: "", password: "", email: "", name: "", role: "Staff" });
   const [savingUser, setSavingUser] = useState(false);
 
   const fetchV = useCallback(async () => { setLoadingV(true); const { data } = await supabase.from("venues").select("*").order("created_at", { ascending: false }); if (data) setVenues(data as Venue[]); setLoadingV(false); }, []);
@@ -233,6 +234,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           password: userForm.password,
           email: userForm.email || null,
           name: userForm.name || null,
+          role: userForm.role,
           updated_at: new Date().toISOString()
         }).eq("id", editingUser.id);
       } else {
@@ -240,12 +242,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           username: userForm.username,
           password: userForm.password,
           email: userForm.email || null,
-          name: userForm.name || null
+          name: userForm.name || null,
+          role: userForm.role
         });
       }
       setShowUserForm(false);
       setEditingUser(null);
-      setUserForm({ username: "", password: "", email: "", name: "" });
+      setUserForm({ username: "", password: "", email: "", name: "", role: "Staff" });
       fetchU();
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "An error occurred");
@@ -254,20 +257,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   };
 
   const deleteUser = async (id: string) => {
+    if (currentUserRole !== "Admin") {
+      alert("Only Admins can delete users.");
+      return;
+    }
     if (!confirm("Delete this admin user?")) return;
     await supabaseAdmin.from("admin_users").delete().eq("id", id);
     fetchU();
   };
 
+  const changeUserPassword = async (id: string, newPassword: string) => {
+    if (currentUserRole !== "Admin") {
+      alert("Only Admins can change passwords.");
+      return;
+    }
+    const newPasswordPrompt = prompt("Enter new password:");
+    if (!newPasswordPrompt) return;
+    await supabaseAdmin.from("admin_users").update({ password: newPasswordPrompt }).eq("id", id);
+    fetchU();
+  };
+
   const startEditUser = (user: AdminUser) => {
     setEditingUser(user);
-    setUserForm({ username: user.username, password: user.password, email: user.email || "", name: user.name || "" });
+    setUserForm({ username: user.username, password: user.password, email: user.email || "", name: user.name || "", role: user.role || "Staff" });
     setShowUserForm(true);
   };
 
   const cancelEditUser = () => {
     setEditingUser(null);
-    setUserForm({ username: "", password: "", email: "", name: "" });
+    setUserForm({ username: "", password: "", email: "", name: "", role: "Staff" });
     setShowUserForm(false);
   };
 
@@ -798,9 +816,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           <h3 className="font-bold text-slate-900 text-lg">Admin Users</h3>
           <p className="text-sm text-slate-500">Manage admin dashboard access.</p>
         </div>
-        <button onClick={() => { setEditingUser(null); setUserForm({ username: "", password: "", email: "", name: "" }); setShowUserForm(true); }} className="flex items-center gap-2 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2.5 text-sm font-bold transition-all cursor-pointer shadow-sm">
-          <Plus className="h-4 w-4" /> Add User
-        </button>
+        {currentUserRole === "Admin" && (
+          <button onClick={() => { setEditingUser(null); setUserForm({ username: "", password: "", email: "", name: "", role: "Staff" }); setShowUserForm(true); }} className="flex items-center gap-2 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2.5 text-sm font-bold transition-all cursor-pointer shadow-sm">
+            <Plus className="h-4 w-4" /> Add User
+          </button>
+        )}
       </div>
 
       {showUserForm && (
@@ -829,6 +849,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                 <label className="text-xs font-bold text-slate-500 mb-1.5 block">Name</label>
                 <input value={userForm.name} onChange={e => setUserForm(f => ({ ...f, name: e.target.value }))} placeholder="Full Name" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 focus:bg-white focus:outline-hidden" />
               </div>
+              {currentUserRole === "Admin" && (
+                <div>
+                  <label className="text-xs font-bold text-slate-500 mb-1.5 block">Role</label>
+                  <select value={userForm.role} onChange={e => setUserForm(f => ({ ...f, role: e.target.value }))} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 focus:bg-white focus:outline-hidden cursor-pointer">
+                    <option value="Staff">Staff</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+              )}
               <div className="flex items-center gap-3 pt-2">
                 <button type="submit" disabled={savingUser} className="flex-1 rounded-xl bg-lrso-blue-600 hover:bg-lrso-blue-700 text-white px-4 py-2.5 text-sm font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50">
                   {savingUser ? <Loader2 className="h-4 w-4 animate-spin mx-auto" /> : (editingUser ? "Update User" : "Create User")}
@@ -848,6 +877,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                 <th className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Username</th>
                 <th className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Name</th>
                 <th className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Email</th>
+                <th className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Role</th>
                 <th className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Created</th>
                 <th className="text-right text-xs font-bold text-slate-500 uppercase tracking-wider px-6 py-3">Actions</th>
               </tr>
@@ -865,16 +895,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
                     <p className="text-sm text-slate-700">{u.email || "—"}</p>
                   </td>
                   <td className="px-6 py-4">
+                    <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${u.role === "Admin" ? "bg-lrso-crimson-50 text-lrso-crimson-700 border border-lrso-crimson-200" : "bg-slate-100 text-slate-600 border border-slate-200"}`}>
+                      {u.role || "Staff"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
                     <p className="text-xs text-slate-500">{new Date(u.created_at).toLocaleDateString()}</p>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => startEditUser(u)} className="p-2 rounded-lg text-slate-400 hover:text-lrso-blue-600 hover:bg-lrso-blue-50 transition-colors cursor-pointer" title="Edit user">
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button onClick={() => deleteUser(u.id)} className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer" title="Delete user">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {currentUserRole === "Admin" && (
+                        <button onClick={() => changeUserPassword(u.id, "")} className="p-2 rounded-lg text-slate-400 hover:text-lrso-blue-600 hover:bg-lrso-blue-50 transition-colors cursor-pointer" title="Change password">
+                          <Lock className="h-4 w-4" />
+                        </button>
+                      )}
+                      {currentUserRole === "Admin" && (
+                        <button onClick={() => startEditUser(u)} className="p-2 rounded-lg text-slate-400 hover:text-lrso-blue-600 hover:bg-lrso-blue-50 transition-colors cursor-pointer" title="Edit user">
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      )}
+                      {currentUserRole === "Admin" && (
+                        <button onClick={() => deleteUser(u.id)} className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer" title="Delete user">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

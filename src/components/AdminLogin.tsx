@@ -5,7 +5,7 @@ import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 interface AdminLoginProps {
-  onLogin: () => void;
+  onLogin: (role: string) => void;
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
@@ -32,7 +32,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
         setError("Invalid username or password.");
         setIsLoading(false);
       } else {
-        onLogin();
+        onLogin(data.role || "Staff");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
