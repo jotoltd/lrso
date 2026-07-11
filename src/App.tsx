@@ -20,6 +20,7 @@ import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BackToTop } from "./components/BackToTop";
 import { AdminPanel } from "./components/AdminPanel";
 import { VenuePage } from "./components/VenuePage";
+import { NotFound } from "./components/NotFound";
 import { SiteContentProvider, useSiteContent } from "./context/SiteContentContext";
 
 import { Home } from "./components/Home";
@@ -145,7 +146,7 @@ export default function App() {
             <Route path="/venues/:id" element={<VenueDetailPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/partnership" element={<PartnershipPage />} />
-            <Route path="*" element={<HomePage />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>
