@@ -19,6 +19,7 @@ import {
   FileText,
   Save,
   X,
+  Lock,
 } from "lucide-react";
 import { supabase, supabaseAdmin } from "../lib/supabase";
 import { Logo } from "./Logo";
