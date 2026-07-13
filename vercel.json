@@ -9,6 +9,22 @@
       "destination": "/venues"
     },
     {
+      "source": "/contact%20a.htm",
+      "destination": "/contact"
+    },
+    {
+      "source": "/book%20now.htm",
+      "destination": "/venues"
+    },
+    {
+      "source": "/cws%20book.htm",
+      "destination": "/venues"
+    },
+    {
+      "source": "/join%20us.htm",
+      "destination": "/partnership"
+    },
+    {
       "source": "/partnership.htm",
       "destination": "/partnership"
     },
