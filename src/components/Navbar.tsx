@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import logoImage from "../assets/lrso_logo.jpg";
@@ -6,8 +6,17 @@ import { Phone, Mail, Menu, X, MessageSquare } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { label: "Home", path: "/" },
@@ -25,9 +34,9 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md">
+    <header className={`sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md transition-all duration-300 ${isScrolled ? "h-24" : "h-48"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-48 items-center">
+        <div className="flex h-full items-center">
           {/* Desktop Navigation */}
           <nav className="hidden flex-1 items-center gap-1.5 md:flex">
             {navItems.map((item) => {
@@ -55,7 +64,12 @@ export const Navbar: React.FC = () => {
           {/* Logo element */}
           <div className="flex flex-1 items-center justify-center md:flex-initial">
             <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
-              <Logo className="h-40 w-auto" showBookteqPartner={false} showText={false} imageSrc={logoImage} />
+              <Logo 
+                className={`w-auto transition-all duration-300 ${isScrolled ? "h-20" : "h-40"}`} 
+                showBookteqPartner={false} 
+                showText={false} 
+                imageSrc={logoImage} 
+              />
             </div>
           </div>
 
