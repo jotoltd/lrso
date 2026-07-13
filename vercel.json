@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/our venues.htm",
+      "destination": "/venues"
+    },
+    {
+      "source": "/our%20venues.htm",
+      "destination": "/venues"
+    },
+    {
+      "source": "/partnership.htm",
+      "destination": "/partnership"
+    },
+    {
+      "source": "/contact.htm",
+      "destination": "/contact"
+    },
+    {
+      "source": "/index.htm",
+      "destination": "/"
+    },
+    {
+      "source": "/home.htm",
+      "destination": "/"
+    }
+  ]
+}
