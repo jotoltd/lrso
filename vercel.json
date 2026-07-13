@@ -1,44 +1,54 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/our venues.htm",
-      "destination": "/venues"
+      "destination": "/venues",
+      "statusCode": 301
     },
     {
       "source": "/our%20venues.htm",
-      "destination": "/venues"
+      "destination": "/venues",
+      "statusCode": 301
     },
     {
       "source": "/contact%20a.htm",
-      "destination": "/contact"
+      "destination": "/contact",
+      "statusCode": 301
     },
     {
       "source": "/book%20now.htm",
-      "destination": "/venues"
+      "destination": "/venues",
+      "statusCode": 301
     },
     {
       "source": "/cws%20book.htm",
-      "destination": "/venues"
+      "destination": "/venues",
+      "statusCode": 301
     },
     {
       "source": "/join%20us.htm",
-      "destination": "/partnership"
+      "destination": "/partnership",
+      "statusCode": 301
     },
     {
       "source": "/partnership.htm",
-      "destination": "/partnership"
+      "destination": "/partnership",
+      "statusCode": 301
     },
     {
       "source": "/contact.htm",
-      "destination": "/contact"
+      "destination": "/contact",
+      "statusCode": 301
     },
     {
       "source": "/index.htm",
-      "destination": "/"
+      "destination": "/",
+      "statusCode": 301
     },
     {
       "source": "/home.htm",
-      "destination": "/"
+      "destination": "/",
+      "statusCode": 301
     }
   ]
 }
