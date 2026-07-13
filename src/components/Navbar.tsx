@@ -34,7 +34,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className={`sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md transition-all duration-300 ${isScrolled ? "h-24" : "h-48"}`}>
+    <header className={`sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-md transition-all duration-500 ease-out ${isScrolled ? "h-24" : "h-48"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-full items-center">
           {/* Desktop Navigation */}
@@ -65,7 +65,7 @@ export const Navbar: React.FC = () => {
           <div className="flex flex-1 items-center justify-center md:flex-initial">
             <div className="cursor-pointer" onClick={() => handleNavClick("/")}>
               <Logo 
-                className={`w-auto transition-all duration-300 ${isScrolled ? "h-20" : "h-40"}`} 
+                className={`w-auto transition-all duration-500 ease-out ${isScrolled ? "h-20" : "h-40"}`} 
                 showBookteqPartner={false} 
                 showText={false} 
                 imageSrc={logoImage} 
