@@ -5,5 +5,11 @@
       "destination": "/",
       "statusCode": 301
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
