@@ -73,18 +73,18 @@ function VenuesPage() {
   const navigate = useNavigate();
   return (
     <VenueExplorer
-      onVenueSelect={(id) => navigate(`/venues/${id}`)}
+      onVenueSelect={(slug) => navigate(`/venues/${slug}`)}
     />
   );
 }
 
 function VenueDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  if (!id) return null;
+  if (!slug) return null;
   return (
     <VenuePage
-      venueId={id}
+      venueSlug={slug}
       onBack={() => navigate("/venues")}
     />
   );
@@ -143,7 +143,7 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/venues" element={<VenuesPage />} />
-            <Route path="/venues/:id" element={<VenueDetailPage />} />
+            <Route path="/venues/:slug" element={<VenueDetailPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/partnership" element={<PartnershipPage />} />
             <Route path="*" element={<NotFound />} />

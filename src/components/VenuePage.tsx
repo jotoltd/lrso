@@ -18,6 +18,7 @@ import {
   Clock,
   Navigation,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 interface Venue {
@@ -26,6 +27,7 @@ interface Venue {
   address: string;
   book_link: string;
   logo_url: string | null;
+  slug: string | null;
 }
 
 interface Facility {
@@ -37,9 +39,11 @@ interface Facility {
 }
 
 interface VenuePageProps {
-  venueId: string;
+  venueSlug: string;
   onBack: () => void;
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function facilityIcon(name: string) {
   const n = name.toLowerCase();
@@ -56,7 +60,8 @@ function facilityIcon(name: string) {
   return <Dumbbell className="h-4 w-4" />;
 }
 
-export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
+export const VenuePage: React.FC<VenuePageProps> = ({ venueSlug, onBack }) => {
+  const navigate = useNavigate();
   const [venue, setVenue] = useState<Venue | null>(null);
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,20 +81,24 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueId, onBack }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     const fetch = async () => {
       setLoading(true);
-      const [{ data: v }, { data: f }] = await Promise.all([
-        supabase.from("venues").select("*").eq("id", venueId).single(),
-        supabase.from("facilities").select("*").eq("venue_id", venueId).order("sort_order", { ascending: true }),
-      ]);
+      let { data: v } = await supabase.from("venues").select("*").eq("slug", venueSlug).maybeSingle();
+      if (!v && UUID_RE.test(venueSlug)) {
+        ({ data: v } = await supabase.from("venues").select("*").eq("id", venueSlug).maybeSingle());
+      }
       if (v) {
         setVenue(v as Venue);
         document.title = `${(v as Venue).name} – LRSO`;
+        if ((v as Venue).slug && (v as Venue).slug !== venueSlug) {
+          navigate(`/venues/${(v as Venue).slug}`, { replace: true });
+        }
+        const { data: f } = await supabase.from("facilities").select("*").eq("venue_id", (v as Venue).id).order("sort_order", { ascending: true });
+        if (f) setFacilities(f as Facility[]);
       }
-      if (f) setFacilities(f as Facility[]);
       setLoading(false);
     };
     fetch();
     return () => { document.title = "LRSO – School Facility Hire"; };
-  }, [venueId]);
+  }, [venueSlug, navigate]);
 
   if (loading) {
     return (

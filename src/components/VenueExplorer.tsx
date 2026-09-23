@@ -9,6 +9,7 @@ interface SupabaseVenue {
   address: string;
   book_link: string;
   logo_url: string | null;
+  slug: string | null;
   created_at: string;
 }
 
@@ -21,7 +22,7 @@ interface Facility {
 }
 
 interface VenueExplorerProps {
-  onVenueSelect: (venueId: string) => void;
+  onVenueSelect: (venueSlug: string) => void;
 }
 
 export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) => {
@@ -170,7 +171,7 @@ export const VenueExplorer: React.FC<VenueExplorerProps> = ({ onVenueSelect }) =
           {filteredVenues.map((venue) => (
             <div
               key={venue.id}
-              onClick={() => onVenueSelect(venue.id)}
+              onClick={() => onVenueSelect(venue.slug || venue.id)}
               className="group flex flex-col justify-between overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 hover:border-lrso-blue-200 transition-all duration-300 cursor-pointer"
             >
               {/* Header banner with logo */}
