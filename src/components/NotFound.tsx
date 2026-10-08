@@ -2,10 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, ArrowLeft } from "lucide-react";
 import { Logo } from "./Logo";
+import { usePageMeta } from "../hooks/usePageMeta";
 import logoImage from "../assets/lrso_logo.jpg";
 
 export const NotFound: React.FC = () => {
   const navigate = useNavigate();
+  usePageMeta({ title: "Page Not Found | LRSO", noindex: true });
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">

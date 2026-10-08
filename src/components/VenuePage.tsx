@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 interface Venue {
   id: string;
@@ -87,15 +88,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueSlug, onBack }) => {
       }
       if (v) {
         setVenue(v as Venue);
-        document.title = `${(v as Venue).name} – LRSO`;
-        const canonical = document.createElement("link");
-        canonical.rel = "canonical";
-        canonical.href = `${window.location.origin}/venues/${(v as Venue).slug || (v as Venue).id}`;
-        document.head.appendChild(canonical);
-        const desc = document.createElement("meta");
-        desc.name = "description";
-        desc.content = `Hire facilities at ${(v as Venue).name}, ${(v as Venue).address}. Sports halls, pitches, studios and more available evenings, weekends and school holidays with LRSO.`;
-        document.head.appendChild(desc);
         if ((v as Venue).slug && (v as Venue).slug !== venueSlug) {
           navigate(`/venues/${(v as Venue).slug}`, { replace: true });
         }
@@ -105,12 +97,30 @@ export const VenuePage: React.FC<VenuePageProps> = ({ venueSlug, onBack }) => {
       setLoading(false);
     };
     fetch();
-    return () => {
-      document.title = "LRSO – School Facility Hire";
-      document.head.querySelector('link[rel="canonical"]')?.remove();
-      document.head.querySelector('meta[name="description"]')?.remove();
-    };
   }, [venueSlug, navigate]);
+
+  usePageMeta({
+    title: venue ? `${venue.name} – School Facilities for Hire | LRSO` : "Venue – LRSO",
+    description: venue ? `Hire facilities at ${venue.name}, ${venue.address}. Sports halls, pitches, studios and more available evenings, weekends and school holidays with LRSO.` : null,
+    canonicalPath: venue ? `/venues/${venue.slug || venue.id}` : `/venues/${venueSlug}`,
+    ogImage: venue?.logo_url || "/logo-512.png",
+  });
+
+  useEffect(() => {
+    if (!venue) return;
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SportsActivityLocation",
+      name: venue.name,
+      address: venue.address,
+      url: `${window.location.origin}/venues/${venue.slug || venue.id}`,
+      image: venue.logo_url ?? undefined,
+    });
+    document.head.appendChild(script);
+    return () => { script.remove(); };
+  }, [venue]);
 
   if (loading) {
     return (

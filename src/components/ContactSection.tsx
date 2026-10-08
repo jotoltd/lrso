@@ -60,9 +60,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialSubject }
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
             {value("contact.page.title", "Contact Headquarters & Support")}
-          </h2>
+          </h1>
           <p className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto font-medium">
             {value("contact.page.subtitle", "We operate fully staffed administrations from Crawley, handling reservations, payments, and site health audits.")}
           </p>

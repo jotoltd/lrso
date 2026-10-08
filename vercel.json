@@ -1,9 +1,37 @@
 {
   "redirects": [
+    { "source": "/our( |%20)venues\\.htm", "destination": "/venues", "statusCode": 301 },
+    { "source": "/book( |%20)now\\.htm", "destination": "/venues", "statusCode": 301 },
+    { "source": "/book( |%20)facility\\.htm", "destination": "/venues", "statusCode": 301 },
+    { "source": "/contact( |%20)a\\.htm", "destination": "/contact", "statusCode": 301 },
+    { "source": "/join( |%20)us\\.htm", "destination": "/partnership", "statusCode": 301 },
+    { "source": "/cws( |%20)(facilities|book)\\.htm", "destination": "/venues/coombe-wood-school", "statusCode": 301 },
+    { "source": "/westlea( |%20)(facilities|book)\\.htm", "destination": "/venues/westlea-primary-school", "statusCode": 301 },
+    { "source": "/lees( |%20)brook( |%20)(facilities|book)\\.htm", "destination": "/venues/lees-brook-academy", "statusCode": 301 },
+    { "source": "/baa( |%20)facilities\\.htm", "destination": "/venues/bluecoat-aspley-academy", "statusCode": 301 },
+    { "source": "/aspley( |%20)book\\.htm", "destination": "/venues/bluecoat-aspley-academy", "statusCode": 301 },
+    { "source": "/bba( |%20)facilities\\.htm", "destination": "/venues/bluecoat-beechdale-academy", "statusCode": 301 },
+    { "source": "/beechdale( |%20)book\\.htm", "destination": "/venues/bluecoat-beechdale-academy", "statusCode": 301 },
+    { "source": "/wollaton( |%20)(facilities|book)\\.htm", "destination": "/venues/bluecoat-wollaton-academy", "statusCode": 301 },
+    { "source": "/nes( |%20)facilities\\.htm", "destination": "/venues/the-nottingham-emmanuel-school", "statusCode": 301 },
+    { "source": "/nott( |%20)em( |%20)book\\.htm", "destination": "/venues/the-nottingham-emmanuel-school", "statusCode": 301 },
+    { "source": "/riddlesdown( |%20)(facilities|book)\\.htm", "destination": "/venues/riddlesdown-collegiate", "statusCode": 301 },
+    { "source": "/lipswich( |%20)ac( |%20)facilities\\.htm", "destination": "/venues/ipswich-academy", "statusCode": 301 },
+    { "source": "/ia( |%20)book\\.htm", "destination": "/venues/ipswich-academy", "statusCode": 301 },
+    { "source": "/pipers( |%20)vale( |%20)facilities\\.htm", "destination": "/venues/pipers-vale-academy", "statusCode": 301 },
+    { "source": "/pipers( |%20)book\\.htm", "destination": "/venues/pipers-vale-academy", "statusCode": 301 },
+    { "source": "/woodbridge( |%20)(facilities|book)\\.htm", "destination": "/venues/woodbridge-road-academy", "statusCode": 301 },
+    { "source": "/trent( |%20)(facilities|book)\\.htm", "destination": "/venues/bluecoat-trent-academy", "statusCode": 301 },
+    { "source": "/wcgs( |%20)(facilities|book)\\.htm", "destination": "/venues/wallington-county-grammar-school", "statusCode": 301 },
+    { "source": "/murray( |%20)(facilities|book)\\.htm", "destination": "/venues/murrayfield-primary", "statusCode": 301 },
+    { "source": "/(.*)\\.htm", "destination": "/", "statusCode": 301 }
+  ],
+  "headers": [
     {
-      "source": "/(.*)\\.htm",
-      "destination": "/",
-      "statusCode": 301
+      "source": "/admin",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
     }
   ],
   "rewrites": [

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -18,12 +18,18 @@ import { Footer } from "./components/Footer";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BackToTop } from "./components/BackToTop";
-import { AdminPanel } from "./components/AdminPanel";
 import { VenuePage } from "./components/VenuePage";
 import { NotFound } from "./components/NotFound";
+import { usePageMeta } from "./hooks/usePageMeta";
 import { SiteContentProvider, useSiteContent } from "./context/SiteContentContext";
 
 import { Home } from "./components/Home";
+
+const AdminPanel = lazy(() =>
+  import("./components/AdminPanel").then((m) => ({ default: m.AdminPanel }))
+);
+
+const OG_IMAGE = "/logo-512.png";
 
 function usePageAnimations() {
   const location = useLocation();
@@ -63,6 +69,12 @@ function MainLayout() {
 
 function HomePage() {
   const navigate = useNavigate();
+  usePageMeta({
+    title: "LRSO Ltd | School Facility Hire & Lettings Management",
+    description: "LRSO manages school and sports club facilities for community hire across the UK. Book sports halls, pitches, studios and more — evenings, weekends and school holidays.",
+    canonicalPath: "/",
+    ogImage: OG_IMAGE,
+  });
   const handleEnquire = (subject: string) => {
     navigate(`/contact?subject=${encodeURIComponent(subject)}`);
   };
@@ -71,6 +83,12 @@ function HomePage() {
 
 function VenuesPage() {
   const navigate = useNavigate();
+  usePageMeta({
+    title: "Venues for Hire | LRSO",
+    description: "Browse venues for hire — sports halls, 3G pitches, dance and drama studios, classrooms and more at schools across the UK.",
+    canonicalPath: "/venues",
+    ogImage: OG_IMAGE,
+  });
   return (
     <VenueExplorer
       onVenueSelect={(slug) => navigate(`/venues/${slug}`)}
@@ -92,12 +110,24 @@ function VenueDetailPage() {
 
 function ContactPage() {
   const [searchParams] = useSearchParams();
+  usePageMeta({
+    title: "Contact Us | LRSO",
+    description: "Contact LRSO about hiring school facilities — sports halls, pitches and studios available for community use.",
+    canonicalPath: "/contact",
+    ogImage: OG_IMAGE,
+  });
   const initialSubject = searchParams.get("subject") || "";
   return <ContactSection initialSubject={initialSubject} />;
 }
 
 function PartnershipPage() {
   const { value } = useSiteContent();
+  usePageMeta({
+    title: "Partner With Us | LRSO",
+    description: "Partner with LRSO — we generate much-needed revenue for schools and sports clubs by managing and marketing their facilities for community lettings.",
+    canonicalPath: "/partnership",
+    ogImage: OG_IMAGE,
+  });
   return (
     <>
       <section className="bg-gradient-to-b from-slate-50 via-white to-white py-20 border-b border-slate-100">
@@ -139,7 +169,7 @@ export default function App() {
       <BrowserRouter>
         <AdminShortcut />
         <Routes>
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin" element={<Suspense fallback={<div className="min-h-screen bg-slate-50" />}><AdminPanel /></Suspense>} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/venues" element={<VenuesPage />} />
